@@ -1,0 +1,129 @@
+import React, { useEffect, useState } from "react";
+import { Box, Text, Icon, useNavigate } from "zmp-ui";
+import ButtonNavigate from "../components/buttonNavigate/buttonNavigate";
+import BookingCard from "../components/cards/bookingCard";
+import HeaderPage from "../components/headerPage/headerPage";
+import Store from "../components/redux/store";
+
+const Booking = () => {
+  const navigate = useNavigate();
+  const [appointmentTab, setAppointmentTab] = useState("all");
+  const [statusAppointment, setStatusAppointment] = useState([0]);
+  const [listAppointments, setListAppointments] = useState([]);
+
+  useEffect(() => {
+    setListAppointments(() => {
+      if (statusAppointment.length >= 2) {
+        let [success, reject] = statusAppointment;
+        return Store.getState().appointments.filter((appointment) => {
+          return (
+            appointment.status === success || appointment.status === reject
+          );
+        });
+      } else {
+        return Store.getState().appointments.filter(
+          (appointment) => appointment.status === statusAppointment[0]
+        );
+      }
+    });
+  }, [Store.getState().appointments, appointmentTab]);
+
+  return (
+    <Box
+      className={
+        listAppointments.length > 0
+          ? "bg-[var(--background-grey)]"
+          : "bg-[var(--white-color)] "
+      }
+      style={{ minHeight: "100vh" }}
+    >
+      <HeaderPage title="Quản lí đặt lịch" />
+      <Box
+        flex
+        justifyContent="space-between"
+        className="bg-[var(--white-color)]"
+        px={4}
+      >
+        <Box
+          alignItems="center"
+          onClick={() => {
+            setAppointmentTab("all");
+            setStatusAppointment([0]);
+          }}
+          style={
+            appointmentTab === "all"
+              ? {
+                  borderBottom: "var(--primary-color) solid 3px",
+                  color: "var(--primary-color)",
+                }
+              : {}
+          }
+          className="flex-1 sub-title"
+          py={2}
+        >
+          <Text className="text-center sub-title">Tất cả</Text>
+        </Box>
+        <Box
+          alignItems="center"
+          onClick={() => {
+            setAppointmentTab("history");
+            setStatusAppointment([1, 2]);
+          }}
+          style={
+            appointmentTab === "history"
+              ? {
+                  borderBottom: "var(--primary-color) solid 3px",
+                  color: "var(--primary-color)",
+                }
+              : {}
+          }
+          className="flex-1 sub-title"
+          py={2}
+        >
+          <Text className="text-center sub-title">Lịch sử</Text>
+        </Box>
+      </Box>
+      <Box>
+        {listAppointments.length > 0 ? (
+          <Box pt={4} flex className="flex-col gap-2">
+            {listAppointments.map((item) => (
+              <BookingCard key={item.id} id {...item} />
+            ))}
+          </Box>
+        ) : (
+          <Box
+            className="bg-[var(--white-color)] flex-col gap-2"
+            flex
+            justifyContent="center"
+            alignItems="center"
+            style={{ height: "calc(100vh - 220px)" }}
+          >
+            <Icon icon="zi-note-delete" size={36} />
+            <Text size="xLarge" className="sub-title">
+              Không có lịch hẹn
+            </Text>
+            <Text className="text-[var(--text-disable)]">
+              Vui lòng tạo lịch hẹn mới
+            </Text>
+          </Box>
+        )}
+      </Box>
+      <Box
+        className="sticky bg-[var(--white-color)] w-full top-full"
+        flex
+        justifyContent="center"
+        alignItems="center"
+        py={2}
+        px={4}
+      >
+        <ButtonNavigate
+          page="/branches"
+          title="Tạo lịch hẹn mới"
+          action={() => navigate("/branches")}
+        ></ButtonNavigate>
+      </Box>
+    </Box>
+  );
+};
+
+export default Booking;

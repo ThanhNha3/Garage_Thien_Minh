@@ -1,0 +1,109 @@
+.page {
+  padding: 16px 16px 96px 16px;
+}
+
+.section-container {
+  padding: 16px;
+  background: #ffffff;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.zaui-list-item {
+  cursor: pointer;
+}
+
+/* Nha Code */
+
+:root {
+  --primary-color: #3498db;
+  --secondary-color: #f39c12;
+  --white-color: #fff;
+  --background-grey: #d3d3d3;
+  --text-color: #333;
+  --text-disable: #8f9499;
+  --text-secondary: #53575a;
+}
+
+* {
+  font-family: Roboto, sans-serif;
+  scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+.zaui-bottom-navigation-item-active {
+  color: var(--primary-color) !important;
+}
+
+.header-sticky {
+  position: sticky;
+  height: auto;
+  margin-bottom: 0;
+  /* top: 10px; */
+  flex: none;
+  /* display: none; */
+  z-index: 100000000;
+}
+
+.sub-title {
+  font-weight: 600;
+}
+
+.text-danger {
+  color: red;
+}
+
+.bg-primary {
+  background: var(--primary-color) !important;
+}
+
+/* custom seclect branch */
+.select-branch {
+  display: flex !important;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.position-relative {
+  position: relative !important;
+}
+
+.zaui-btn .zaui-btn-container {
+  display: block !important;
+}
+
+.zaui-snackbar.zaui-snackbar.zaui-snackbar-bottom-visible.zaui-snackbar-bottom,
+.zaui-snackbar
+  .zaui-snackbar
+  .zaui-snackbar-bottom-visible
+  .zaui-snackbar-bottom {
+  transition: 0ms;
+  background: var(--secondary-color) !important;
+}
+
+.zaui-snackbar.zaui-snackbar.zaui-snackbar-bottom-visible.zaui-snackbar-bottom
+  > * {
+  color: var(--white-color) !important;
+}
+
+.staff-chosen-active::after {
+  content: "";
+  position: absolute;
+  top: 110%;
+  width: 100%;
+  height: 5px;
+  background: var(--primary-color);
+}
+
+.zaui-date-picker {
+  border: none !important;
+}
+
+/* timer picker */
+.cardTimerPickerActive {
+  background-color: var(--primary-color);
+  color: var(--white-color);
+}
