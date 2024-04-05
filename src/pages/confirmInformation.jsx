@@ -1,9 +1,13 @@
-import react from "react";
+import react, { useState } from "react";
 import { Box, Icon, Text } from "zmp-ui";
 import HeaderPage from "../components/headerPage/headerPage";
 import ButtonNavigate from "../components/buttonNavigate/buttonNavigate";
+import ModalConfirm from "../components/modalConfirm/modalConfirm";
+import ModalNotification from "../components/modalNotification/modalNotification";
 
 const ConfirmInformation = () => {
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [popupVisible, setPopupVisible] = useState(false);
   return (
     <Box>
       <HeaderPage title="Xác nhận đặt lịch"></HeaderPage>
@@ -94,8 +98,23 @@ const ConfirmInformation = () => {
         <ButtonNavigate
           title="Xác nhận"
           style={{ borderRadius: 10 }}
+          action={() => setDialogVisible(true)}
         ></ButtonNavigate>
       </Box>
+      <ModalConfirm
+        title="Xác nhận đặt lịch"
+        description="Bạn có chắc chắn đặt lịch không?"
+        type="submit"
+        dialogVisible={dialogVisible}
+        setDialogVisible={setDialogVisible}
+        setPopupVisible={setPopupVisible}
+      />
+      <ModalNotification
+        title="Đặt lịch thành công"
+        description="Chúng tôi sẽ nhắc bạn trước ngày được đặt. Hẹn gặp bạn tại Garage Thiện Minh!"
+        popupVisible={popupVisible}
+        setPopupVisible={setPopupVisible}
+      />
     </Box>
   );
 };

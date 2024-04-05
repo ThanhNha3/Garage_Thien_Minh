@@ -50,7 +50,7 @@ const FormInformation = () => {
         checkRegex(email, emailRegex)
       ) {
         // xử lí ở đây
-        console.log(customer_type, name, phone, address, email, note);
+        // console.log(customer_type, name, phone, address, email, note);
         navigate("/confirminformation");
       } else {
       }
