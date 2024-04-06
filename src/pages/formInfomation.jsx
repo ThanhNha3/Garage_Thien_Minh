@@ -2,6 +2,8 @@ import React, { useState, useRef } from "react";
 import { Box, Input, Text, useNavigate } from "zmp-ui";
 import HeaderPage from "../components/headerPage/headerPage";
 import ButtonNavigate from "../components/buttonNavigate/buttonNavigate";
+import Store from "../components/redux/store";
+import { UpdateCustomerInformation } from "../components/redux/actions/customerInformationAction";
 
 const nameRegex =
   /^[A-ZÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ][a-zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]*(?:[ ][A-ZÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ][a-zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]*)*$/;
@@ -51,6 +53,8 @@ const FormInformation = () => {
       ) {
         // xử lí ở đây
         // console.log(customer_type, name, phone, address, email, note);
+        const data = { customer_type, name, phone, address, email, note };
+        Store.dispatch(UpdateCustomerInformation(data));
         navigate("/confirminformation");
       } else {
       }

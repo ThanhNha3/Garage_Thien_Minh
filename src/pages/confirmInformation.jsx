@@ -1,13 +1,48 @@
-import react, { useState } from "react";
+import react, { useEffect, useState } from "react";
 import { Box, Icon, Text } from "zmp-ui";
 import HeaderPage from "../components/headerPage/headerPage";
 import ButtonNavigate from "../components/buttonNavigate/buttonNavigate";
 import ModalConfirm from "../components/modalConfirm/modalConfirm";
 import ModalNotification from "../components/modalNotification/modalNotification";
+import Store from "../components/redux/store";
 
 const ConfirmInformation = () => {
   const [dialogVisible, setDialogVisible] = useState(false);
   const [popupVisible, setPopupVisible] = useState(false);
+  const [customerInformation, setCustomerInformation] = useState({});
+  const [staffChosen, setStaffChosen] = useState({});
+  const [timePicker, setTimePicker] = useState({});
+  const [datePicker, setDatePicker] = useState(Store.getState().datePicker);
+  const [branchChosen, setBranchChosen] = useState({});
+
+  useEffect(() => {
+    setCustomerInformation(Store.getState().customerInformation);
+    setStaffChosen(() => {
+      return Store.getState().users.find(
+        (user) => user.id === Store.getState().staffChosen
+      );
+    });
+    setTimePicker(() => {
+      return Store.getState().listTimePicker.find((timePicker) => {
+        return timePicker.id === Store.getState().timePicker;
+      });
+    });
+    setBranchChosen(() => {
+      return Store.getState().branches.find(
+        (branch) => branch.id === Store.getState().branchChosen
+      );
+    });
+    setDatePicker(Store.getState().datePicker);
+  }, []);
+
+  const formatDatePicker = (datePicker) => {
+    return datePicker.toLocaleDateString("vi-VN");
+  };
+
+  useEffect(() => {
+    console.log();
+  }, [datePicker]);
+
   return (
     <Box>
       <HeaderPage title="Xác nhận đặt lịch"></HeaderPage>
@@ -20,12 +55,12 @@ const ConfirmInformation = () => {
         <Text className="sub-title">Chi tiết đặt lịch</Text>
         <Box flex className="gap-4">
           <Box width={135}>
-            <img src="https://vietbooking.net/wp-content/uploads/2021/04/Can-tho-3-thienphuoctravel.com_-1.jpg"></img>
+            <img src={branchChosen.image}></img>
           </Box>
           <Box>
-            <Text className="sub-title">Garage Thiện Minh</Text>
+            <Text className="sub-title">{branchChosen.name}</Text>
             <Text className="text-[var(--text-disable)]">
-              Thành phố cần thơ
+              {branchChosen.address}
             </Text>
           </Box>
         </Box>
@@ -39,19 +74,19 @@ const ConfirmInformation = () => {
       >
         <Box flex justifyContent="space-between">
           <Text>Ngày đặt</Text>
-          <Text className="sub-title">Ngày đặt</Text>
+          <Text className="sub-title">{formatDatePicker(datePicker)}</Text>
         </Box>
         <Box flex justifyContent="space-between">
           <Text>Giờ đặt</Text>
-          <Text className="sub-title">Giờ đặt</Text>
+          <Text className="sub-title">{timePicker.time}</Text>
         </Box>
         <Box flex justifyContent="space-between">
           <Text>Nhân viên</Text>
           <Box flex alignItems="center">
             <Box width={25}>
-              <img src="https://th.bing.com/th/id/R.425d708a625a73a8bafdcf3a7349f565?rik=gE0x6lkfGE35Ug&pid=ImgRaw&r=0" />
+              <img src={staffChosen.image} />
             </Box>
-            <Text className="sub-title">Mặc định</Text>
+            <Text className="sub-title">{staffChosen.name}</Text>
           </Box>
         </Box>
       </Box>
@@ -66,23 +101,23 @@ const ConfirmInformation = () => {
         <Box flex flexDirection="column" className="gap-2">
           <Box flex alignItems="center" className="gap-2">
             <Icon icon="zi-user-solid"></Icon>
-            <Text>Thanh Nhả</Text>
+            <Text>{customerInformation.name}</Text>
           </Box>
           <Box flex alignItems="center" className="gap-2">
             <Icon icon="zi-call-solid"></Icon>
-            <Text>0946630197</Text>
+            <Text>{customerInformation.phone}</Text>
           </Box>
           <Box flex alignItems="center" className="gap-2">
             <Icon icon="zi-notif-ring"></Icon>
-            <Text>nhantpc05188@fpt.edu.vn</Text>
+            <Text>{customerInformation.email}</Text>
           </Box>
           <Box flex alignItems="center" className="gap-2">
             <Icon icon="zi-location-solid"></Icon>
-            <Text>Cần Thơ</Text>
+            <Text>{customerInformation.address}</Text>
           </Box>
           <Box flex alignItems="center" className="gap-2">
             <Icon icon="zi-post"></Icon>
-            <Text>Sẽ lấy trong 2 ngày</Text>
+            <Text>{customerInformation.note}</Text>
           </Box>
         </Box>
       </Box>

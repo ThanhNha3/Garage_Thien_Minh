@@ -12,7 +12,7 @@ const ButtonNavigate = ({
   action,
 }) => {
   return (
-    <Button style={style} className="bg-primary" fullWidth onClick={action}>
+    <Button style={style} className="" fullWidth onClick={action}>
       {title}
     </Button>
   );

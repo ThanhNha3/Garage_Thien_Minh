@@ -1,5 +1,7 @@
 import React from "react";
 import { Box, Text, useNavigate } from "zmp-ui";
+import { ChangeBranchChosen } from "../redux/actions/branchChosenAction";
+import Store from "../redux/store";
 
 const BranchCard = (data) => {
   const navigate = useNavigate();
@@ -18,7 +20,10 @@ const BranchCard = (data) => {
   return (
     <Box
       flex
-      onClick={() => navigate(`/createbooking/${id}`)}
+      onClick={() => {
+        Store.dispatch(ChangeBranchChosen(id));
+        navigate(`/createbooking`);
+      }}
       className="gap-2 bg-[var(--white-color)]"
       px={4}
       py={2}

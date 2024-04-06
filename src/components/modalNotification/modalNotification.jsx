@@ -30,7 +30,7 @@ const ModalNotification = ({
         <Button
           onClick={() => {
             setPopupVisible(false);
-            navigate("/");
+            navigate("/detailsBooking");
           }}
           fullWidth
         >

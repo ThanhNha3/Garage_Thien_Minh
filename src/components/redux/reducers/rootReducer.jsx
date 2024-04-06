@@ -9,6 +9,9 @@ import UserReducer from "./userReducer";
 import StaffChosenReducer from "./staffChosenReducer";
 import DatePickerReducer from "./datePickerReducer";
 import TimePickerReducer from "./timePickerReducer";
+import CustomerInformationReducer from "./customerInformationReducer";
+import ListTimePickerReducer from "./listTimePickerReducer";
+import BranchChosenReducer from "./branchChosenReducer";
 
 export const rootReducer = combineReducers({
   productsSelected: ProductsSelectedReducer,
@@ -16,9 +19,12 @@ export const rootReducer = combineReducers({
   coupons: CouponReducer,
   appointments: AppointmentReducer,
   branches: BranchReducer,
+  branchChosen: BranchChosenReducer,
   categories: CategoryReducer,
   users: UserReducer,
   staffChosen: StaffChosenReducer,
   datePicker: DatePickerReducer,
+  listTimePicker: ListTimePickerReducer,
   timePicker: TimePickerReducer,
+  customerInformation: CustomerInformationReducer,
 });

@@ -1,15 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router";
-import {
-  Box,
-  Header,
-  Icon,
-  Text,
-  useNavigate,
-  DatePicker,
-  BottomNavigation,
-  Button,
-} from "zmp-ui";
+import { Box, Icon, Text, useNavigate, DatePicker } from "zmp-ui";
 import Store from "../components/redux/store";
 import { dataContext } from "../components/providerContext/providerContext";
 import { ChangeStaffChosen } from "../components/redux/actions/staffChosenAction";
@@ -20,18 +10,17 @@ import HeaderPage from "../components/headerPage/headerPage";
 
 const CreateBooking = () => {
   const navigate = useNavigate();
-  const { id } = useParams();
-  const [currentBranch, setCurrentBranch] = useState({});
+  const [currentBranch, setCurrentBranch] = useState(Store);
   const [listStaffs, setListStaffs] = useState([]);
   const { formatCurrency } = useContext(dataContext);
   const [listServices, setListServices] = useState([]);
   const [staffIdChosen, setStaffIdChosen] = useState();
-  const [date, setDate] = useState();
+  const [date, setDate] = useState(Store.getState().datePicker);
 
   useEffect(() => {
     setCurrentBranch(() => {
       return Store.getState().branches.find(
-        (branch) => branch.id === Number(id)
+        (branch) => branch.id === Store.getState().branchChosen
       );
     });
     setListStaffs(() => {
@@ -39,26 +28,23 @@ const CreateBooking = () => {
     });
     setListServices(Store.getState().productsSelected);
     setStaffIdChosen(Store.getState().staffChosen);
-    setDate(Store.getState().datePicker);
   }, []);
 
   useEffect(() => {
     Store.subscribe(() => {
       setListServices(Store.getState().productsSelected);
     });
-  }, [Store.getState().productsSelected]);
+  }, []);
 
   useEffect(() => {
     Store.subscribe(() => {
       setStaffIdChosen(Store.getState().staffChosen);
     });
-  }, [Store.getState().staffChosen]);
+  }, []);
 
   useEffect(() => {
-    Store.subscribe(() => {
-      setDate(Store.getState().datePicker);
-    });
-  }, [Store.getState().datePicker]);
+    Store.dispatch(ChangeDatePicker(date));
+  }, [date]);
 
   return (
     <Box className="bg-[var(--background-grey)]">
@@ -118,10 +104,7 @@ const CreateBooking = () => {
           onClick={() => navigate("/product")}
         >
           <Text.Title className="sub-title">2. Chọn dịch vụ</Text.Title>
-          <Box
-            className="gap-2 d-block"
-            // style={{ maxHeight: "200px" }}
-          >
+          <Box className="gap-2 d-block">
             {listServices.length > 0 ? (
               listServices.map((item) => (
                 <Box
@@ -209,16 +192,15 @@ const CreateBooking = () => {
                 </Box>
               }
               suffix={<Icon icon="zi-chevron-right" />}
-              key={date}
-              startDate={date}
-              value={date}
+              startDate={Store.getState().datePicker}
+              value={Store.getState().datePicker}
               mask
-              defaultValue={date}
+              defaultValue={Store.getState().datePicker}
               maskClosable
               dateFormat="dd/mm/yyyy"
               title="Chọn ngày"
               locale="vi-VN"
-              onChange={(date) => Store.dispatch(ChangeDatePicker(date))}
+              onChange={(date) => setDate(date)}
             />
           </Box>
           {listServices.length > 0 ? (

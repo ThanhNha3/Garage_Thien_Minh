@@ -11,6 +11,7 @@ import CreateBooking from "../../pages/createbooking";
 import ProductPage from "../../pages/product";
 import FormInformation from "../../pages/formInfomation";
 import ConfirmInformation from "../../pages/confirmInformation";
+import DetailsBooking from "../../pages/detailsbooking";
 
 const Layout = () => {
   return (
@@ -27,8 +28,12 @@ const Layout = () => {
         <Route path="/product" element={<ProductPage />}></Route>
         <Route path="/forminformation" element={<FormInformation />} />
         <Route path="/branches" element={<BookingChooseBranch />}></Route>
-        <Route path="/createbooking/:id" element={<CreateBooking />}></Route>
-        <Route path="/confirminformation" element={<ConfirmInformation />}></Route>
+        <Route path="/createbooking" element={<CreateBooking />}></Route>
+        <Route
+          path="/confirminformation"
+          element={<ConfirmInformation />}
+        ></Route>
+        <Route path="/detailsBooking" element={<DetailsBooking />}></Route>
       </AnimationRoutes>
     </Page>
   );
