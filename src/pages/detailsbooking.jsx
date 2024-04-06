@@ -6,10 +6,34 @@ import { dataContext } from "../components/providerContext/providerContext";
 import Store from "../components/redux/store";
 
 const DetailsBooking = () => {
+  const [customerInformation, setCustomerInformation] = useState(
+    Store.getState().customerInformation
+  );
+  const [datePicker, setDatePicker] = useState(Store.getState().datePicker);
+  const [listServices, setListServices] = useState(
+    Store.getState().productsSelected
+  );
+  const [staffChosen, setStaffChosen] = useState({});
+  const [timePicker, setTimePicker] = useState({});
+  const [branchChosen, setBranchChosen] = useState({});
   const { formatCurrency } = useContext(dataContext);
-  const [listServices, setListServices] = useState([]);
+
   useEffect(() => {
-    setListServices(Store.getState().productsSelected);
+    setBranchChosen(() => {
+      return Store.getState().branches.find(
+        (branch) => branch.id === Store.getState().branchChosen
+      );
+    });
+    setTimePicker(() => {
+      return Store.getState().listTimePicker.find((timePicker) => {
+        return timePicker.id === Store.getState().timePicker;
+      });
+    });
+    setStaffChosen(() => {
+      return Store.getState().users.find(
+        (user) => user.id === Store.getState().staffChosen
+      );
+    });
   }, []);
 
   useEffect(() => {
@@ -17,6 +41,11 @@ const DetailsBooking = () => {
       setListServices(Store.getState().productsSelected);
     });
   }, [Store.getState().productsSelected]);
+
+  const formatDatePicker = (datePicker) => {
+    return datePicker.toLocaleDateString("vi-VN");
+  };
+
   return (
     <Box>
       <HeaderPage title="Phiếu đặt lịch"></HeaderPage>
@@ -45,12 +74,12 @@ const DetailsBooking = () => {
         <Text className="sub-title">Chi tiết đặt lịch</Text>
         <Box flex className="gap-4">
           <Box width={135}>
-            <img src="https://vietbooking.net/wp-content/uploads/2021/04/Can-tho-3-thienphuoctravel.com_-1.jpg"></img>
+            <img src={branchChosen.image}></img>
           </Box>
           <Box>
-            <Text className="sub-title">Garage Thiện Minh</Text>
+            <Text className="sub-title">{branchChosen.name}</Text>
             <Text className="text-[var(--text-disable)]">
-              Thành phố cần thơ
+              {branchChosen.address}
             </Text>
           </Box>
         </Box>
@@ -64,19 +93,19 @@ const DetailsBooking = () => {
       >
         <Box flex justifyContent="space-between">
           <Text>Ngày đặt</Text>
-          <Text className="sub-title">Ngày đặt</Text>
+          <Text className="sub-title">{formatDatePicker(datePicker)}</Text>
         </Box>
         <Box flex justifyContent="space-between">
           <Text>Giờ đặt</Text>
-          <Text className="sub-title">Giờ đặt</Text>
+          <Text className="sub-title">{timePicker.time}</Text>
         </Box>
         <Box flex justifyContent="space-between">
           <Text>Nhân viên</Text>
           <Box flex alignItems="center">
             <Box width={25}>
-              <img src="https://th.bing.com/th/id/R.425d708a625a73a8bafdcf3a7349f565?rik=gE0x6lkfGE35Ug&pid=ImgRaw&r=0" />
+              <img src={staffChosen.image} />
             </Box>
-            <Text className="sub-title">Mặc định</Text>
+            <Text className="sub-title">{staffChosen.name}</Text>
           </Box>
         </Box>
       </Box>
@@ -89,10 +118,7 @@ const DetailsBooking = () => {
         mt={2}
       >
         <Text className="sub-title">Dịch vụ đã chọn</Text>
-        <Box
-          className="gap-2 d-block"
-          // style={{ maxHeight: "200px" }}
-        >
+        <Box className="gap-2 d-block">
           {listServices.length > 0 ? (
             listServices.map((item) => (
               <Box
@@ -140,27 +166,26 @@ const DetailsBooking = () => {
         <Box flex flexDirection="column" className="gap-2">
           <Box flex alignItems="center" className="gap-2">
             <Icon icon="zi-user-solid"></Icon>
-            <Text>Thanh Nhả</Text>
+            <Text>{customerInformation.name}</Text>
           </Box>
           <Box flex alignItems="center" className="gap-2">
             <Icon icon="zi-call-solid"></Icon>
-            <Text>0946630197</Text>
+            <Text>{customerInformation.phone}</Text>
           </Box>
           <Box flex alignItems="center" className="gap-2">
             <Icon icon="zi-notif-ring"></Icon>
-            <Text>nhantpc05188@fpt.edu.vn</Text>
+            <Text>{customerInformation.email}</Text>
           </Box>
           <Box flex alignItems="center" className="gap-2">
             <Icon icon="zi-location-solid"></Icon>
-            <Text>Cần Thơ</Text>
+            <Text>{customerInformation.address}</Text>
           </Box>
           <Box flex alignItems="center" className="gap-2">
             <Icon icon="zi-post"></Icon>
-            <Text>Sẽ lấy trong 2 ngày</Text>
+            <Text>{customerInformation.note}</Text>
           </Box>
         </Box>
       </Box>
-
       <Box p={4} mb={10} className="gap-2 bg-[var(--white-color)]" mt={2}>
         <ButtonNavigate
           style={{

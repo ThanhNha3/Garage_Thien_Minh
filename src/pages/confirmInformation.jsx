@@ -9,14 +9,15 @@ import Store from "../components/redux/store";
 const ConfirmInformation = () => {
   const [dialogVisible, setDialogVisible] = useState(false);
   const [popupVisible, setPopupVisible] = useState(false);
-  const [customerInformation, setCustomerInformation] = useState({});
+  const [customerInformation, setCustomerInformation] = useState(
+    Store.getState().customerInformation
+  );
   const [staffChosen, setStaffChosen] = useState({});
   const [timePicker, setTimePicker] = useState({});
   const [datePicker, setDatePicker] = useState(Store.getState().datePicker);
   const [branchChosen, setBranchChosen] = useState({});
 
   useEffect(() => {
-    setCustomerInformation(Store.getState().customerInformation);
     setStaffChosen(() => {
       return Store.getState().users.find(
         (user) => user.id === Store.getState().staffChosen
@@ -32,7 +33,6 @@ const ConfirmInformation = () => {
         (branch) => branch.id === Store.getState().branchChosen
       );
     });
-    setDatePicker(Store.getState().datePicker);
   }, []);
 
   const formatDatePicker = (datePicker) => {
