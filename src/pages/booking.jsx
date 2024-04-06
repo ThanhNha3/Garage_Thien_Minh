@@ -118,6 +118,7 @@ const Booking = () => {
       >
         <ButtonNavigate
           page="/branches"
+          style={{ background: "var(--primary-color)" }}
           title="Tạo lịch hẹn mới"
           action={() => navigate("/branches")}
         ></ButtonNavigate>

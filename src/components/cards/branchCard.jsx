@@ -10,11 +10,6 @@ const BranchCard = (data) => {
     image,
     name,
     address,
-    phone_number,
-    status,
-    orders,
-    create_at,
-    update_at,
   } = data;
 
   return (

@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Box, Icon, Text, useNavigate, DatePicker } from "zmp-ui";
+import { openChat } from "zmp-sdk/apis";
 import Store from "../components/redux/store";
 import { dataContext } from "../components/providerContext/providerContext";
 import { ChangeStaffChosen } from "../components/redux/actions/staffChosenAction";
@@ -13,8 +14,12 @@ const CreateBooking = () => {
   const [currentBranch, setCurrentBranch] = useState(Store);
   const [listStaffs, setListStaffs] = useState([]);
   const { formatCurrency } = useContext(dataContext);
-  const [listServices, setListServices] = useState([]);
-  const [staffIdChosen, setStaffIdChosen] = useState();
+  const [listServices, setListServices] = useState(
+    Store.getState().productsSelected
+  );
+  const [staffIdChosen, setStaffIdChosen] = useState(
+    Store.getState().staffChosen
+  );
   const [date, setDate] = useState(Store.getState().datePicker);
 
   useEffect(() => {
@@ -26,25 +31,31 @@ const CreateBooking = () => {
     setListStaffs(() => {
       return Store.getState().users.filter((user) => user.role === 1);
     });
-    setListServices(Store.getState().productsSelected);
-    setStaffIdChosen(Store.getState().staffChosen);
   }, []);
 
   useEffect(() => {
-    Store.subscribe(() => {
-      setListServices(Store.getState().productsSelected);
-    });
-  }, []);
-
-  useEffect(() => {
-    Store.subscribe(() => {
-      setStaffIdChosen(Store.getState().staffChosen);
-    });
-  }, []);
+    Store.dispatch(ChangeStaffChosen(staffIdChosen));
+  }, [staffIdChosen]);
 
   useEffect(() => {
     Store.dispatch(ChangeDatePicker(date));
   }, [date]);
+
+  const handleDatePicker = (date) => {
+    setDate(date);
+  };
+
+  const openChatScreen = async () => {
+    try {
+      await openChat({
+        type: "oa",
+        id: "user-id",
+        message: "Xin Chào",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <Box className="bg-[var(--background-grey)]">
@@ -165,7 +176,9 @@ const CreateBooking = () => {
                     className={
                       staff.id === staffIdChosen ? "staff-chosen-active" : ""
                     }
-                    onClick={() => Store.dispatch(ChangeStaffChosen(staff.id))}
+                    onClick={() => {
+                      setStaffIdChosen(staff.id);
+                    }}
                   >
                     <Box width={50} height={50}>
                       <img
@@ -191,6 +204,7 @@ const CreateBooking = () => {
                   />
                 </Box>
               }
+              key={"a"}
               suffix={<Icon icon="zi-chevron-right" />}
               startDate={Store.getState().datePicker}
               value={Store.getState().datePicker}
@@ -200,7 +214,7 @@ const CreateBooking = () => {
               dateFormat="dd/mm/yyyy"
               title="Chọn ngày"
               locale="vi-VN"
-              onChange={(date) => setDate(date)}
+              onChange={(date) => handleDatePicker(date)}
             />
           </Box>
           {listServices.length > 0 ? (
@@ -225,6 +239,7 @@ const CreateBooking = () => {
             flexDirection="column"
             alignItems="center"
             justifyContent="space-between"
+            onClick={() => openChatScreen()}
           >
             <Box>
               <Icon
@@ -240,7 +255,7 @@ const CreateBooking = () => {
             <Box style={{ width: "max-content" }}>Chat Ngay</Box>
           </Box>
           <ButtonNavigate
-            style={{ borderRadius: 10 }}
+            style={{ borderRadius: 10, background: "var(--primary-color)" }}
             title="Tiếp tục"
             action={() => navigate("/forminformation")}
           ></ButtonNavigate>

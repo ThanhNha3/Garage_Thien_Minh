@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Box, Text } from "zmp-ui";
 import BottomNavigationPage from "../components/bottomNavigation/bottomNavigation";
 import CircleCard from "../components/cards/circleCard";
@@ -6,11 +6,12 @@ import HomeProductCard from "../components/cards/homeProductCard";
 import HeaderBar from "../components/headerbar/headerBar";
 import Store from "../components/redux/store";
 
+import image1 from "../../public/images/image1.jpg";
+import image2 from "../../public/images/image2.jpg";
+import image4 from "../../public/images/image4.jpg";
+
 const Home = () => {
-  const [productList, setProductList] = useState([]);
-  useEffect(() => {
-    setProductList(Store.getState().products);
-  }, [Store.getState().products]);
+  const [productList, setProductList] = useState(Store.getState().products);
   return (
     <Box
       px={4}
@@ -62,21 +63,18 @@ const Home = () => {
         </Text>
         <Box flex className="flex-col gap-2">
           <div>
-            <img src="https://th.bing.com/th/id/R.45bca37cb7d65060549930b08728c75d?rik=qsEQ6vjtV%2fNFNQ&riu=http%3a%2f%2fstarweb.web.fc2.com%2f_src%2fsc34%2fP1020583.JPG&ehk=jhL8pqasvlGCatSNRgYdSf7fE51CzjiJJPv1qQrL1%2fM%3d&risl=&pid=ImgRaw&r=0"></img>
+            <img src={image4}></img>
           </div>
           <div>
-            <img src="https://th.bing.com/th/id/R.45bca37cb7d65060549930b08728c75d?rik=qsEQ6vjtV%2fNFNQ&riu=http%3a%2f%2fstarweb.web.fc2.com%2f_src%2fsc34%2fP1020583.JPG&ehk=jhL8pqasvlGCatSNRgYdSf7fE51CzjiJJPv1qQrL1%2fM%3d&risl=&pid=ImgRaw&r=0"></img>
+            <img src={image1}></img>
           </div>
           <div>
-            <img src="https://th.bing.com/th/id/R.45bca37cb7d65060549930b08728c75d?rik=qsEQ6vjtV%2fNFNQ&riu=http%3a%2f%2fstarweb.web.fc2.com%2f_src%2fsc34%2fP1020583.JPG&ehk=jhL8pqasvlGCatSNRgYdSf7fE51CzjiJJPv1qQrL1%2fM%3d&risl=&pid=ImgRaw&r=0"></img>
+            <img src={image2}></img>
           </div>
         </Box>
       </Box>
       <BottomNavigationPage />
     </Box>
-    // <>
-    //   <Box>Home</Box>
-    // </>
   );
 };
 

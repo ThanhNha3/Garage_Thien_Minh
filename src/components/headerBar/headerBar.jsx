@@ -5,7 +5,6 @@ import { dataContext } from "../providerContext/providerContext";
 
 const HeaderBar = () => {
   const { userInfo } = useContext(dataContext);
-
   return (
     <Header
       flex

@@ -5,7 +5,6 @@ import Store from "../redux/store";
 
 const TimeCard = (data) => {
   const { id, time, isActive } = data;
-
   return (
     <Box
       onClick={() => Store.dispatch(ChangeTimePicker(id))}

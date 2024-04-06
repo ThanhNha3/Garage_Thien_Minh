@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { Header, Text } from "zmp-ui";
 const HeaderPage = ({ title }) => {
   return (
@@ -13,4 +13,4 @@ const HeaderPage = ({ title }) => {
   );
 };
 
-export default HeaderPage;
+export default memo(HeaderPage);

@@ -39,10 +39,6 @@ const ConfirmInformation = () => {
     return datePicker.toLocaleDateString("vi-VN");
   };
 
-  useEffect(() => {
-    console.log();
-  }, [datePicker]);
-
   return (
     <Box>
       <HeaderPage title="Xác nhận đặt lịch"></HeaderPage>
@@ -132,7 +128,7 @@ const ConfirmInformation = () => {
       >
         <ButtonNavigate
           title="Xác nhận"
-          style={{ borderRadius: 10 }}
+          style={{ borderRadius: 10, background: "var(--primary-color)" }}
           action={() => setDialogVisible(true)}
         ></ButtonNavigate>
       </Box>

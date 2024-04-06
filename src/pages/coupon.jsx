@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { lazy, useEffect, useState, Suspense } from "react";
 import { Box, Text, Header } from "zmp-ui";
-import CouponCard from "../components/cards/couponCard";
+const CouponList = lazy(() => import("../components/couponList/couponList"));
 import Store from "../components/redux/store";
 
 const Coupon = () => {
@@ -75,11 +75,9 @@ const Coupon = () => {
           </form>
         </Box>
       </Box>
-      <Box px={4} mt={4} flex className="flex-col gap-4">
-        {listCoupons.map((coupon) => (
-          <CouponCard key={coupon.id} {...coupon} />
-        ))}
-      </Box>
+      <Suspense fallback={"Đang tải..."}>
+        <CouponList listCoupons={listCoupons} />
+      </Suspense>
     </Box>
   );
 };

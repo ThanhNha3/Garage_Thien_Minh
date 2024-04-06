@@ -1,27 +1,25 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, lazy, Suspense } from "react";
 import { Box, Header, Input, Text, Icon, useNavigate } from "zmp-ui";
-import CategoryCard from "../components/cards/categoryCard";
-import ProductCard from "../components/cards/productCard";
 import Store from "../components/redux/store";
-
 import { dataContext } from "../components/providerContext/providerContext";
+import EmptyData from "../components/emptyData/emptyData";
+
+const ProductList = lazy(() => import("../components/productList/productList"));
+const CategoryNavbar = lazy(() =>
+  import("../components/categoryNavbar/categoryNavbar")
+);
 
 const ProductPage = () => {
   const [state, setState] = useState("all");
   const [idActiveCategory, setIdActiveCategory] = useState(1);
-  const [listCategories, setListCategories] = useState([]);
+
   const [productList, setProductList] = useState([]);
-  const [listProductSelected, setListProductSelected] = useState([]);
+  const [listProductSelected, setListProductSelected] = useState(
+    Store.getState().productsSelected
+  );
   const [totalMoney, setTotalMoney] = useState(0);
-
   const { formatCurrency } = useContext(dataContext);
-
   const navigate = useNavigate();
-
-  useEffect(() => {
-    setListCategories(Store.getState().categories);
-    setListProductSelected(Store.getState().productsSelected);
-  }, []);
 
   useEffect(() => {
     Store.subscribe(() => {
@@ -101,48 +99,18 @@ const ProductPage = () => {
           <Text className="text-center sub-title">Liệu trình đã mua</Text>
         </Box>
       </Box>
-      <Box flex p={4} className="gap-4 overflow-scroll">
-        {listCategories.map((category) => {
-          return (
-            <CategoryCard
-              key={category.id}
-              idActive={idActiveCategory}
-              setIdActiveFnc={setIdActiveCategory}
-              {...category}
-            />
-          );
-        })}
-      </Box>
+      <Suspense fallback={"Đang tải..."}>
+        <CategoryNavbar
+          idActiveCategory={idActiveCategory}
+          setIdActiveCategory={setIdActiveCategory}
+        />
+      </Suspense>
       {productList && productList.length > 0 ? (
-        <Box
-          p={4}
-          style={{ display: "grid", paddingBottom: "70px" }}
-          className="grid-cols-2 gap-4 bg-[var(--white-color)]"
-        >
-          {productList.map((product) => (
-            <ProductCard
-              key={product.id}
-              {...product}
-              setListProductSelected={setListProductSelected}
-            />
-          ))}
-        </Box>
+        <Suspense fallback={"Đang tải..."}>
+          <ProductList productList={productList} />
+        </Suspense>
       ) : (
-        <Box
-          className="bg-[var(--white-color)] flex-col gap-2"
-          flex
-          justifyContent="center"
-          alignItems="center"
-          style={{ height: "calc(100vh - 271px)" }}
-        >
-          <Icon icon="zi-note-delete" size={36} />
-          <Text size="xLarge" className="sub-title">
-            Trống
-          </Text>
-          <Text className="text-[var(--text-disable)]">
-            Xin lỗi chúng tôi đã hết dịch vụ này
-          </Text>
-        </Box>
+        <EmptyData description="Xin lỗi chúng tôi đã hết dịch vụ này" />
       )}
       {listProductSelected.length > 0 ? (
         <Box className="absolute bottom-0 w-full" px={4}>

@@ -74,9 +74,7 @@ const CouponCard = (data) => {
                   }
             }
           >
-            <Text size="xxSmall">
-              {status === 1 ? "Áp dụng" : "Đã dùng"}
-            </Text>
+            <Text size="xxSmall">{status === 1 ? "Áp dụng" : "Đã dùng"}</Text>
           </button>
         </Box>
       </Box>

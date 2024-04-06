@@ -4,11 +4,7 @@ import HeaderPage from "../components/headerPage/headerPage";
 import Store from "../components/redux/store";
 const BranchCard = lazy(() => import("../components/cards/branchCard"));
 const BookingChooseBranch = () => {
-  const [listBranches, setListBranches] = useState([]);
-  useEffect(() => {
-    setListBranches(Store.getState().branches);
-  }, [Store.getState().branches]);
-
+  const [listBranches, setListBranches] = useState(Store.getState().branches);
   return (
     <Box>
       <HeaderPage title="Chọn chi nhánh" />

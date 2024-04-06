@@ -1,6 +1,13 @@
 import React from "react";
 import { Box, Text, Header, Icon } from "zmp-ui";
 
+import image5 from "../../public/images/image5.jpg";
+import image6 from "../../public/images/image6.jpg";
+import image7 from "../../public/images/image7.jpg";
+import image8 from "../../public/images/image8.jpg";
+import image9 from "../../public/images/image9.jpg";
+import image10 from "../../public/images/image10.jpg";
+
 const Contact = () => {
   return (
     <Box className="bg-[var(--white-color)]" style={{ paddingBottom: "100px" }}>
@@ -37,12 +44,8 @@ const Contact = () => {
           </Text>
           <ul className="list-disc px-4 flex flex-col gap-2">
             <li>
-              Nhà Máy Sản Xuất: Quốc lộ N2, Xã Hòa Khánh Đông, Đức Hòa, Long An.
-            </li>
-            <li>Chi Nhánh Miền Tây: 459 Võ Văn Kiệt, P2, Sóc Trăng.</li>
-            <li>
-              Chi nhánh miền trung 1 : Thôn Lạc Sơn 2 , Xã Cà Ná , Huyện Thuận
-              Nam , Tỉnh Ninh Thuận.
+              91/36A hẻm 91. Đ.Cách Mạng Tháng 8, P.An Thới Q.Bình Thuỷ, Tp.Cần
+              Thơ
             </li>
           </ul>
         </Box>
@@ -56,7 +59,7 @@ const Contact = () => {
               icon="zi-call-solid"
             />
             <Text className="sub-title">
-              <a href="tel:0999888777">099 988 8777</a>
+              <a href="tel:0943125799">0943 125 799</a>
             </Text>
           </Box>
         </Box>
@@ -67,13 +70,22 @@ const Contact = () => {
           <Box p={1} width={100} className="bg-[var(--primary-color)]"></Box>
           <Box flex className="flex-col gap-2">
             <div>
-              <img src="https://th.bing.com/th/id/R.45bca37cb7d65060549930b08728c75d?rik=qsEQ6vjtV%2fNFNQ&riu=http%3a%2f%2fstarweb.web.fc2.com%2f_src%2fsc34%2fP1020583.JPG&ehk=jhL8pqasvlGCatSNRgYdSf7fE51CzjiJJPv1qQrL1%2fM%3d&risl=&pid=ImgRaw&r=0"></img>
+              <img src={image5}></img>
             </div>
             <div>
-              <img src="https://th.bing.com/th/id/R.45bca37cb7d65060549930b08728c75d?rik=qsEQ6vjtV%2fNFNQ&riu=http%3a%2f%2fstarweb.web.fc2.com%2f_src%2fsc34%2fP1020583.JPG&ehk=jhL8pqasvlGCatSNRgYdSf7fE51CzjiJJPv1qQrL1%2fM%3d&risl=&pid=ImgRaw&r=0"></img>
+              <img src={image6}></img>
             </div>
             <div>
-              <img src="https://th.bing.com/th/id/R.45bca37cb7d65060549930b08728c75d?rik=qsEQ6vjtV%2fNFNQ&riu=http%3a%2f%2fstarweb.web.fc2.com%2f_src%2fsc34%2fP1020583.JPG&ehk=jhL8pqasvlGCatSNRgYdSf7fE51CzjiJJPv1qQrL1%2fM%3d&risl=&pid=ImgRaw&r=0"></img>
+              <img src={image7}></img>
+            </div>
+            <div>
+              <img src={image8}></img>
+            </div>
+            <div>
+              <img src={image9}></img>
+            </div>
+            <div>
+              <img src={image10}></img>
             </div>
           </Box>
         </Box>

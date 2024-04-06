@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { Box, Input, Text, useNavigate } from "zmp-ui";
 import HeaderPage from "../components/headerPage/headerPage";
 import ButtonNavigate from "../components/buttonNavigate/buttonNavigate";
@@ -19,7 +19,6 @@ const FormInformation = () => {
   const [statusPhone, setStatusPhone] = useState("");
   const [statusAddress, setStatusAddress] = useState("");
   const [statusEmail, setStatusEmail] = useState("");
-
   const handleChangeValue = (e, setFunction, regex) => {
     const { value } = e.target;
     if (regex.test(value)) {
@@ -28,23 +27,19 @@ const FormInformation = () => {
       setFunction("error");
     }
   };
-
   const checkRegex = (name, regex) => {
     return regex.test(name);
   };
-
   const handleSubmitOrder = async () => {
     try {
       const formOrder = document.getElementById("form-order");
       const formData = new FormData(formOrder);
-
       const customer_type = formData.get("customer");
       const name = formData.get("name");
       const phone = formData.get("phone");
       const address = formData.get("address");
       const email = formData.get("email");
       const note = formData.get("note");
-
       if (
         checkRegex(name, nameRegex) &&
         checkRegex(phone, phoneRegex) &&
@@ -52,7 +47,6 @@ const FormInformation = () => {
         checkRegex(email, emailRegex)
       ) {
         // xử lí ở đây
-        // console.log(customer_type, name, phone, address, email, note);
         const data = { customer_type, name, phone, address, email, note };
         Store.dispatch(UpdateCustomerInformation(data));
         navigate("/confirminformation");
@@ -62,7 +56,6 @@ const FormInformation = () => {
       console.log(error);
     }
   };
-
   return (
     <Box>
       <HeaderPage title="Thông tin người đặt" />
@@ -150,7 +143,7 @@ const FormInformation = () => {
       >
         <ButtonNavigate
           title="Tiếp tục"
-          style={{ borderRadius: 10 }}
+          style={{ borderRadius: 10, background: "var(--primary-color)" }}
           action={handleSubmitOrder}
         ></ButtonNavigate>
       </Box>
