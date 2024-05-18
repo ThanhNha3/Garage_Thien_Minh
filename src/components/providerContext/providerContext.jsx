@@ -5,6 +5,11 @@ export const dataContext = createContext(null);
 
 const ProviderContext = (props) => {
   const [userInfo, setUserInfo] = useState({});
+
+  const formatDatePicker = (datePicker) => {
+    return datePicker.toLocaleDateString("vi-VN");
+  };
+
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -25,6 +30,7 @@ const ProviderContext = (props) => {
   const payload = {
     userInfo,
     formatCurrency,
+    formatDatePicker,
   };
   return (
     <dataContext.Provider value={payload}>

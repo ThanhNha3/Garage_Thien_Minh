@@ -14,7 +14,7 @@ const CreateBooking = () => {
   const [currentBranch, setCurrentBranch] = useState(Store);
   const [listStaffs, setListStaffs] = useState([]);
   const { formatCurrency } = useContext(dataContext);
-  const [listServices, setListServices] = useState(
+  const [listServices] = useState(
     Store.getState().productsSelected
   );
   const [staffIdChosen, setStaffIdChosen] = useState(

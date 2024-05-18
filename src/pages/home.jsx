@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Box, Text } from "zmp-ui";
+
 import BottomNavigationPage from "../components/bottomNavigation/bottomNavigation";
 import CircleCard from "../components/cards/circleCard";
 import HomeProductCard from "../components/cards/homeProductCard";
@@ -11,7 +12,7 @@ import image2 from "../../public/images/image2.jpg";
 import image4 from "../../public/images/image4.jpg";
 
 const Home = () => {
-  const [productList, setProductList] = useState(Store.getState().products);
+  const [productList] = useState(Store.getState().products);
   return (
     <Box
       px={4}

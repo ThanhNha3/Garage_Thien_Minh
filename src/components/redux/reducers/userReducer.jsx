@@ -2,7 +2,7 @@ const users = [
   {
     id: 1,
     zalo_id: 123213,
-    name: "Mặc định",
+    name: "Thanh Nhả",
     phone: "094663912",
     email: "nha@123.com",
     role: 1,
@@ -12,6 +12,7 @@ const users = [
       "https://th.bing.com/th/id/OIP.Qvf9UmzJS1V5YafT9NQZlAHaKL?rs=1&pid=ImgDetMain",
     create_at: "1/1/2024",
     update_at: "2/2/2024",
+    address: "Sóc Trăng",
   },
   {
     id: 2,
@@ -26,6 +27,7 @@ const users = [
       "https://th.bing.com/th/id/OIP.Qvf9UmzJS1V5YafT9NQZlAHaKL?rs=1&pid=ImgDetMain",
     create_at: "1/1/2024",
     update_at: "2/2/2024",
+    address: "Cần Thơ",
   },
   {
     id: 3,
@@ -40,6 +42,7 @@ const users = [
       "https://th.bing.com/th/id/OIP.Qvf9UmzJS1V5YafT9NQZlAHaKL?rs=1&pid=ImgDetMain",
     create_at: "1/1/2024",
     update_at: "2/2/2024",
+    address: "Cần Thơ",
   },
   {
     id: 4,
@@ -54,6 +57,7 @@ const users = [
       "https://th.bing.com/th/id/OIP.Qvf9UmzJS1V5YafT9NQZlAHaKL?rs=1&pid=ImgDetMain",
     create_at: "1/1/2024",
     update_at: "2/2/2024",
+    address: "Cần Thơ",
   },
 ];
 

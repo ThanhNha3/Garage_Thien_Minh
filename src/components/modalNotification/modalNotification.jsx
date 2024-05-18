@@ -6,13 +6,20 @@ const ModalNotification = ({
   description,
   popupVisible,
   setPopupVisible,
+  type,
 }) => {
   const navigate = useNavigate();
   return (
     <Modal
       visible={popupVisible}
       title={
-        <Box flex alignItems="center" justifyContent="center" className="gap-2" pb={5}>
+        <Box
+          flex
+          alignItems="center"
+          justifyContent="center"
+          className="gap-2"
+          pb={5}
+        >
           <Icon
             className="text-[var(--success-color)]"
             icon="zi-check-circle-solid"
@@ -30,7 +37,23 @@ const ModalNotification = ({
         <Button
           onClick={() => {
             setPopupVisible(false);
-            navigate("/detailsBooking");
+            if (type) {
+              switch (type) {
+                case "submit": {
+                  // Phần id này sẽ được gọi từ database 
+                  navigate("/detailsBooking");
+                  break;
+                }
+                case "cancel": {
+                  navigate("/");
+                  break;
+                }
+                default: {
+                  navigate("/");
+                  break;
+                }
+              }
+            }
           }}
           fullWidth
         >

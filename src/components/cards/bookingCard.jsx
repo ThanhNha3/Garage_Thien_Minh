@@ -1,14 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Box, Icon, Text } from "zmp-ui";
+import React, { useContext, useEffect, useState } from "react";
+import { Box, Icon, Text, useNavigate } from "zmp-ui";
 import Store from "../redux/store";
 
 const BookingCard = (data) => {
-  const {
-    id,
-    branch_id,
-    appointment_date,
-    status,
-  } = data;
+  const navigate = useNavigate();
+  const { id, branch_id, appointment_date, status } = data;
   const [branch, setbranch] = useState({});
   useEffect(() => {
     setbranch(() => {
@@ -20,6 +16,7 @@ const BookingCard = (data) => {
 
   return (
     <Box
+      onClick={() => navigate(`/detailsBooking/${id}`)}
       flex
       className="flex-col gap-2 bg-[var(--white-color)] rounded-xl"
       p={4}

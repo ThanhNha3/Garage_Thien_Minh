@@ -9,12 +9,12 @@ import Store from "../components/redux/store";
 const ConfirmInformation = () => {
   const [dialogVisible, setDialogVisible] = useState(false);
   const [popupVisible, setPopupVisible] = useState(false);
-  const [customerInformation, setCustomerInformation] = useState(
+  const [customerInformation] = useState(
     Store.getState().customerInformation
   );
   const [staffChosen, setStaffChosen] = useState({});
   const [timePicker, setTimePicker] = useState({});
-  const [datePicker, setDatePicker] = useState(Store.getState().datePicker);
+  const [datePicker] = useState(Store.getState().datePicker);
   const [branchChosen, setBranchChosen] = useState({});
 
   useEffect(() => {
@@ -145,6 +145,7 @@ const ConfirmInformation = () => {
         description="Chúng tôi sẽ nhắc bạn trước ngày được đặt. Hẹn gặp bạn tại Garage Thiện Minh!"
         popupVisible={popupVisible}
         setPopupVisible={setPopupVisible}
+        type="submit"
       />
     </Box>
   );

@@ -1,3 +1,6 @@
+import { useContext } from "react";
+import { dataContext } from "../../providerContext/providerContext";
+
 const today = new Date();
 
 const DatePickerReducer = (state = today, action) => {

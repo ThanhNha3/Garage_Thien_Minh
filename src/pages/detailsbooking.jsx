@@ -1,203 +1,287 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Box, Text, Icon } from "zmp-ui";
-import ButtonNavigate from "../components/buttonNavigate/buttonNavigate";
+import { Box, DatePicker, Icon, Text } from "zmp-ui";
 import HeaderPage from "../components/headerPage/headerPage";
 import { dataContext } from "../components/providerContext/providerContext";
+import ButtonNavigate from "../components/buttonNavigate/buttonNavigate";
+import ModalConfirm from "../components/modalConfirm/modalConfirm";
+import ModalNotification from "../components/modalNotification/modalNotification";
+import { useParams } from "react-router";
 import Store from "../components/redux/store";
 
 const DetailsBooking = () => {
-  const [customerInformation, setCustomerInformation] = useState(
-    Store.getState().customerInformation
-  );
-  const [datePicker, setDatePicker] = useState(Store.getState().datePicker);
-  const [listServices, setListServices] = useState(
-    Store.getState().productsSelected
-  );
+  const { id } = useParams();
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [popupVisible, setPopupVisible] = useState(false);
+  const { formatCurrency, formatDatePicker } = useContext(dataContext);
+
+  //Dữ liệu của detailBooking trong trường hợp không có ID
+  const [customerInformation, setCustomerInformation] = useState({});
+  const [datePicker, setDatePicker] = useState("");
+  const [listServices, setListServices] = useState([]);
   const [staffChosen, setStaffChosen] = useState({});
   const [timePicker, setTimePicker] = useState({});
   const [branchChosen, setBranchChosen] = useState({});
-  const { formatCurrency } = useContext(dataContext);
-
+  const [note, setNote] = useState("");
   useEffect(() => {
-    setBranchChosen(() => {
-      return Store.getState().branches.find(
-        (branch) => branch.id === Store.getState().branchChosen
-      );
-    });
-    setTimePicker(() => {
-      return Store.getState().listTimePicker.find((timePicker) => {
-        return timePicker.id === Store.getState().timePicker;
+    if (!id) {
+      setListServices(() => {
+        return Store.getState().productsSelected;
       });
-    });
-    setStaffChosen(() => {
-      return Store.getState().users.find(
-        (user) => user.id === Store.getState().staffChosen
+      setCustomerInformation(() => {
+        return Store.getState().customerInformation;
+      });
+      setDatePicker(() => {
+        return formatDatePicker(Store.getState().datePicker);
+      });
+      setBranchChosen(() => {
+        return Store.getState().branches.find(
+          (branch) => branch.id === Store.getState().branchChosen
+        );
+      });
+      setTimePicker(() => {
+        return Store.getState().listTimePicker.find((timePicker) => {
+          return timePicker.id === Store.getState().timePicker;
+        });
+      });
+      setStaffChosen(() => {
+        return Store.getState().users.find(
+          (user) => user.id === Store.getState().staffChosen
+        );
+      });
+    } else {
+      const currentAppoinment = Store.getState().appointments.find(
+        (appointment) => appointment.id === Number(id)
       );
-    });
+      console.log(currentAppoinment);
+
+      setCustomerInformation(() => {
+        return Store.getState().users.find(
+          (user) => user.id === currentAppoinment.customer_id
+        );
+      });
+      setListServices(() => {
+        return Store.getState().products.filter((product) =>
+          currentAppoinment.services_id.includes(product.id)
+        );
+      });
+      setDatePicker(() => {
+        return currentAppoinment.appointment_date;
+      });
+      setBranchChosen(() => {
+        return Store.getState().branches.find(
+          (branch) => branch.id === currentAppoinment.branch_id
+        );
+      });
+      setTimePicker(() => {
+        return Store.getState().listTimePicker.find((timePicker) => {
+          return timePicker.id === currentAppoinment.time_picker_id;
+        });
+      });
+      setStaffChosen(() => {
+        return Store.getState().users.find(
+          (user) => user.id === currentAppoinment.employee_id
+        );
+      });
+      setNote(currentAppoinment.note);
+    }
   }, []);
 
-  useEffect(() => {
-    Store.subscribe(() => {
-      setListServices(Store.getState().productsSelected);
-    });
-  }, [Store.getState().productsSelected]);
+  // useEffect(() => {
+  //   Store.subscribe(() => {
+  //     setListServices(Store.getState().productsSelected);
+  //   });
+  // }, [Store.getState().productsSelected]);
 
-  const formatDatePicker = (datePicker) => {
-    return datePicker.toLocaleDateString("vi-VN");
-  };
+  //Kết thúc dữ liệu của detailBooking trong trường hợp không có ID
 
   return (
     <Box>
-      <HeaderPage title="Phiếu đặt lịch"></HeaderPage>
-      <Box
-        flex
-        justifyContent="space-between"
-        alignItems="center"
-        px={4}
-        py={2}
-        className="bg-[var(--white-color)]"
-      >
-        <Box>
-          <Text className="text-[var(--text-disable)]">#123</Text>
-        </Box>
-        <Box p={2} className="bg-[var(--secondary-color)] rounded text-white">
-          Chờ xác nhận
-        </Box>
-      </Box>
-      <Box
-        p={4}
-        className="bg-[var(--white-color)] gap-4"
-        flex
-        flexDirection="column"
-        mt={2}
-      >
-        <Text className="sub-title">Chi tiết đặt lịch</Text>
-        <Box flex className="gap-4">
-          <Box width={135}>
-            <img src={branchChosen.image}></img>
-          </Box>
+      <HeaderPage title="Phiếu đặt lịch" isBackHome={true}></HeaderPage>
+      <Box>
+        <Box
+          flex
+          justifyContent="space-between"
+          alignItems="center"
+          px={4}
+          py={2}
+          className="bg-[var(--white-color)]"
+        >
           <Box>
-            <Text className="sub-title">{branchChosen.name}</Text>
-            <Text className="text-[var(--text-disable)]">
-              {branchChosen.address}
+            {id ? (
+              <Text className="text-[var(--text-disable)]">#{id}</Text>
+            ) : (
+              ""
+            )}
+          </Box>
+          <Box
+            p={2}
+            className="rounded text-[var(--white-color)] w-fit"
+            style={{
+              background: "var(--secondary-color)",
+            }}
+          >
+            <Text size="xxSmall">
+              {<Text size="xxSmall">Đợi xác nhận</Text>}
             </Text>
           </Box>
         </Box>
-      </Box>
-      <Box
-        className="bg-[var(--white-color)] gap-4"
-        flex
-        flexDirection="column"
-        p={4}
-        mt={2}
-      >
-        <Box flex justifyContent="space-between">
-          <Text>Ngày đặt</Text>
-          <Text className="sub-title">{formatDatePicker(datePicker)}</Text>
-        </Box>
-        <Box flex justifyContent="space-between">
-          <Text>Giờ đặt</Text>
-          <Text className="sub-title">{timePicker.time}</Text>
-        </Box>
-        <Box flex justifyContent="space-between">
-          <Text>Nhân viên</Text>
-          <Box flex alignItems="center">
-            <Box width={25}>
-              <img src={staffChosen.image} />
+        <Box
+          p={4}
+          className="bg-[var(--white-color)] gap-4"
+          flex
+          flexDirection="column"
+          mt={2}
+        >
+          <Text className="sub-title">Chi tiết đặt lịch</Text>
+          <Box flex className="gap-4">
+            <Box width={135}>
+              <img src={branchChosen.image}></img>
             </Box>
-            <Text className="sub-title">{staffChosen.name}</Text>
+            <Box>
+              <Text className="sub-title">{branchChosen.name}</Text>
+              <Text className="text-[var(--text-disable)]">
+                {branchChosen.address}
+              </Text>
+            </Box>
           </Box>
         </Box>
-      </Box>
-      <Box
-        flex
-        flexDirection="column"
-        className="gap-2 bg-[var(--white-color)]"
-        px={4}
-        py={2}
-        mt={2}
-      >
-        <Text className="sub-title">Dịch vụ đã chọn</Text>
-        <Box className="gap-2 d-block">
-          {listServices.length > 0 ? (
-            listServices.map((item) => (
-              <Box
-                key={item.id}
-                flex
-                justifyContent="space-between"
-                alignItems="center"
-                py={2}
-              >
-                <Box flex alignItems="center" className="gap-2">
-                  <Box width={50} height={50}>
-                    <img
-                      width={50}
-                      className="w-full h-full"
-                      src={item.image}
-                    />
+        <Box
+          className="bg-[var(--white-color)] gap-4"
+          flex
+          flexDirection="column"
+          p={4}
+          mt={2}
+        >
+          <Box flex justifyContent="space-between">
+            <Text>Ngày đặt</Text>
+            <Text className="sub-title">{datePicker}</Text>
+          </Box>
+          <Box flex justifyContent="space-between">
+            <Text>Giờ đặt</Text>
+            <Text className="sub-title">{timePicker.time}</Text>
+          </Box>
+          <Box flex justifyContent="space-between">
+            <Text>Nhân viên</Text>
+            <Box flex alignItems="center">
+              <Box width={25}>
+                <img src={staffChosen.image} />
+              </Box>
+              <Text className="sub-title">{staffChosen.name}</Text>
+            </Box>
+          </Box>
+        </Box>
+        <Box
+          flex
+          flexDirection="column"
+          className="gap-2 bg-[var(--white-color)]"
+          px={4}
+          py={2}
+          mt={2}
+        >
+          <Text className="sub-title">Dịch vụ đã chọn</Text>
+          <Box className="gap-2 d-block">
+            {listServices.length > 0 ? (
+              listServices.map((item) => (
+                <Box
+                  key={item.id}
+                  flex
+                  justifyContent="space-between"
+                  alignItems="center"
+                  py={2}
+                >
+                  <Box flex alignItems="center" className="gap-2">
+                    <Box width={50} height={50}>
+                      <img
+                        width={50}
+                        className="w-full h-full"
+                        src={item.image}
+                      />
+                    </Box>
+                    <Text>{item.name}</Text>
                   </Box>
-                  <Text>{item.name}</Text>
+                  <Box>{formatCurrency(item.price)}</Box>
                 </Box>
-                <Box>{formatCurrency(item.price)}</Box>
+              ))
+            ) : (
+              <Box flex alignItems="center" justifyContent="space-between">
+                <Box flex alignItems="center" className="gap-2">
+                  <Icon
+                    className="text-[var(--secondary-color)]"
+                    icon="zi-more-grid-solid"
+                  />
+                  <Text>Xem tất cả dịch vụ</Text>
+                </Box>
+                <Icon icon="zi-chevron-right" />
               </Box>
-            ))
-          ) : (
-            <Box flex alignItems="center" justifyContent="space-between">
-              <Box flex alignItems="center" className="gap-2">
-                <Icon
-                  className="text-[var(--secondary-color)]"
-                  icon="zi-more-grid-solid"
-                />
-                <Text>Xem tất cả dịch vụ</Text>
-              </Box>
-              <Icon icon="zi-chevron-right" />
+            )}
+          </Box>
+        </Box>
+        <Box
+          flex
+          flexDirection="column"
+          className="gap-2 bg-[var(--white-color)]"
+          p={4}
+          mt={2}
+        >
+          <Text className="sub-title">Thông tin người đặt</Text>
+          <Box flex flexDirection="column" className="gap-2">
+            <Box flex alignItems="center" className="gap-2">
+              <Icon icon="zi-user-solid"></Icon>
+              <Text>{customerInformation.name}</Text>
             </Box>
-          )}
-        </Box>
-      </Box>
-      <Box
-        flex
-        flexDirection="column"
-        className="gap-2 bg-[var(--white-color)]"
-        p={4}
-        mt={2}
-      >
-        <Text className="sub-title">Thông tin người đặt</Text>
-        <Box flex flexDirection="column" className="gap-2">
-          <Box flex alignItems="center" className="gap-2">
-            <Icon icon="zi-user-solid"></Icon>
-            <Text>{customerInformation.name}</Text>
-          </Box>
-          <Box flex alignItems="center" className="gap-2">
-            <Icon icon="zi-call-solid"></Icon>
-            <Text>{customerInformation.phone}</Text>
-          </Box>
-          <Box flex alignItems="center" className="gap-2">
-            <Icon icon="zi-notif-ring"></Icon>
-            <Text>{customerInformation.email}</Text>
-          </Box>
-          <Box flex alignItems="center" className="gap-2">
-            <Icon icon="zi-location-solid"></Icon>
-            <Text>{customerInformation.address}</Text>
-          </Box>
-          <Box flex alignItems="center" className="gap-2">
-            <Icon icon="zi-post"></Icon>
-            <Text>{customerInformation.note}</Text>
+            <Box flex alignItems="center" className="gap-2">
+              <Icon icon="zi-call-solid"></Icon>
+              <Text>{customerInformation.phone}</Text>
+            </Box>
+            <Box flex alignItems="center" className="gap-2">
+              <Icon icon="zi-notif-ring"></Icon>
+              <Text>{customerInformation.email}</Text>
+            </Box>
+            <Box flex alignItems="center" className="gap-2">
+              <Icon icon="zi-location-solid"></Icon>
+              <Text>{customerInformation.address}</Text>
+            </Box>
+            <Box flex alignItems="center" className="gap-2">
+              <Icon icon="zi-post"></Icon>
+              <Text>{customerInformation.note || note}</Text>
+            </Box>
           </Box>
         </Box>
-      </Box>
-      <Box p={4} mb={10} className="gap-2 bg-[var(--white-color)]" mt={2}>
-        <ButtonNavigate
-          style={{
-            borderRadius: 10,
-            border: "red solid 1px",
-            background: "white",
-            color: "red",
-            fontWeight: "bold",
-          }}
-          isCancel={true}
-          title="Hủy đặt lịch"
-        ></ButtonNavigate>
+        {id ? (
+          <Box>
+            <Box p={4} mb={10} className="gap-2 bg-[var(--white-color)]" mt={2}>
+              <ButtonNavigate
+                style={{
+                  borderRadius: 10,
+                  border: "red solid 1px",
+                  background: "white",
+                  color: "red",
+                  fontWeight: "bold",
+                }}
+                isCancel={true}
+                title="Hủy đặt lịch"
+                action={() => setDialogVisible(true)}
+              ></ButtonNavigate>
+            </Box>
+            <ModalConfirm
+              title="Xác nhận hủy lịch"
+              description="Bạn có chắc chắn hủy lịch không?"
+              type="submit"
+              dialogVisible={dialogVisible}
+              setDialogVisible={setDialogVisible}
+              setPopupVisible={setPopupVisible}
+            />
+            <ModalNotification
+              title="Hủy lịch thành công"
+              description="Hẹn gặp bạn vào một dịp khác!"
+              popupVisible={popupVisible}
+              setPopupVisible={setPopupVisible}
+              type="cancel"
+            />
+          </Box>
+        ) : (
+          ""
+        )}
       </Box>
     </Box>
   );

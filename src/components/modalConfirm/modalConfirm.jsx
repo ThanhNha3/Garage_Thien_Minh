@@ -10,6 +10,7 @@ const ModalConfirm = ({
   setPopupVisible,
 }) => {
   const confirmData = () => {
+    // Gọi API tại đây để thêm dữ liệu vào Database
     setDialogVisible(false);
     setPopupVisible(true);
   };

@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Box, Input, Text, useNavigate } from "zmp-ui";
 import HeaderPage from "../components/headerPage/headerPage";
 import ButtonNavigate from "../components/buttonNavigate/buttonNavigate";
 import Store from "../components/redux/store";
 import { UpdateCustomerInformation } from "../components/redux/actions/customerInformationAction";
+import { dataContext } from "../components/providerContext/providerContext";
 
 const nameRegex =
   /^[A-ZÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ][a-zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]*(?:[ ][A-ZÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ][a-zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]*)*$/;
@@ -14,6 +15,8 @@ const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
 
 const FormInformation = () => {
   const navigate = useNavigate();
+  const { customerName, setCustomerName } = useState("");
+  const { userInfo } = useContext(dataContext);
   const [customerType, setCustomerType] = useState(0);
   const [statusName, setStatusName] = useState("");
   const [statusPhone, setStatusPhone] = useState("");
@@ -101,6 +104,10 @@ const FormInformation = () => {
             <Input
               status={statusName}
               label="Họ và tên"
+              onChange={(e) => {
+                setCustomerName(e.target.value);
+              }}
+              value={customerType === 0 ? userInfo.name : customerName}
               name="name"
               errorText="Vui lòng nhập đúng định dạng họ tên"
               onChange={(e) => handleChangeValue(e, setStatusName, nameRegex)}
