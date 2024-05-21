@@ -108,3 +108,7 @@
   background-color: var(--primary-color);
   color: var(--white-color);
 }
+
+.rating-active {
+  border-bottom: var(--primary-color) solid 3px;
+}

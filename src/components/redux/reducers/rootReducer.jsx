@@ -12,6 +12,7 @@ import TimePickerReducer from "./timePickerReducer";
 import CustomerInformationReducer from "./customerInformationReducer";
 import ListTimePickerReducer from "./listTimePickerReducer";
 import BranchChosenReducer from "./branchChosenReducer";
+import RatingAppointmentReducer from "./ratingAppointmentReducer";
 
 export const rootReducer = combineReducers({
   productsSelected: ProductsSelectedReducer,
@@ -27,4 +28,5 @@ export const rootReducer = combineReducers({
   listTimePicker: ListTimePickerReducer,
   timePicker: TimePickerReducer,
   customerInformation: CustomerInformationReducer,
+  ratings: RatingAppointmentReducer,
 });
