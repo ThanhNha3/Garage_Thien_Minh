@@ -1,5 +1,6 @@
 import React, { memo } from "react";
 import { Box, Header, Icon, Text, useNavigate } from "zmp-ui";
+
 const HeaderPage = ({ title, isBackHome }) => {
   const navigate = useNavigate();
   return (

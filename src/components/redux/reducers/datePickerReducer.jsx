@@ -1,17 +1,13 @@
-import { useContext } from "react";
-import { dataContext } from "../../providerContext/providerContext";
-
-const today = new Date();
+const today = new Date().toISOString();
 
 const DatePickerReducer = (state = today, action) => {
   switch (action.type) {
     case "changeDatePicker": {
-      return (state = action.date);
+      return action.date; 
     }
     default: {
       return state;
     }
   }
-  return state;
 };
 export default DatePickerReducer;

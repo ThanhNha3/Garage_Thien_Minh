@@ -39,7 +39,7 @@ const DetailsBooking = () => {
         return Store.getState().customerInformation;
       });
       setDatePicker(() => {
-        return formatDatePicker(Store.getState().datePicker);
+        return formatDatePicker(new Date(Store.getState().datePicker));
       });
       setBranchChosen(() => {
         return Store.getState().branches.find(

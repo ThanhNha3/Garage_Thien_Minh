@@ -1,13 +1,8 @@
-import React from "react";
-import { Box, Button, useNavigate } from "zmp-ui";
+import React, { memo } from "react";
+import { Button } from "zmp-ui";
 
 const ButtonNavigate = ({
-  page,
   title,
-  hasChat,
-  isSubmit,
-  isNavigate,
-  isCancel,
   style,
   action,
 }) => {
@@ -18,4 +13,4 @@ const ButtonNavigate = ({
   );
 };
 
-export default ButtonNavigate;
+export default memo(ButtonNavigate);

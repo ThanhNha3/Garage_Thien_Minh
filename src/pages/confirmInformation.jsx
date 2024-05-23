@@ -1,4 +1,4 @@
-import react, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Icon, Text } from "zmp-ui";
 import HeaderPage from "../components/headerPage/headerPage";
 import ButtonNavigate from "../components/buttonNavigate/buttonNavigate";
@@ -9,12 +9,12 @@ import Store from "../components/redux/store";
 const ConfirmInformation = () => {
   const [dialogVisible, setDialogVisible] = useState(false);
   const [popupVisible, setPopupVisible] = useState(false);
-  const [customerInformation] = useState(
-    Store.getState().customerInformation
-  );
+  const [customerInformation] = useState(Store.getState().customerInformation);
   const [staffChosen, setStaffChosen] = useState({});
   const [timePicker, setTimePicker] = useState({});
-  const [datePicker] = useState(Store.getState().datePicker);
+  const [datePicker] = useState(
+    new Date(Store.getState().datePicker)
+  );
   const [branchChosen, setBranchChosen] = useState({});
 
   useEffect(() => {
@@ -70,7 +70,8 @@ const ConfirmInformation = () => {
       >
         <Box flex justifyContent="space-between">
           <Text>Ngày đặt</Text>
-          <Text className="sub-title">{formatDatePicker(datePicker)}</Text>
+          <Text className="sub-title">{formatDatePicker(datePicker)}</Text>{" "}
+          {/* Chuyển thành đối tượng Date */}
         </Box>
         <Box flex justifyContent="space-between">
           <Text>Giờ đặt</Text>

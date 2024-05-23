@@ -1,9 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { Box, Text, Icon, useNavigate } from "zmp-ui";
+
 import ButtonNavigate from "../components/buttonNavigate/buttonNavigate";
-import BookingCard from "../components/cards/bookingCard";
 import HeaderPage from "../components/headerPage/headerPage";
 import Store from "../components/redux/store";
+
+const BookingCard = lazy(() => import("../components/cards/bookingCard"));
 
 const Booking = () => {
   const navigate = useNavigate();
@@ -27,6 +36,15 @@ const Booking = () => {
       }
     });
   }, [Store.getState().appointments, appointmentTab]);
+
+  const handleNavigate = useCallback(() => {
+    navigate("/branches");
+  }, []);
+
+  const buttonStyle = useMemo(
+    () => ({ background: "var(--primary-color)" }),
+    []
+  );
 
   return (
     <Box
@@ -86,9 +104,11 @@ const Booking = () => {
       <Box>
         {listAppointments.length > 0 ? (
           <Box pt={4} flex className="flex-col gap-2">
-            {listAppointments.map((item) => (
-              <BookingCard key={item.id} id {...item} />
-            ))}
+            <Suspense fallback={<Box>Đang tải</Box>}>
+              {listAppointments.map((item) => (
+                <BookingCard key={item.id} id {...item} />
+              ))}
+            </Suspense>
           </Box>
         ) : (
           <Box
@@ -118,9 +138,9 @@ const Booking = () => {
       >
         <ButtonNavigate
           page="/branches"
-          style={{ background: "var(--primary-color)" }}
+          style={buttonStyle} //style cần phải dùng luôn useMemo vì mỗi lần re-render lại nó sẽ tạo mới lại
           title="Tạo lịch hẹn mới"
-          action={() => navigate("/branches")}
+          action={handleNavigate}
         ></ButtonNavigate>
       </Box>
     </Box>

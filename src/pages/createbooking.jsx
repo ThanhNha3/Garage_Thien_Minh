@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Box, Icon, Text, useNavigate, DatePicker } from "zmp-ui";
 import { openChat } from "zmp-sdk/apis";
+
 import Store from "../components/redux/store";
 import { dataContext } from "../components/providerContext/providerContext";
 import { ChangeStaffChosen } from "../components/redux/actions/staffChosenAction";
@@ -14,13 +15,12 @@ const CreateBooking = () => {
   const [currentBranch, setCurrentBranch] = useState(Store);
   const [listStaffs, setListStaffs] = useState([]);
   const { formatCurrency } = useContext(dataContext);
-  const [listServices] = useState(
-    Store.getState().productsSelected
-  );
+  const [listServices] = useState(Store.getState().productsSelected);
   const [staffIdChosen, setStaffIdChosen] = useState(
     Store.getState().staffChosen
   );
-  const [date, setDate] = useState(Store.getState().datePicker);
+
+  const [date, setDate] = useState(new Date(Store.getState().datePicker));
 
   useEffect(() => {
     setCurrentBranch(() => {
@@ -206,10 +206,10 @@ const CreateBooking = () => {
               }
               key={"a"}
               suffix={<Icon icon="zi-chevron-right" />}
-              startDate={Store.getState().datePicker}
-              value={Store.getState().datePicker}
+              startDate={date}
+              value={date}
               mask
-              defaultValue={Store.getState().datePicker}
+              defaultValue={date}
               maskClosable
               dateFormat="dd/mm/yyyy"
               title="Chọn ngày"
