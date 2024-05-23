@@ -376,17 +376,17 @@ const DetailsBooking = () => {
                     <Input.TextArea value={appointmentHasRating.rating_value} />
                   </Box>
                 </Box>
+                <ModalNotification
+                  description={"Cảm ơn bạn đã để lại đánh giá"}
+                  title="Đánh giá thành công"
+                  popupVisible={popupVisible}
+                  setPopupVisible={setPopupVisible}
+                />
               </Box>
             )
           ) : null}
         </Box>
       </Box>
-      <ModalNotification
-        description={"Cảm ơn bạn đã để lại đánh giá"}
-        title="Đánh giá thành công"
-        popupVisible={popupVisible}
-        setPopupVisible={setPopupVisible}
-      />
     </Box>
   );
 };

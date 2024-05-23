@@ -5,23 +5,25 @@ import { Provider } from "react-redux";
 
 import Layout from "./layout/layout";
 import ProviderContext from "./providerContext/providerContext";
-import Store from "./redux/store"
-
+import Store from "./redux/store";
+import ErrorBoundary from "./errorBoundary/errorBoundary";
 
 const MyApp = () => {
   return (
     <RecoilRoot>
-      <App>
-        <SnackbarProvider>
-          <ZMPRouter>
-            <Provider store={Store}>
-              <ProviderContext>
-                <Layout />
-              </ProviderContext>
-            </Provider>
-          </ZMPRouter>
-        </SnackbarProvider>
-      </App>
+      <ErrorBoundary>
+        <App>
+          <SnackbarProvider>
+            <ZMPRouter>
+              <Provider store={Store}>
+                <ProviderContext>
+                  <Layout />
+                </ProviderContext>
+              </Provider>
+            </ZMPRouter>
+          </SnackbarProvider>
+        </App>
+      </ErrorBoundary>
     </RecoilRoot>
   );
 };

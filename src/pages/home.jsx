@@ -30,6 +30,7 @@ const Home = () => {
           paddingTop: "120px",
         }}
         p={4}
+        mt={10}
       >
         <CircleCard
           key={1}
