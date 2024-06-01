@@ -1,4 +1,4 @@
-const timers = [
+const time_picker = [
   { id: 1, time: "8:00" },
   { id: 2, time: "8:30" },
   { id: 3, time: "9:00" },
@@ -22,7 +22,7 @@ const timers = [
   { id: 21, time: "18:00" },
 ];
 
-const ListTimePickerReducer = (state = timers, action) => {
+const ListTimePickerReducer = (state = time_picker, action) => {
   switch (action.type) {
     default: {
       return state;

@@ -2,44 +2,61 @@ import React, {
   lazy,
   Suspense,
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useState,
 } from "react";
-import { Box, Text, Icon, useNavigate } from "zmp-ui";
+import { useSelector } from "react-redux";
+import { Box, Text, Icon } from "zmp-ui";
 
 import ButtonNavigate from "../components/buttonNavigate/buttonNavigate";
 import HeaderPage from "../components/headerPage/headerPage";
-import Store from "../components/redux/store";
+import { dataContext } from "../components/providerContext/providerContext";
+import { fetchAllAppointments } from "../components/redux/slices/appointmentSlide";
 
 const BookingCard = lazy(() => import("../components/cards/bookingCard"));
 
 const Booking = () => {
-  const navigate = useNavigate();
-  const [appointmentTab, setAppointmentTab] = useState("all");
-  const [statusAppointment, setStatusAppointment] = useState([0]);
+  const { dispatch, navigate } = useContext(dataContext);
+
+  useEffect(() => {
+    dispatch(fetchAllAppointments());
+  }, []);
+
+  // Lấy appointments
+  const data = useSelector((state) => state.appointments.appointments);
+
+  // Lấy ra sản phẩm
   const [listAppointments, setListAppointments] = useState([]);
 
+  //Dùng cho tab
+  const [appointmentTab, setAppointmentTab] = useState("all");
+
+  // Set status appointments muốn hiển thị
+  const [statusAppointment, setStatusAppointment] = useState([0]);
+
+  // Cập nhật listAppointments khi data hoặc statusAppointment thay đổi
   useEffect(() => {
     setListAppointments(() => {
       if (statusAppointment.length >= 2) {
         let [success, reject] = statusAppointment;
-        return Store.getState().appointments.filter((appointment) => {
+        return data.filter((appointment) => {
           return (
             appointment.status === success || appointment.status === reject
           );
         });
       } else {
-        return Store.getState().appointments.filter(
+        return data.filter(
           (appointment) => appointment.status === statusAppointment[0]
         );
       }
     });
-  }, [Store.getState().appointments, appointmentTab]);
+  }, [data, statusAppointment]);
 
   const handleNavigate = useCallback(() => {
     navigate("/branches");
-  }, []);
+  }, [navigate]);
 
   const buttonStyle = useMemo(
     () => ({ background: "var(--primary-color)" }),

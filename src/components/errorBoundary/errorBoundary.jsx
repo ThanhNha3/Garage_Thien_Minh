@@ -29,7 +29,6 @@ class ErrorBoundary extends Component {
         </Box>
       );
     }
-
     return this.props.children;
   }
 }

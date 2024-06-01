@@ -1,18 +1,31 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Box, Icon, Text, useNavigate } from "zmp-ui";
-import Store from "../redux/store";
+import { useDispatch, useSelector } from "react-redux";
+
+import { dataContext } from "../providerContext/providerContext";
+import background from "../../../public/images/background.jpg";
+import { fetchAllBranches } from "../redux/slices/branchSlide";
 
 const BookingCard = (data) => {
   const navigate = useNavigate();
+  const { formatDate, dispatch } = useContext(dataContext);
   const { id, branch_id, appointment_date, status } = data;
-  const [branch, setbranch] = useState({});
+  const [branch, setBranch] = useState({});
+
   useEffect(() => {
-    setbranch(() => {
-      return Store.getState().branches.find(
-        (branch) => branch.id === branch_id
-      );
-    });
-  }, [Store.getState().branches]);
+    dispatch(fetchAllBranches());
+  }, []);
+
+  const branches = useSelector((store) => store.branches.branches);
+
+  useEffect(() => {
+    if (branches && branches.length > 0) {
+      const foundBranch = branches.find((branch) => branch.id === branch_id);
+      if (foundBranch) {
+        setBranch(foundBranch);
+      }
+    }
+  }, [branches]);
 
   return (
     <Box
@@ -24,18 +37,22 @@ const BookingCard = (data) => {
       <Box className="text-[var(--text-disable)]">#{id}</Box>
       <Box flex className="gap-2">
         <Box>
-          <img width={135} src={branch.image} alt={branch.name} />
+          <img width={135} src={background} alt={branch.name || "Branch"} />
         </Box>
         <Box flex className="flex-1 flex-col gap-2">
-          <Text className="sub-title">{branch.name}</Text>
-          <Text className="text-[var(--text-secondary)]">{branch.address}</Text>
+          <Text className="sub-title">
+            {branch.name || "Không có chi nhánh"}
+          </Text>
+          <Text className="text-[var(--text-secondary)]">
+            {branch.address || "Branch Address"}
+          </Text>
         </Box>
       </Box>
       <hr />
       <Box flex justifyContent="space-between">
         <Box flex alignItems="center" className="gap-2">
           <Icon icon="zi-clock-2-solid" />
-          <Text>{appointment_date}</Text>
+          <Text>{formatDate(appointment_date)}</Text>
         </Box>
         <Box
           p={2}
@@ -50,15 +67,11 @@ const BookingCard = (data) => {
           }}
         >
           <Text size="xxSmall">
-            {
-              <Text size="xxSmall">
-                {status === 0
-                  ? "Đợi xác nhận"
-                  : status === 1
-                  ? "Hoàn thành"
-                  : "Đã hủy"}
-              </Text>
-            }
+            {status === 0
+              ? "Đợi xác nhận"
+              : status === 1
+              ? "Hoàn thành"
+              : "Đã hủy"}
           </Text>
         </Box>
       </Box>

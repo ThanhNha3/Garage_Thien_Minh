@@ -1,18 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { Box, Text } from "zmp-ui";
+import { useSelector, useDispatch } from "react-redux";
 
 import BottomNavigationPage from "../components/bottomNavigation/bottomNavigation";
 import CircleCard from "../components/cards/circleCard";
 import HomeProductCard from "../components/cards/homeProductCard";
 import HeaderBar from "../components/headerbar/headerBar";
-import Store from "../components/redux/store";
 
+import background from "../../public/images/background.jpg";
 import image1 from "../../public/images/image1.jpg";
 import image2 from "../../public/images/image2.jpg";
 import image4 from "../../public/images/image4.jpg";
+import { fetchAllProducts } from "../components/redux/slices/productSlice";
 
 const Home = () => {
-  const [productList] = useState(Store.getState().products);
+  const dispatch = useDispatch();
+  const productList = useSelector((state) => state.products.products);
+  useEffect(() => {
+    dispatch(fetchAllProducts());
+  }, []);
+
   return (
     <Box
       px={4}
@@ -47,15 +54,15 @@ const Home = () => {
         <CircleCard key={3} name="Ưu Đãi" icon="zi-star-solid" page="coupon" />
       </Box>
       <Box>
-        <img src="https://cdn.shopify.com/s/files/1/1110/4458/products/STREETER_AUTO_CO_8_X_16_ART_MURAL_PROOF_II_1024x1024.jpg?v=1580153647" />
+        <img src={background} />
       </Box>
       <Box flex className="flex-col gap-2">
         <Text style={{ fontWeight: "bold" }} size="xLarge">
           Danh sách dịch vụ
         </Text>
         <div className="flex overflow-scroll gap-4">
-          {productList.map((product) => {
-            return <HomeProductCard key={product.id} {...product} />;
+          {productList.map((product, index) => {
+            return <HomeProductCard key={index} {...product} />;
           })}
         </div>
       </Box>

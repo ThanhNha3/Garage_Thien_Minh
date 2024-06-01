@@ -1,10 +1,22 @@
-import React, { lazy, Suspense, useEffect, useState } from "react";
-import { Box, Header, Icon, Text } from "zmp-ui";
+import React, { lazy, Suspense, useEffect, useContext } from "react";
+import { useSelector } from "react-redux";
+import { Box, Icon, Text } from "zmp-ui";
+
 import HeaderPage from "../components/headerPage/headerPage";
-import Store from "../components/redux/store";
+import { dataContext } from "../components/providerContext/providerContext";
+import { fetchAllBranches } from "../components/redux/slices/branchSlide";
+
 const BranchCard = lazy(() => import("../components/cards/branchCard"));
+
 const BookingChooseBranch = () => {
-  const [listBranches] = useState(Store.getState().branches);
+  const listBranches = useSelector((store) => store.branches.branches);
+
+  const { dispatch } = useContext(dataContext);
+
+  useEffect(() => {
+    dispatch(fetchAllBranches());
+  }, []);
+
   return (
     <Box>
       <HeaderPage title="Chọn chi nhánh" />
