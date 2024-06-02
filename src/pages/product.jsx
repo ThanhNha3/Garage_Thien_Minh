@@ -1,8 +1,9 @@
 import React, { useState, useContext, useEffect, lazy, Suspense } from "react";
 import { Box, Header, Input, Text, Icon, useNavigate } from "zmp-ui";
-import Store from "../components/redux/store";
 import { dataContext } from "../components/providerContext/providerContext";
 import EmptyData from "../components/emptyData/emptyData";
+import { useSelector } from "react-redux";
+import { fetchAllProducts } from "../components/redux/slices/productSlice";
 
 const ProductList = lazy(() => import("../components/productList/productList"));
 const CategoryNavbar = lazy(() =>
@@ -10,36 +11,37 @@ const CategoryNavbar = lazy(() =>
 );
 
 const ProductPage = () => {
+  // Lấy dữ liệu từ dataContext
+  const { formatCurrency, dispatch, navigate } = useContext(dataContext);
+
+  // dispatch fired
+  useEffect(() => {
+    dispatch(fetchAllProducts());
+  }, []);
+
+  //Lấy các dữ liệu từ Store
+  const products = useSelector((state) => state.products.products);
+  const productsSelected = useSelector(
+    (state) => state.productsSelected.productsSelected
+  );
+
+  // Set state cho id category và products theo category_id và tổng tiền
   const [state, setState] = useState("all");
   const [idActiveCategory, setIdActiveCategory] = useState(1);
-
-  const [productList, setProductList] = useState([]);
-  const [listProductSelected, setListProductSelected] = useState(
-    Store.getState().productsSelected
-  );
+  const [productList, setProductList] = useState(products);
   const [totalMoney, setTotalMoney] = useState(0);
-  const { formatCurrency } = useContext(dataContext);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    Store.subscribe(() => {
-      setListProductSelected(Store.getState().productsSelected);
-    });
-  }, [Store.getState().productsSelected]);
 
   useEffect(() => {
     setTotalMoney(() => {
-      return listProductSelected.reduce((acc, currentValue) => {
+      return productsSelected.reduce((acc, currentValue) => {
         return (acc += currentValue.price);
       }, 0);
     });
-  }, [listProductSelected]);
+  }, [productsSelected]);
 
   useEffect(() => {
     setProductList(() =>
-      Store.getState().products.filter(
-        (product) => product.category_id === idActiveCategory
-      )
+      products.filter((product) => product.category_id === idActiveCategory)
     );
   }, [idActiveCategory]);
 
@@ -112,7 +114,7 @@ const ProductPage = () => {
       ) : (
         <EmptyData description="Xin lỗi chúng tôi đã hết dịch vụ này" />
       )}
-      {listProductSelected.length > 0 ? (
+      {productsSelected.length > 0 ? (
         <Box className="absolute bottom-0 w-full" px={4}>
           <Box
             className="bg-[var(--secondary-color)] rounded text-white"
@@ -121,8 +123,7 @@ const ProductPage = () => {
             p={4}
           >
             <Box>
-              {listProductSelected.length} dịch vụ -{" "}
-              {formatCurrency(totalMoney)}
+              {productsSelected.length} dịch vụ - {formatCurrency(totalMoney)}
             </Box>
             <Box>
               <button onClick={() => navigate(-1)}>Tiếp tục</button>

@@ -1,23 +1,18 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Box, Text, useNavigate } from "zmp-ui";
+import { dataContext } from "../providerContext/providerContext";
 import { ChangeBranchChosen } from "../redux/actions/branchChosenAction";
 import Store from "../redux/store";
 
 const BranchCard = (data) => {
-  const navigate = useNavigate();
-  const {
-    id,
-    image,
-    name,
-    address,
-  } = data;
+  const { navigate } = useContext(dataContext);
+  const { id, image, name, address } = data;
 
   return (
     <Box
       flex
       onClick={() => {
-        Store.dispatch(ChangeBranchChosen(id));
-        navigate(`/createbooking`);
+        navigate(`/createbooking/${id}`);
       }}
       className="gap-2 bg-[var(--white-color)]"
       px={4}

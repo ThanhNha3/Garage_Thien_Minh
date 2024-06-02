@@ -1,13 +1,16 @@
-import { useEffect, useState } from "react";
+import { useContext } from "react";
 import { Box } from "zmp-ui";
-import { ChangeTimePicker } from "../redux/actions/timePickerAction";
-import Store from "../redux/store";
+import { dataContext } from "../providerContext/providerContext";
+import { changeTimePicker } from "../redux/slices/timeSlotPickerSlide";
 
 const TimeCard = (data) => {
   const { id, time, isActive } = data;
+  const { dispatch } = useContext(dataContext);
   return (
     <Box
-      onClick={() => Store.dispatch(ChangeTimePicker(id))}
+      onClick={() => {
+        dispatch(changeTimePicker({ id, time }));
+      }}
       p={2}
       className={isActive ? "cardTimerPickerActive" : ""}
       style={{

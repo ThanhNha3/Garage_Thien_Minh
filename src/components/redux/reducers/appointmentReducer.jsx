@@ -1,7 +1,7 @@
 const appointments = [
   {
     id: 1,
-    customer_id: 1,
+    zalo_id: 1,
     branch_id: 1,
     employee_id: 1,
     appointment_date: "28/03/2024",

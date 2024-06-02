@@ -28,7 +28,7 @@ const Layout = () => {
         <Route path="/product" element={<ProductPage />}></Route>
         <Route path="/forminformation" element={<FormInformation />} />
         <Route path="/branches" element={<BookingChooseBranch />}></Route>
-        <Route path="/createbooking" element={<CreateBooking />}></Route>
+        <Route path="/createbooking/:branch_id" element={<CreateBooking />}></Route>
         <Route
           path="/confirminformation"
           element={<ConfirmInformation />}

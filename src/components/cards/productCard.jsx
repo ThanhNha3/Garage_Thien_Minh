@@ -1,19 +1,28 @@
 import React, { useState, useEffect, useContext } from "react";
+import { useSelector } from "react-redux";
 import { Box, Text } from "zmp-ui";
 import { dataContext } from "../providerContext/providerContext";
 import {
-  addProductSelected,
-  removeProductSelected,
-} from "../redux/actions/productsSelectedAction";
-
-import Store from "../redux/store";
-
+  selectProduct,
+  removeProduct,
+} from "../redux/slices/productSelectedSlide";
 const ProductCard = ({ id, name, price, image }) => {
+  // Set nút active
   const [buttonActive, setButtonActive] = useState(false);
-  const { formatCurrency } = useContext(dataContext);
+
+  // Lấy dữ liệu từ dataContext
+  const { formatCurrency, dispatch } = useContext(dataContext);
+
+  //dispatch fired
+
+  // Lấy dữ liệu từ store
+
+  const productsSelected = useSelector(
+    (state) => state.productsSelected.productsSelected
+  );
 
   useEffect(() => {
-    Store.getState().productsSelected.find(
+    productsSelected.find(
       (productSelected) => productSelected.id === Number(id)
     )
       ? setButtonActive(true)
@@ -38,8 +47,8 @@ const ProductCard = ({ id, name, price, image }) => {
           onClick={() => {
             setButtonActive(!buttonActive);
             buttonActive
-              ? Store.dispatch(removeProductSelected(id, name, price, image))
-              : Store.dispatch(addProductSelected(id, name, price, image));
+              ? dispatch(removeProduct({ id, name, price, image }))
+              : dispatch(selectProduct({ id, name, price, image }));
           }}
           className="w-full border py-2"
         >

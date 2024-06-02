@@ -1,33 +1,33 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-export const fetchAllProducts = createAsyncThunk(
-  "users/fetchAllProducts",
+export const fetchAllStaffs = createAsyncThunk(
+  "users/fetchAllStaffs",
   async () => {
-    const response = await fetch("http://localhost:4000/api/products");
+    const response = await fetch("http://localhost:4000/api/staffs");
     const data = await response.json();
     return data;
   }
 );
 
-export const productSlice = createSlice({
+export const staffSlice = createSlice({
   name: "products",
   initialState: {
-    products: [],
+    staffs: [],
     loading: false,
     error: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchAllProducts.pending, (state, action) => {
+      .addCase(fetchAllStaffs.pending, (state, action) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchAllProducts.fulfilled, (state, action) => {
+      .addCase(fetchAllStaffs.fulfilled, (state, action) => {
         state.loading = false;
-        state.products = action.payload;
+        state.staffs = action.payload; 
       })
-      .addCase(fetchAllProducts.rejected, (state, action) => {
+      .addCase(fetchAllStaffs.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });
@@ -35,5 +35,5 @@ export const productSlice = createSlice({
 });
 
 // Export actions and reducer
-export const {} = productSlice.actions;
-export default productSlice.reducer;
+export const {} = staffSlice.actions;
+export default staffSlice.reducer;

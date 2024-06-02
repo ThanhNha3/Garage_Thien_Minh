@@ -7,8 +7,7 @@ import background from "../../../public/images/background.jpg";
 import { fetchAllBranches } from "../redux/slices/branchSlide";
 
 const BookingCard = (data) => {
-  const navigate = useNavigate();
-  const { formatDate, dispatch } = useContext(dataContext);
+  const { formatDate, dispatch, navigate } = useContext(dataContext);
   const { id, branch_id, appointment_date, status } = data;
   const [branch, setBranch] = useState({});
 
@@ -16,7 +15,7 @@ const BookingCard = (data) => {
     dispatch(fetchAllBranches());
   }, []);
 
-  const branches = useSelector((store) => store.branches.branches);
+  const branches = useSelector((state) => state.branches.branches);
 
   useEffect(() => {
     if (branches && branches.length > 0) {

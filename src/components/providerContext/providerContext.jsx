@@ -36,6 +36,7 @@ const ProviderContext = (props) => {
     const getUser = async () => {
       try {
         const { userInfo } = await getUserInfo({});
+        console.log(userInfo);
         setUserInfo(userInfo);
       } catch (error) {
         console.log(error);

@@ -1,44 +1,65 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Box, Icon, Text, useNavigate, DatePicker } from "zmp-ui";
+import { useParams } from "react-router";
 import { openChat } from "zmp-sdk/apis";
 
 import Store from "../components/redux/store";
 import { dataContext } from "../components/providerContext/providerContext";
-import { ChangeStaffChosen } from "../components/redux/actions/staffChosenAction";
-import { ChangeDatePicker } from "../components/redux/actions/datePickerAction";
-import TimePicker from "../components/timePicker/timePicker";
 import ButtonNavigate from "../components/buttonNavigate/buttonNavigate";
 import HeaderPage from "../components/headerPage/headerPage";
+import { useSelector } from "react-redux";
+import { fetchAllBranches } from "../components/redux/slices/branchSlide";
+import { ChangeDatePicker } from "../components/redux/actions/datePickerAction";
+import background from "../../public/images/background.jpg";
+import TimeSlot from "../components/timeSlot/timeSlot";
+import { fetchAllStaffs } from "../components/redux/slices/staffSlide";
+import {changeStaffChosen} from "../components/redux/slices/staffChosenSlide"
 
 const CreateBooking = () => {
-  const navigate = useNavigate();
-  const [currentBranch, setCurrentBranch] = useState(Store);
-  const [listStaffs, setListStaffs] = useState([]);
-  const { formatCurrency } = useContext(dataContext);
-  const [listServices] = useState(Store.getState().productsSelected);
-  const [staffIdChosen, setStaffIdChosen] = useState(
-    Store.getState().staffChosen
-  );
+  // Lấy các hàm từ dataContext
+  const { navigate, dispatch, formatCurrency } = useContext(dataContext);
 
-  const [date, setDate] = useState(new Date(Store.getState().datePicker));
+  // Lấy branch_id
+  const { branch_id } = useParams("branch_id");
+
+  // Dispatch
+  useEffect(() => {
+    dispatch(fetchAllBranches());
+  }, []);
+  useEffect(() => {
+    dispatch(fetchAllStaffs());
+  }, []);
+
+  // Lấy dữ liệu từ store
+  const listBranches = useSelector((state) => state.branches.branches);
+  const productsSelected = useSelector(
+    (store) => store.productsSelected.productsSelected
+  );
+  const staffs = useSelector((store) => store.staffs.staffs);
+  const datePicker = useSelector((store) => store.datePicker.datePicker);
+
+  // Đặt state cho chính nhánh, danh sách nhân viên, danh sách dịch vụ
+  const [currentBranch, setCurrentBranch] = useState(Store);
+  const [staffsByBranchId, setStaffsByBranchId] = useState([]);
+  const [listServices] = useState(productsSelected);
+  const [date, setDate] = useState(new Date(datePicker));
+
+  useEffect(() => {
+    setStaffsByBranchId(() => {
+      return staffs.filter((staff) => staff.branch_id === Number(branch_id));
+    });
+  }, [branch_id]);
+
+  const [staffIdChosen, setStaffIdChosen] = useState();
 
   useEffect(() => {
     setCurrentBranch(() => {
-      return Store.getState().branches.find(
-        (branch) => branch.id === Store.getState().branchChosen
-      );
+      return listBranches.find((branch) => branch.id === Number(branch_id));
     });
-    setListStaffs(() => {
-      return Store.getState().users.filter((user) => user.role === 1);
-    });
-  }, []);
+  }, [listBranches, dispatch]);
 
   useEffect(() => {
-    Store.dispatch(ChangeStaffChosen(staffIdChosen));
-  }, [staffIdChosen]);
-
-  useEffect(() => {
-    Store.dispatch(ChangeDatePicker(date));
+    dispatch(ChangeDatePicker(date));
   }, [date]);
 
   const handleDatePicker = (date) => {
@@ -67,7 +88,7 @@ const CreateBooking = () => {
         className="gap-2 bg-[var(--white-color)]"
       >
         <Box>
-          <img src={currentBranch.image} />
+          <img src={(currentBranch && currentBranch.image) || background} />
         </Box>
         <Box
           px={4}
@@ -77,9 +98,11 @@ const CreateBooking = () => {
           justifyContent="center"
           className="gap-2"
         >
-          <Text.Title className="sub-title">{currentBranch.name}</Text.Title>
+          <Text.Title className="sub-title">
+            {(currentBranch && currentBranch.name) || "Tên chi nhánh"}
+          </Text.Title>
           <Text className="text-[var(--text-secondary)]">
-            {currentBranch.address}
+            {(currentBranch && currentBranch.address) || "Địa chỉ"}
           </Text>
         </Box>
       </Box>
@@ -103,7 +126,9 @@ const CreateBooking = () => {
                 className="text-[var(--secondary-color)]"
                 icon="zi-location-solid"
               />
-              <Text>{currentBranch.name}</Text>
+              <Text>
+                {(currentBranch && currentBranch.name) || "Tên chi nhánh"}
+              </Text>
             </Box>
             <Icon icon="zi-chevron-right" />
           </Box>
@@ -116,8 +141,8 @@ const CreateBooking = () => {
         >
           <Text.Title className="sub-title">2. Chọn dịch vụ</Text.Title>
           <Box className="gap-2 d-block">
-            {listServices.length > 0 ? (
-              listServices.map((item) => (
+            {productsSelected && productsSelected.length > 0 ? (
+              productsSelected.map((item) => (
                 <Box
                   key={item.id}
                   flex
@@ -156,40 +181,42 @@ const CreateBooking = () => {
           <Text.Title className="sub-title">
             3. Chọn ngày giờ và NV phục vụ
           </Text.Title>
-          {listServices.length > 0 ? (
+          {productsSelected && productsSelected.length > 0 ? (
             <Box
               flex
               alignItems="center"
-              justifyContent="space-between"
-              className="transition-all"
+              justifyContent="space-around"
+              className="transition-all gap-2"
             >
-              {listStaffs.map((staff) => {
-                return (
-                  <Box
-                    key={staff.id}
-                    flex
-                    flexDirection="column"
-                    alignItems="center"
-                    dât={staff.id}
-                    justifyContent="center"
-                    style={{ gap: "8px", position: "relative" }}
-                    className={
-                      staff.id === staffIdChosen ? "staff-chosen-active" : ""
-                    }
-                    onClick={() => {
-                      setStaffIdChosen(staff.id);
-                    }}
-                  >
-                    <Box width={50} height={50}>
-                      <img
-                        src={staff.image}
-                        className="w-full h-full object-contain rounded-full"
-                      />
+              {staffsByBranchId &&
+                staffsByBranchId.map((staff) => {
+                  return (
+                    <Box
+                      key={staff.id}
+                      flex
+                      flexDirection="column"
+                      alignItems="center"
+                      data={staff.id}
+                      justifyContent="center"
+                      style={{ gap: "8px", position: "relative" }}
+                      className={
+                        staff.id === staffIdChosen ? "staff-chosen-active" : ""
+                      }
+                      onClick={() => {
+                        setStaffIdChosen(staff.id);
+                        dispatch(changeStaffChosen(staff));
+                      }}
+                    >
+                      <Box width={50} height={50}>
+                        <img
+                          src={staff.image}
+                          className="w-full h-full object-contain rounded-full"
+                        />
+                      </Box>
+                      <Text className="sub-title">{staff.name}</Text>
                     </Box>
-                    <Text className="sub-title">{staff.name}</Text>
-                  </Box>
-                );
-              })}
+                  );
+                })}
             </Box>
           ) : (
             ""
@@ -217,16 +244,16 @@ const CreateBooking = () => {
               onChange={(date) => handleDatePicker(date)}
             />
           </Box>
-          {listServices.length > 0 ? (
+          {listServices && listServices.length > 0 ? (
             <Box style={{ paddingBottom: 100 }}>
-              <TimePicker></TimePicker>
+              <TimeSlot></TimeSlot>
             </Box>
           ) : (
             ""
           )}
         </Box>
       </Box>
-      {listServices.length > 0 ? (
+      {listServices && listServices.length > 0 ? (
         <Box
           p={4}
           className="fixed bottom-0 bg-[var(--white-color)] w-full gap-4"
