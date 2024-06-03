@@ -1,18 +1,31 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Box } from "zmp-ui";
 import { dataContext } from "../providerContext/providerContext";
 import { changeTimePicker } from "../redux/slices/timeSlotPickerSlide";
 
 const TimeCard = (data) => {
   const { id, time, isActive } = data;
-  const { dispatch } = useContext(dataContext);
+  const { dispatch, handleTimeActive } = useContext(dataContext);
+
+  const [isAvailable, setIsAvailabel] = useState(false);
+  useEffect(() => {
+    if (handleTimeActive(time)) {
+      setIsAvailabel(true);
+    }
+  });
+
+  useEffect(() => {}, [isActive]);
   return (
     <Box
       onClick={() => {
-        dispatch(changeTimePicker({ id, time }));
+        if (isAvailable) {
+          dispatch(changeTimePicker({ id, time }));
+        }
       }}
       p={2}
-      className={isActive ? "cardTimerPickerActive" : ""}
+      className={`${isActive ? "cardTimerPickerActive" : ""} ${
+        isAvailable ? "" : "cardTimerPickerDisable"
+      }`}
       style={{
         border: "var(--text-disable) solid 1px",
         textAlign: "center",

@@ -1,43 +1,41 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Box, Icon, Text } from "zmp-ui";
+import { useSelector } from "react-redux";
+import { useParams } from "react-router";
+
 import HeaderPage from "../components/headerPage/headerPage";
 import ButtonNavigate from "../components/buttonNavigate/buttonNavigate";
 import ModalConfirm from "../components/modalConfirm/modalConfirm";
 import ModalNotification from "../components/modalNotification/modalNotification";
-import Store from "../components/redux/store";
+import background from "../../public/images/background.jpg";
+import { dataContext } from "../components/providerContext/providerContext";
 
 const ConfirmInformation = () => {
+  //Lấy branch_id
+  const { branch_id } = useParams("branch_id");
+
+  // Lấy hàm từ dataContext
+  const { formatDate, dispatch } = useContext(dataContext);
+
+  // Set state popup
   const [dialogVisible, setDialogVisible] = useState(false);
   const [popupVisible, setPopupVisible] = useState(false);
-  const [customerInformation] = useState(Store.getState().customerInformation);
-  const [staffChosen, setStaffChosen] = useState({});
-  const [timePicker, setTimePicker] = useState({});
-  const [datePicker] = useState(
-    new Date(Store.getState().datePicker)
+
+  // Lấy dữ liệu từ store
+  const customerInformation = useSelector(
+    (state) => state.customerInformation.customerInformation
   );
-  const [branchChosen, setBranchChosen] = useState({});
+  const staffChosen = useSelector((state) => state.staffChosen.staffChosen);
+  const timePicker = useSelector(
+    (state) => state.timeSlotPicker.timeSlotPicker
+  );
+  const datePicker = useSelector((state) => state.datePicker.datePicker);
+  const branches = useSelector((state) => state.branches.branches);
 
-  useEffect(() => {
-    setStaffChosen(() => {
-      return Store.getState().users.find(
-        (user) => user.id === Store.getState().staffChosen
-      );
-    });
-    setTimePicker(() => {
-      return Store.getState().listTimePicker.find((timePicker) => {
-        return timePicker.id === Store.getState().timePicker;
-      });
-    });
-    setBranchChosen(() => {
-      return Store.getState().branches.find(
-        (branch) => branch.id === Store.getState().branchChosen
-      );
-    });
-  }, []);
-
-  const formatDatePicker = (datePicker) => {
-    return datePicker.toLocaleDateString("vi-VN");
-  };
+  // Lấy ra branch được đặt
+  const branchChosen = branches.find(
+    (branch) => branch.id === Number(branch_id)
+  );
 
   return (
     <Box>
@@ -51,12 +49,12 @@ const ConfirmInformation = () => {
         <Text className="sub-title">Chi tiết đặt lịch</Text>
         <Box flex className="gap-4">
           <Box width={135}>
-            <img src={branchChosen.image}></img>
+            <img src={branchChosen.image || background}></img>
           </Box>
           <Box>
             <Text className="sub-title">{branchChosen.name}</Text>
             <Text className="text-[var(--text-disable)]">
-              {branchChosen.address}
+              {branchChosen.address || "Địa chỉ"}
             </Text>
           </Box>
         </Box>
@@ -70,20 +68,21 @@ const ConfirmInformation = () => {
       >
         <Box flex justifyContent="space-between">
           <Text>Ngày đặt</Text>
-          <Text className="sub-title">{formatDatePicker(datePicker)}</Text>{" "}
-          {/* Chuyển thành đối tượng Date */}
+          <Text className="sub-title">{formatDate(datePicker)}</Text>
         </Box>
         <Box flex justifyContent="space-between">
           <Text>Giờ đặt</Text>
-          <Text className="sub-title">{timePicker.time}</Text>
+          <Text className="sub-title">{timePicker.time || "giờ đặt"}</Text>
         </Box>
         <Box flex justifyContent="space-between">
           <Text>Nhân viên</Text>
           <Box flex alignItems="center">
             <Box width={25}>
-              <img src={staffChosen.image} />
+              <img src={staffChosen.image || background} />
             </Box>
-            <Text className="sub-title">{staffChosen.name}</Text>
+            <Text className="sub-title">
+              {staffChosen.name || "tên nhân viên"}
+            </Text>
           </Box>
         </Box>
       </Box>
@@ -98,23 +97,23 @@ const ConfirmInformation = () => {
         <Box flex flexDirection="column" className="gap-2">
           <Box flex alignItems="center" className="gap-2">
             <Icon icon="zi-user-solid"></Icon>
-            <Text>{customerInformation.name}</Text>
+            <Text>{customerInformation.name || "Tên người đặt"}</Text>
           </Box>
           <Box flex alignItems="center" className="gap-2">
             <Icon icon="zi-call-solid"></Icon>
-            <Text>{customerInformation.phone}</Text>
+            <Text>{customerInformation.phone || "SĐT người đặt"}</Text>
           </Box>
           <Box flex alignItems="center" className="gap-2">
             <Icon icon="zi-notif-ring"></Icon>
-            <Text>{customerInformation.email}</Text>
+            <Text>{customerInformation.email || "email người đặt"}</Text>
           </Box>
           <Box flex alignItems="center" className="gap-2">
             <Icon icon="zi-location-solid"></Icon>
-            <Text>{customerInformation.address}</Text>
+            <Text>{customerInformation.address || "địa chỉ người đặt"}</Text>
           </Box>
           <Box flex alignItems="center" className="gap-2">
             <Icon icon="zi-post"></Icon>
-            <Text>{customerInformation.note}</Text>
+            <Text>{customerInformation.note || "ghi chú"}</Text>
           </Box>
         </Box>
       </Box>

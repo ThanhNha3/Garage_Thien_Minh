@@ -1,10 +1,12 @@
 import React, { useState, useContext } from "react";
 import { Box, Input, Text, useNavigate } from "zmp-ui";
+
 import HeaderPage from "../components/headerPage/headerPage";
 import ButtonNavigate from "../components/buttonNavigate/buttonNavigate";
-import Store from "../components/redux/store";
-import { UpdateCustomerInformation } from "../components/redux/actions/customerInformationAction";
 import { dataContext } from "../components/providerContext/providerContext";
+import { updateCustomerInformation } from "../components/redux/slices/customerInformationSlide";
+import { useDispatch } from "react-redux";
+import { useParams } from "react-router";
 
 const nameRegex =
   /^[A-ZÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ][a-zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]*(?:[ ][A-ZÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ][a-zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]*)*$/;
@@ -14,9 +16,10 @@ const addressRegex =
 const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
 
 const FormInformation = () => {
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { branch_id } = useParams("branch_id");
   const { customerName, setCustomerName } = useState("");
-  const { userInfo } = useContext(dataContext);
+  const { userInfo, navigate } = useContext(dataContext);
   const [customerType, setCustomerType] = useState(0);
   const [statusName, setStatusName] = useState("");
   const [statusPhone, setStatusPhone] = useState("");
@@ -33,7 +36,7 @@ const FormInformation = () => {
   const checkRegex = (name, regex) => {
     return regex.test(name);
   };
-  const handleSubmitOrder = async () => {
+  const handleSubmitOrder = () => {
     try {
       const formOrder = document.getElementById("form-order");
       const formData = new FormData(formOrder);
@@ -51,8 +54,8 @@ const FormInformation = () => {
       ) {
         // xử lí ở đây
         const data = { customer_type, name, phone, address, email, note };
-        Store.dispatch(UpdateCustomerInformation(data));
-        navigate("/confirminformation");
+        dispatch(updateCustomerInformation(data));
+        navigate(`/confirminformation/${branch_id}`);
       } else {
       }
     } catch (error) {

@@ -26,11 +26,11 @@ const Layout = () => {
         <Route path="/contact" element={<Contact />}></Route>
         <Route path="/booking" element={<Booking />}></Route>
         <Route path="/product" element={<ProductPage />}></Route>
-        <Route path="/forminformation" element={<FormInformation />} />
+        <Route path="/forminformation/:branch_id" element={<FormInformation />} />
         <Route path="/branches" element={<BookingChooseBranch />}></Route>
         <Route path="/createbooking/:branch_id" element={<CreateBooking />}></Route>
         <Route
-          path="/confirminformation"
+          path="/confirminformation/:branch_id"
           element={<ConfirmInformation />}
         ></Route>
         <Route path="/detailsBooking/:id?" element={<DetailsBooking />}></Route>

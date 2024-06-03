@@ -11,6 +11,7 @@ import datePickerReducer from "./slices/datePickerSlide";
 import timeSlotReducer from "./slices/timeSlotSlide";
 import timeSlotPickerReducer from "./slices/timeSlotPickerSlide";
 import staffChosenReducer from "./slices/staffChosenSlide";
+import customerInformationReducer from "./slices/customerInformationSlide";
 
 export const Store = configureStore({
   reducer: {
@@ -24,6 +25,7 @@ export const Store = configureStore({
     timeSlots: timeSlotReducer,
     timeSlotPicker: timeSlotPickerReducer,
     staffChosen: staffChosenReducer,
+    customerInformation: customerInformationReducer,
   },
 });
 

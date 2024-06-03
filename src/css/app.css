@@ -109,6 +109,11 @@
   color: var(--white-color);
 }
 
+.cardTimerPickerDisable {
+  background-color: var(--text-secondary);
+  color: var(--white-color);
+}
+
 .rating-active {
   border-bottom: var(--primary-color) solid 3px;
 }

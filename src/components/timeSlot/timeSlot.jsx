@@ -32,7 +32,7 @@ const TimeSlot = () => {
               key={time.id}
               id={time.id}
               time={time.time}
-              isActive={time.id === timeSlotPicker}
+              isActive={time.id === timeSlotPicker.id}
             ></TimeCard>
           );
         })}

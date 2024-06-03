@@ -1,19 +1,18 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Box, Icon, Text, useNavigate, DatePicker } from "zmp-ui";
+import { Box, Icon, Text, DatePicker } from "zmp-ui";
 import { useParams } from "react-router";
 import { openChat } from "zmp-sdk/apis";
+import { useSelector } from "react-redux";
 
-import Store from "../components/redux/store";
 import { dataContext } from "../components/providerContext/providerContext";
 import ButtonNavigate from "../components/buttonNavigate/buttonNavigate";
 import HeaderPage from "../components/headerPage/headerPage";
-import { useSelector } from "react-redux";
 import { fetchAllBranches } from "../components/redux/slices/branchSlide";
 import { ChangeDatePicker } from "../components/redux/actions/datePickerAction";
 import background from "../../public/images/background.jpg";
 import TimeSlot from "../components/timeSlot/timeSlot";
 import { fetchAllStaffs } from "../components/redux/slices/staffSlide";
-import {changeStaffChosen} from "../components/redux/slices/staffChosenSlide"
+import { changeStaffChosen } from "../components/redux/slices/staffChosenSlide";
 
 const CreateBooking = () => {
   // Lấy các hàm từ dataContext
@@ -39,9 +38,8 @@ const CreateBooking = () => {
   const datePicker = useSelector((store) => store.datePicker.datePicker);
 
   // Đặt state cho chính nhánh, danh sách nhân viên, danh sách dịch vụ
-  const [currentBranch, setCurrentBranch] = useState(Store);
+  const [currentBranch, setCurrentBranch] = useState({});
   const [staffsByBranchId, setStaffsByBranchId] = useState([]);
-  const [listServices] = useState(productsSelected);
   const [date, setDate] = useState(new Date(datePicker));
 
   useEffect(() => {
@@ -52,16 +50,27 @@ const CreateBooking = () => {
 
   const [staffIdChosen, setStaffIdChosen] = useState();
 
+  // Đặt mặc định nhân viên đầu tiên của chi nhánh được chọn
+  useEffect(() => {
+    if (staffsByBranchId.length > 0) {
+      dispatch(changeStaffChosen(staffsByBranchId[0]));
+      setStaffIdChosen(staffsByBranchId[0].id);
+    }
+  }, [staffsByBranchId]);
+
+  // Tìm ra chi nhánh mặc định
   useEffect(() => {
     setCurrentBranch(() => {
       return listBranches.find((branch) => branch.id === Number(branch_id));
     });
   }, [listBranches, dispatch]);
 
+  // Gửi dispatch khi date thay đổi
   useEffect(() => {
     dispatch(ChangeDatePicker(date));
   }, [date]);
 
+  // Set date khi có sự thay đổi
   const handleDatePicker = (date) => {
     setDate(date);
   };
@@ -244,7 +253,7 @@ const CreateBooking = () => {
               onChange={(date) => handleDatePicker(date)}
             />
           </Box>
-          {listServices && listServices.length > 0 ? (
+          {productsSelected && productsSelected.length > 0 ? (
             <Box style={{ paddingBottom: 100 }}>
               <TimeSlot></TimeSlot>
             </Box>
@@ -253,7 +262,7 @@ const CreateBooking = () => {
           )}
         </Box>
       </Box>
-      {listServices && listServices.length > 0 ? (
+      {productsSelected && productsSelected.length > 0 ? (
         <Box
           p={4}
           className="fixed bottom-0 bg-[var(--white-color)] w-full gap-4"
@@ -284,7 +293,7 @@ const CreateBooking = () => {
           <ButtonNavigate
             style={{ borderRadius: 10, background: "var(--primary-color)" }}
             title="Tiếp tục"
-            action={() => navigate("/forminformation")}
+            action={() => navigate(`/forminformation/${branch_id}`)}
           ></ButtonNavigate>
         </Box>
       ) : (

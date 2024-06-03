@@ -3,13 +3,20 @@ import { createSlice } from "@reduxjs/toolkit";
 export const timeSlotPickerSlice = createSlice({
   name: "timeSlotsPicker",
   initialState: {
-    timeSlotPicker: 1,
+    timeSlotPicker: {
+      id: 1,
+      time: "",
+    },
     loading: false,
     error: null,
   },
   reducers: {
     changeTimePicker: (state, action) => {
-      state.timeSlotPicker = action.payload.id;
+      // console.log(action.payload.time);
+      state.timeSlotPicker = {
+        id: action.payload.id,
+        time: action.payload.time,
+      };
     },
   },
 });
