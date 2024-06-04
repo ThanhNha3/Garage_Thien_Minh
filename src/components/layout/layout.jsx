@@ -33,7 +33,7 @@ const Layout = () => {
           path="/confirminformation/:branch_id"
           element={<ConfirmInformation />}
         ></Route>
-        <Route path="/detailsBooking/:id?" element={<DetailsBooking />}></Route>
+        <Route path="/detailsBooking" element={<DetailsBooking />}></Route>
       </AnimationRoutes>
     </Page>
   );

@@ -5,7 +5,7 @@ import { dataContext } from "../providerContext/providerContext";
 import {
   selectProduct,
   removeProduct,
-} from "../redux/slices/productSelectedSlide";
+} from "../redux/slices/productSelectedSlice";
 const ProductCard = ({ id, name, price, image }) => {
   // Set nút active
   const [buttonActive, setButtonActive] = useState(false);

@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export const customerInformationSlide = createSlice({
+export const customerInformationSlice = createSlice({
   name: "customerInformation",
   initialState: {
     customerInformation: {},
@@ -15,5 +15,5 @@ export const customerInformationSlide = createSlice({
 });
 
 // Export actions and reducer
-export const { updateCustomerInformation } = customerInformationSlide.actions;
-export default customerInformationSlide.reducer;
+export const { updateCustomerInformation } = customerInformationSlice.actions;
+export default customerInformationSlice.reducer;

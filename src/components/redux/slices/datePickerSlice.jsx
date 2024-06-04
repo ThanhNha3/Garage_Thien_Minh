@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export const datePickerSlide = createSlice({
+export const datePickerSlice = createSlice({
   name: "datePicker",
   initialState: {
-    datePicker: new Date().toISOString(),
+    datePicker: new Date().toLocaleString("vi-EN"),
     loading: false,
     error: null,
   },
@@ -15,5 +15,5 @@ export const datePickerSlide = createSlice({
 });
 
 // Export actions and reducer
-export const { changeDatePicker } = datePickerSlide.actions;
-export default datePickerSlide.reducer;
+export const { changeDatePicker } = datePickerSlice.actions;
+export default datePickerSlice.reducer;

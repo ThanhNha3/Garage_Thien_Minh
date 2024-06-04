@@ -1,8 +1,6 @@
 import React, { useContext } from "react";
-import { Box, Text, useNavigate } from "zmp-ui";
+import { Box, Text } from "zmp-ui";
 import { dataContext } from "../providerContext/providerContext";
-import { ChangeBranchChosen } from "../redux/actions/branchChosenAction";
-import Store from "../redux/store";
 
 const BranchCard = (data) => {
   const { navigate } = useContext(dataContext);

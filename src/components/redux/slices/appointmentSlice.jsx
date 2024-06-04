@@ -13,7 +13,7 @@ export const fetchAllAppointments = createAsyncThunk(
   }
 );
 
-export const appointmentSlide = createSlice({
+export const appointmentSlice = createSlice({
   name: "appointments",
   initialState: {
     appointments: [],
@@ -38,5 +38,5 @@ export const appointmentSlide = createSlice({
   },
 });
 
-export const {} = appointmentSlide.actions;
-export default appointmentSlide.reducer;
+export const {} = appointmentSlice.actions;
+export default appointmentSlice.reducer;

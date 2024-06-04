@@ -1,11 +1,13 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { Box } from "zmp-ui";
 import { dataContext } from "../providerContext/providerContext";
-import { changeTimePicker } from "../redux/slices/timeSlotPickerSlide";
+import { changeTimePicker } from "../redux/slices/timeSlotPickerSlice";
 
 const TimeCard = (data) => {
   const { id, time, isActive } = data;
   const { dispatch, handleTimeActive } = useContext(dataContext);
+  const datePicker = useSelector((state) => state.datePicker.datePicker);
 
   const [isAvailable, setIsAvailabel] = useState(false);
   useEffect(() => {
@@ -13,6 +15,20 @@ const TimeCard = (data) => {
       setIsAvailabel(true);
     }
   });
+
+  const handleAvailableDate = useCallback(() => {
+    const arrayDatePicker = datePicker.split("/");
+    const currentDate = new Date().getDate();
+    if (Number(arrayDatePicker[0]) > currentDate) {
+      setIsAvailabel(true);
+    } else {
+      setIsAvailabel(false);
+    }
+  });
+
+  useEffect(() => {
+    handleAvailableDate();
+  }, [datePicker]);
 
   useEffect(() => {}, [isActive]);
   return (

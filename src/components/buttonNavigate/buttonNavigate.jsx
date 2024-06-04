@@ -1,13 +1,13 @@
 import React, { memo } from "react";
 import { Button } from "zmp-ui";
 
-const ButtonNavigate = ({
-  title,
-  style,
-  action,
-}) => {
+const ButtonNavigate = ({ title, style, action }) => {
   return (
-    <Button style={style} className="" fullWidth onClick={action}>
+    <Button
+      style={style}
+      fullWidth
+      onClick={action}
+    >
       {title}
     </Button>
   );

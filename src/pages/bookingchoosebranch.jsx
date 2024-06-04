@@ -4,7 +4,7 @@ import { Box, Icon, Text } from "zmp-ui";
 
 import HeaderPage from "../components/headerPage/headerPage";
 import { dataContext } from "../components/providerContext/providerContext";
-import { fetchAllBranches } from "../components/redux/slices/branchSlide";
+import { fetchAllBranches } from "../components/redux/slices/branchSlice";
 
 const BranchCard = lazy(() => import("../components/cards/branchCard"));
 

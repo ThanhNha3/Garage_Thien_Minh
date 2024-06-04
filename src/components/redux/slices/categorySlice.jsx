@@ -9,7 +9,7 @@ export const fetchAllCategories = createAsyncThunk(
   }
 );
 
-export const branchSlide = createSlice({
+export const branchSlice = createSlice({
   name: "categories",
   initialState: {
     categories: [],
@@ -35,5 +35,5 @@ export const branchSlide = createSlice({
 });
 
 // Export actions and reducer
-export const {} = branchSlide.actions;
-export default branchSlide.reducer;
+export const {} = branchSlice.actions;
+export default branchSlice.reducer;

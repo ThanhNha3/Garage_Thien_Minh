@@ -6,13 +6,7 @@ import Store from "../components/redux/store";
 const Coupon = () => {
   const [couponTab, setCouponTab] = useState(1);
   const [listCoupons, setLishCoupons] = useState([]);
-  useEffect(() => {
-    setLishCoupons(() => {
-      return Store.getState().coupons.filter(
-        (coupon) => coupon.status === couponTab
-      );
-    });
-  }, [Store.getState().coupons, couponTab]);
+
   return (
     <Box>
       <Header

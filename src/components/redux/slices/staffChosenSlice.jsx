@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export const staffChosenSlide = createSlice({
+export const staffChosenSlice = createSlice({
   name: "staffChosen",
   initialState: {
     staffChosen: {},
@@ -15,5 +15,5 @@ export const staffChosenSlide = createSlice({
 });
 
 // Export actions and reducer
-export const { changeStaffChosen } = staffChosenSlide.actions;
-export default staffChosenSlide.reducer;
+export const { changeStaffChosen } = staffChosenSlice.actions;
+export default staffChosenSlice.reducer;

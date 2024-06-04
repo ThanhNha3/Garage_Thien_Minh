@@ -1,11 +1,11 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Box, Input, Text, useNavigate } from "zmp-ui";
 
 import HeaderPage from "../components/headerPage/headerPage";
 import ButtonNavigate from "../components/buttonNavigate/buttonNavigate";
 import { dataContext } from "../components/providerContext/providerContext";
-import { updateCustomerInformation } from "../components/redux/slices/customerInformationSlide";
-import { useDispatch } from "react-redux";
+import { updateCustomerInformation } from "../components/redux/slices/customerInformationSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 
 const nameRegex =
@@ -21,10 +21,17 @@ const FormInformation = () => {
   const { customerName, setCustomerName } = useState("");
   const { userInfo, navigate } = useContext(dataContext);
   const [customerType, setCustomerType] = useState(0);
+
   const [statusName, setStatusName] = useState("");
   const [statusPhone, setStatusPhone] = useState("");
   const [statusAddress, setStatusAddress] = useState("");
   const [statusEmail, setStatusEmail] = useState("");
+
+  // Lấy thông tin từ store
+  const customerInformation = useSelector(
+    (state) => state.customerInformation.customerInformation
+  );
+
   const handleChangeValue = (e, setFunction, regex) => {
     const { value } = e.target;
     if (regex.test(value)) {

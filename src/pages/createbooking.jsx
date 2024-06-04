@@ -7,16 +7,17 @@ import { useSelector } from "react-redux";
 import { dataContext } from "../components/providerContext/providerContext";
 import ButtonNavigate from "../components/buttonNavigate/buttonNavigate";
 import HeaderPage from "../components/headerPage/headerPage";
-import { fetchAllBranches } from "../components/redux/slices/branchSlide";
-import { ChangeDatePicker } from "../components/redux/actions/datePickerAction";
+import { fetchAllBranches} from "../components/redux/slices/branchSlice"
+import { changeDatePicker } from "../components/redux/slices/datePickerSlice";
 import background from "../../public/images/background.jpg";
 import TimeSlot from "../components/timeSlot/timeSlot";
-import { fetchAllStaffs } from "../components/redux/slices/staffSlide";
-import { changeStaffChosen } from "../components/redux/slices/staffChosenSlide";
+import { fetchAllStaffs } from "../components/redux/slices/staffSlice";
+import { changeStaffChosen } from "../components/redux/slices/staffChosenSlice";
 
 const CreateBooking = () => {
   // Lấy các hàm từ dataContext
-  const { navigate, dispatch, formatCurrency } = useContext(dataContext);
+  const { navigate, dispatch, formatCurrency } =
+    useContext(dataContext);
 
   // Lấy branch_id
   const { branch_id } = useParams("branch_id");
@@ -40,7 +41,11 @@ const CreateBooking = () => {
   // Đặt state cho chính nhánh, danh sách nhân viên, danh sách dịch vụ
   const [currentBranch, setCurrentBranch] = useState({});
   const [staffsByBranchId, setStaffsByBranchId] = useState([]);
-  const [date, setDate] = useState(new Date(datePicker));
+  const [date, setDate] = useState(new Date());
+
+  useEffect(() => {
+    dispatch(changeDatePicker(date.toLocaleDateString("vi")));
+  }, [date]);
 
   useEffect(() => {
     setStaffsByBranchId(() => {
@@ -66,9 +71,6 @@ const CreateBooking = () => {
   }, [listBranches, dispatch]);
 
   // Gửi dispatch khi date thay đổi
-  useEffect(() => {
-    dispatch(ChangeDatePicker(date));
-  }, [date]);
 
   // Set date khi có sự thay đổi
   const handleDatePicker = (date) => {
@@ -244,8 +246,8 @@ const CreateBooking = () => {
               suffix={<Icon icon="zi-chevron-right" />}
               startDate={date}
               value={date}
-              mask
               defaultValue={date}
+              mask
               maskClosable
               dateFormat="dd/mm/yyyy"
               title="Chọn ngày"

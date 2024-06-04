@@ -1,121 +1,148 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Box, Button, Icon, Input, Text } from "zmp-ui";
+import { Box, Icon, Input, Text } from "zmp-ui";
+import { useSelector } from "react-redux";
+import { useSearchParams } from "react-router-dom";
+
 import HeaderPage from "../components/headerPage/headerPage";
+import background from "../../public/images/background.jpg";
 import { dataContext } from "../components/providerContext/providerContext";
 import ButtonNavigate from "../components/buttonNavigate/buttonNavigate";
 import ModalConfirm from "../components/modalConfirm/modalConfirm";
 import ModalNotification from "../components/modalNotification/modalNotification";
-import { useParams } from "react-router";
-import Store from "../components/redux/store";
 import StatusCard from "../components/cards/statusCard";
+import {
+  fetchRatingByAppointmentId,
+  insertRating,
+} from "../components/redux/slices/ratingSlice";
 
 const DetailsBooking = () => {
-  const { id } = useParams();
+  // Lấy id và branch_id
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id");
+  const branch_id = searchParams.get("branch_id");
+
   const [dialogVisible, setDialogVisible] = useState(false);
   const [popupVisible, setPopupVisible] = useState(false);
-  const { formatCurrency, formatDatePicker } = useContext(dataContext);
+  const { formatCurrency, formatDate, dispatch } = useContext(dataContext);
 
-  // Dữ liệu đánh giá
-  const [rating, setRating] = useState(0);
-
-  //Dữ liệu của detailBooking trong trường hợp không có ID
+  //Set state của detailBooking trong trường hợp không có ID
   const [customerInformation, setCustomerInformation] = useState({});
-  const [currentAppointment, setCurrentAppoinment] = useState({});
   const [datePicker, setDatePicker] = useState("");
-  const [listServices, setListServices] = useState([]);
-  const [staffChosen, setStaffChosen] = useState({});
   const [timePicker, setTimePicker] = useState({});
+  const [staffChosen, setStaffChosen] = useState({});
   const [branchChosen, setBranchChosen] = useState({});
-  const [note, setNote] = useState("");
-  const [showRating, setShowRating] = useState(false);
-  const [appointmentHasRating, setAppointmentHasRating] = useState({});
+  const [productsSelected, setProductsSelected] = useState({});
+
+  //Set state của detailBooking trong trường hợp có ID
+  const [currentAppointment, setCurrentAppoinment] = useState();
+
+  const [appointmentRatingStatus, setAppointmentRatingStatus] = useState(0); //đánh giá status
+  const [ratingStatusSelected, setRatingStatusSelected] = useState(0); //đánh giá status
+  const [ratingValue, setRatingValue] = useState({}); //kiểm tra nó có trong cơ sở dữ liệu chưa
+  const [readOnly, setReadOnly] = useState(false);
+
+  // Lấy dữ liệu từ store
+  const customerInformationFromStore = useSelector(
+    (state) => state.customerInformation.customerInformation
+  );
+  const datePickerFromStore = useSelector(
+    (state) => state.datePicker.datePicker
+  );
+  const timePickerFromStore = useSelector(
+    (state) => state.timeSlotPicker.timeSlotPicker
+  );
+  const staffChosenFromStore = useSelector(
+    (state) => state.staffChosen.staffChosen
+  );
+  const branches = useSelector((state) => state.branches.branches);
+  const productsSelectedFromStore = useSelector(
+    (state) => state.productsSelected.productsSelected
+  );
+  const timeslots = useSelector((state) => state.timeSlots.timeSlots);
+  const products = useSelector((state) => state.products.products);
+  const appointments = useSelector((state) => state.appointments.appointments);
+  const staffs = useSelector((state) => state.staffs.staffs);
+  const rating = useSelector((state) => state.rating.rating);
 
   useEffect(() => {
-    if (!id) {
-      setListServices(() => {
-        return Store.getState().productsSelected;
-      });
-      setCustomerInformation(() => {
-        return Store.getState().customerInformation;
-      });
-      setDatePicker(() => {
-        return formatDatePicker(new Date(Store.getState().datePicker));
-      });
-      setBranchChosen(() => {
-        return Store.getState().branches.find(
-          (branch) => branch.id === Store.getState().branchChosen
-        );
-      });
-      setTimePicker(() => {
-        return Store.getState().listTimePicker.find((timePicker) => {
-          return timePicker.id === Store.getState().timePicker;
-        });
-      });
-      setStaffChosen(() => {
-        return Store.getState().users.find(
-          (user) => user.id === Store.getState().staffChosen
-        );
-      });
-    } else {
-      const currentAppoinment = Store.getState().appointments.find(
-        (appointment) => appointment.id === Number(id)
+    if (id === "null") {
+      setCustomerInformation(customerInformationFromStore);
+      setDatePicker(datePickerFromStore);
+      setTimePicker(timePickerFromStore);
+      setStaffChosen(staffChosenFromStore);
+      setBranchChosen(() =>
+        branches.find((branch) => branch.id === Number(branch_id))
       );
-      setCurrentAppoinment(currentAppoinment);
-
-      setCustomerInformation(() => {
-        return Store.getState().users.find(
-          (user) => user.id === currentAppoinment.customer_id
-        );
-      });
-      setListServices(() => {
-        return Store.getState().products.filter((product) =>
-          currentAppoinment.services_id.includes(product.id)
-        );
-      });
-      setDatePicker(() => {
-        return currentAppoinment.appointment_date;
-      });
-      setBranchChosen(() => {
-        return Store.getState().branches.find(
-          (branch) => branch.id === currentAppoinment.branch_id
-        );
-      });
-      setTimePicker(() => {
-        return Store.getState().listTimePicker.find((timePicker) => {
-          return timePicker.id === currentAppoinment.time_picker_id;
-        });
-      });
-      setStaffChosen(() => {
-        return Store.getState().users.find(
-          (user) => user.id === currentAppoinment.employee_id
-        );
-      });
-      setNote(currentAppoinment.note);
+      setProductsSelected(productsSelectedFromStore);
+    } else {
+      setCurrentAppoinment(
+        appointments.find((appointment) => appointment.id === Number(id))
+      );
     }
   }, []);
 
   useEffect(() => {
-    const appointmentCompleted = Store.getState().ratings.find(
-      (rating) => rating.appointment_id === Number(id)
-    );
+    if (currentAppointment !== undefined) {
+      setBranchChosen(() =>
+        branches.find(
+          (branch) => branch.id === Number(currentAppointment.branch_id)
+        )
+      );
+      setStaffChosen(() =>
+        staffs.find(
+          (staff) => staff.id === Number(currentAppointment.employee_id)
+        )
+      );
 
-    if (appointmentCompleted) {
-      setAppointmentHasRating(appointmentCompleted);
-      setRating(appointmentCompleted.rating_status);
-      setShowRating(true);
+      setTimePicker(() =>
+        timeslots.find(
+          (timeslot) =>
+            timeslot.id === Number(currentAppointment.time_picker_id)
+        )
+      );
+      setDatePicker(() => formatDate(currentAppointment.appointment_date));
+      setCustomerInformation(customerInformationFromStore);
+
+      setProductsSelected(() => {
+        return products.filter((product) =>
+          currentAppointment.services_id.includes(product.id)
+        );
+      });
+
+      dispatch(fetchRatingByAppointmentId(currentAppointment.id));
     }
-  }, [rating]);
+  }, [currentAppointment]);
+
+  useEffect(() => {
+    if (rating) {
+      setAppointmentRatingStatus(rating.rating_status);
+      setRatingValue(rating.rating_value);
+      setReadOnly(true);
+    } else {
+      setReadOnly(false);
+      setRatingValue("");
+      setAppointmentRatingStatus(ratingStatusSelected);
+    }
+  }, [rating, ratingStatusSelected]);
+
+  const handleInput = (e) => {
+    if (!rating) {
+      setRatingValue(e.target.value);
+    }
+  };
 
   const sendRating = () => {
     const ratingValue = document.getElementById("customer-rating");
+
     const data = {
-      note: ratingValue.value,
-      rating,
+      rating_value: ratingValue.value,
+      rating_status: ratingStatusSelected,
       appointment_id: Number(id),
     };
     // Call API để gửi đánh giá
+    dispatch(insertRating(data));
     setPopupVisible(true);
-    setShowRating(true);
+    setReadOnly(true);
   };
 
   //Kết thúc dữ liệu của detailBooking trong trường hợp không có ID
@@ -133,13 +160,15 @@ const DetailsBooking = () => {
           className="bg-[var(--white-color)]"
         >
           <Box>
-            {id ? (
+            {id && id !== "null" ? (
               <Text className="text-[var(--text-disable)]">#{id}</Text>
             ) : (
               ""
             )}
           </Box>
-          <StatusCard status={currentAppointment.status} />
+          <StatusCard
+            status={currentAppointment && currentAppointment.status}
+          />
         </Box>
         <Box
           p={4}
@@ -151,12 +180,14 @@ const DetailsBooking = () => {
           <Text className="sub-title">Chi tiết đặt lịch</Text>
           <Box flex className="gap-4">
             <Box width={135}>
-              <img src={branchChosen.image}></img>
+              <img src={branchChosen.image || background}></img>
             </Box>
             <Box>
-              <Text className="sub-title">{branchChosen.name}</Text>
+              <Text className="sub-title">
+                {branchChosen.name || "Tên chi nhánh"}
+              </Text>
               <Text className="text-[var(--text-disable)]">
-                {branchChosen.address}
+                {branchChosen.address || "địa chỉ chi nhánh"}
               </Text>
             </Box>
           </Box>
@@ -170,19 +201,21 @@ const DetailsBooking = () => {
         >
           <Box flex justifyContent="space-between">
             <Text>Ngày đặt</Text>
-            <Text className="sub-title">{datePicker}</Text>
+            <Text className="sub-title">{datePicker || "Ngày đặt"}</Text>
           </Box>
           <Box flex justifyContent="space-between">
             <Text>Giờ đặt</Text>
-            <Text className="sub-title">{timePicker.time}</Text>
+            <Text className="sub-title">{timePicker.time || "Giờ đặt"}</Text>
           </Box>
           <Box flex justifyContent="space-between">
             <Text>Nhân viên</Text>
             <Box flex alignItems="center">
               <Box width={25}>
-                <img src={staffChosen.image} />
+                <img src={staffChosen.image || background} />
               </Box>
-              <Text className="sub-title">{staffChosen.name}</Text>
+              <Text className="sub-title">
+                {staffChosen.name || "tên nhân viên"}
+              </Text>
             </Box>
           </Box>
         </Box>
@@ -196,8 +229,8 @@ const DetailsBooking = () => {
         >
           <Text className="sub-title">Dịch vụ đã chọn</Text>
           <Box className="gap-2 d-block">
-            {listServices.length > 0 ? (
-              listServices.map((item) => (
+            {productsSelected && productsSelected.length > 0 ? (
+              productsSelected.map((item) => (
                 <Box
                   key={item.id}
                   flex
@@ -243,27 +276,27 @@ const DetailsBooking = () => {
           <Box flex flexDirection="column" className="gap-2">
             <Box flex alignItems="center" className="gap-2">
               <Icon icon="zi-user-solid"></Icon>
-              <Text>{customerInformation.name}</Text>
+              <Text>{customerInformation.name || "tên KH"}</Text>
             </Box>
             <Box flex alignItems="center" className="gap-2">
               <Icon icon="zi-call-solid"></Icon>
-              <Text>{customerInformation.phone}</Text>
+              <Text>{customerInformation.phone || "sđt KH"}</Text>
             </Box>
             <Box flex alignItems="center" className="gap-2">
               <Icon icon="zi-notif-ring"></Icon>
-              <Text>{customerInformation.email}</Text>
+              <Text>{customerInformation.email || "email KH"}</Text>
             </Box>
             <Box flex alignItems="center" className="gap-2">
               <Icon icon="zi-location-solid"></Icon>
-              <Text>{customerInformation.address}</Text>
+              <Text>{customerInformation.address || "địa chỉ KH"}</Text>
             </Box>
             <Box flex alignItems="center" className="gap-2">
               <Icon icon="zi-post"></Icon>
-              <Text>{customerInformation.note || note}</Text>
+              <Text>{customerInformation.note || "ghi chú KH"}</Text>
             </Box>
           </Box>
         </Box>
-        {id && currentAppointment.status === 0 && (
+        {id && currentAppointment && currentAppointment.status === 0 && (
           <Box>
             <Box p={4} mb={10} className="gap-2 bg-[var(--white-color)]" mt={2}>
               <ButtonNavigate
@@ -297,42 +330,52 @@ const DetailsBooking = () => {
           </Box>
         )}
         <Box>
-          {currentAppointment.status === 1 ? (
-            !showRating ? (
-              // Phần này sẽ được hiển thị nếu currentAppointment.status === 1 và showRating === false
-              <Box
-                p={4}
-                className="bg-[var(--white-color)] gap-4"
-                flex
-                flexDirection="column"
-                mt={2}
-              >
-                <Box flex flexDirection="column" className="gap-4">
-                  <label className="sub-title">Đánh giá dịch vụ</label>
-                  <Box flex justifyContent="space-between" className="w-full">
-                    <Box
-                      onClick={() => setRating(0)}
-                      pb={2}
-                      className={`text-center flex-1 ${
-                        rating === 0 ? "rating-active" : ""
-                      }`}
-                    >
-                      Hài lòng
-                    </Box>
-                    <Box
-                      onClick={() => setRating(1)}
-                      pb={2}
-                      className={`text-center flex-1 ${
-                        rating === 1 ? "rating-active" : ""
-                      }`}
-                    >
-                      Không hài lòng
-                    </Box>
+          {currentAppointment && currentAppointment.status === 1 ? (
+            <Box
+              p={4}
+              className="bg-[var(--white-color)] gap-4"
+              flex
+              flexDirection="column"
+              mt={2}
+            >
+              <Box flex flexDirection="column" className="gap-4">
+                <label className="sub-title">Đánh giá dịch vụ</label>
+                <Box flex justifyContent="space-between" className="w-full">
+                  <Box
+                    onClick={() => {
+                      if (!readOnly) {
+                        setRatingStatusSelected(0);
+                      }
+                    }}
+                    pb={2}
+                    className={`text-center flex-1 ${
+                      appointmentRatingStatus === 0 ? "rating-active" : ""
+                    }`}
+                  >
+                    Hài lòng
                   </Box>
-                  <Input.TextArea
-                    id="customer-rating"
-                    placeholder="đánh giá của bạn..."
-                  />
+                  <Box
+                    onClick={() => {
+                      if (!readOnly) {
+                        setRatingStatusSelected(1);
+                      }
+                    }}
+                    pb={2}
+                    className={`text-center flex-1 ${
+                      appointmentRatingStatus === 1 ? "rating-active" : ""
+                    }`}
+                  >
+                    Không hài lòng
+                  </Box>
+                </Box>
+                <Input.TextArea
+                  value={ratingValue}
+                  readOnly={readOnly}
+                  onChange={handleInput}
+                  id="customer-rating"
+                  placeholder="đánh giá của bạn..."
+                />
+                {!readOnly ? (
                   <ButtonNavigate
                     title="Gửi"
                     style={{
@@ -341,52 +384,20 @@ const DetailsBooking = () => {
                     }}
                     action={sendRating}
                   ></ButtonNavigate>
-                </Box>
+                ) : (
+                  ""
+                )}
               </Box>
-            ) : (
-              // Phần này sẽ được hiển thị nếu currentAppointment.status === 1 và showRating === true
-              <Box>
-                <Box
-                  p={4}
-                  className="bg-[var(--white-color)] gap-4"
-                  flex
-                  flexDirection="column"
-                  mt={2}
-                >
-                  <Box flex flexDirection="column" className="gap-4">
-                    <label className="sub-title">Bạn đã đánh giá</label>
-                    <Box flex justifyContent="space-between" className="w-full">
-                      <Box
-                        pb={2}
-                        className={`text-center flex-1 ${
-                          rating === 0 ? "rating-active" : ""
-                        }`}
-                      >
-                        Hài lòng
-                      </Box>
-                      <Box
-                        pb={2}
-                        className={`text-center flex-1 ${
-                          rating === 1 ? "rating-active" : ""
-                        }`}
-                      >
-                        Không hài lòng
-                      </Box>
-                    </Box>
-                    <Input.TextArea value={appointmentHasRating.rating_value} />
-                  </Box>
-                </Box>
-                <ModalNotification
-                  description={"Cảm ơn bạn đã để lại đánh giá"}
-                  title="Đánh giá thành công"
-                  popupVisible={popupVisible}
-                  setPopupVisible={setPopupVisible}
-                />
-              </Box>
-            )
+            </Box>
           ) : null}
         </Box>
       </Box>
+      <ModalNotification
+        description={"Cảm ơn bạn đã để lại đánh giá"}
+        title="Đánh giá thành công"
+        popupVisible={popupVisible}
+        setPopupVisible={setPopupVisible}
+      />
     </Box>
   );
 };

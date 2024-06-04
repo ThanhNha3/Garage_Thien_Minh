@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { Box } from "zmp-ui";
 import CategoryCard from "../cards/categoryCard";
 import { dataContext } from "../providerContext/providerContext";
-import { fetchAllCategories } from "../redux/slices/categorySlide";
+import { fetchAllCategories } from "../redux/slices/categorySlice";
 import Store from "../redux/store";
 
 const CategoryNavbar = (data) => {

@@ -1,0 +1,84 @@
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { json } from "react-router";
+
+export const fetchAllRating = createAsyncThunk(
+  "users/fetchAllRating",
+  async () => {
+    const response = await fetch(`http://localhost:4000/api/ratings}`);
+    const data = await response.json();
+    return data;
+  }
+);
+
+export const fetchRatingByAppointmentId = createAsyncThunk(
+  "users/fetchRatingByAppointmentId",
+  async (appointment_id) => {
+    const response = await fetch(
+      `http://localhost:4000/api/ratings/${appointment_id}`
+    );
+    const data = await response.json();
+    return data;
+  }
+);
+
+export const insertRating = createAsyncThunk(
+  "users/insertRating",
+  async (ratingData) => {
+    console.log(ratingData);
+    const { rating_value, rating_status, appointment_id } = ratingData;
+    const response = await fetch(`http://localhost:4000/api/ratings`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        rating_value,
+        rating_status,
+        appointment_id,
+      }),
+    });
+    const data = await response.json();
+    return data;
+  }
+);
+
+export const ratingSlice = createSlice({
+  name: "products",
+  initialState: {
+    rating: {},
+    loading: false,
+    error: null,
+  },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchRatingByAppointmentId.pending, (state, action) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchRatingByAppointmentId.fulfilled, (state, action) => {
+        state.loading = false;
+        state.rating = action.payload[0];
+      })
+      .addCase(fetchRatingByAppointmentId.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(insertRating.pending, (state, action) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(insertRating.fulfilled, (state, action) => {
+        state.loading = false;
+        // state.rating = action.payload[0];
+      })
+      .addCase(insertRating.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      });
+  },
+});
+
+// Export actions and reducer
+export const {} = ratingSlice.actions;
+export default ratingSlice.reducer;

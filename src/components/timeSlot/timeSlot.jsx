@@ -3,13 +3,15 @@ import { useSelector } from "react-redux";
 import { Box } from "zmp-ui";
 import TimeCard from "../cards/timePickerCard";
 import { dataContext } from "../providerContext/providerContext";
-import { fetchAllTimeSlots } from "../redux/slices/timeSlotSlide";
+import { changeTimePicker } from "../redux/slices/timeSlotPickerSlice";
+import { fetchAllTimeSlots } from "../redux/slices/timeSlotSlice";
 
 const TimeSlot = () => {
   // Set state cho timeslot được chọn
 
   // Lấy hàm từ dataContext
-  const { dispatch } = useContext(dataContext);
+  const { dispatch, handleTimeActive } = useContext(dataContext);
+  const [defaultTimeslot, setDefaultTimeslot] = useState();
 
   // dispatch fired
   useEffect(() => {
@@ -22,20 +24,37 @@ const TimeSlot = () => {
     (state) => state.timeSlotPicker.timeSlotPicker
   );
 
+  // Set default timeslot trong trường hợp người dùng không chọn
+  useEffect(() => {
+    setDefaultTimeslot(() => {
+      return timeSlots.find((timeslot) => handleTimeActive(timeslot.time));
+    });
+  }, [timeSlots]);
+
+  useEffect(() => {
+    if (defaultTimeslot !== undefined) {
+      dispatch(changeTimePicker(defaultTimeslot));
+    }
+  }, [defaultTimeslot]);
+
   return (
-    <Box className="grid-cols-4 gap-4" style={{ display: "grid" }}>
-      {timeSlots &&
-        timeSlots.length > 0 &&
-        timeSlots.map((time) => {
-          return (
-            <TimeCard
-              key={time.id}
-              id={time.id}
-              time={time.time}
-              isActive={time.id === timeSlotPicker.id}
-            ></TimeCard>
-          );
-        })}
+    <Box>
+      {timeSlots && timeSlots.length > 0 ? (
+        <Box className="grid-cols-4 gap-4" style={{ display: "grid" }}>
+          {timeSlots.map((time) => {
+            return (
+              <TimeCard
+                key={time.id}
+                id={time.id}
+                time={time.time}
+                isActive={time.id === timeSlotPicker.id}
+              ></TimeCard>
+            );
+          })}
+        </Box>
+      ) : (
+        <Box flex justifyContent="center" className="sub-title"></Box>
+      )}
     </Box>
   );
 };

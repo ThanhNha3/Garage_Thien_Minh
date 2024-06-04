@@ -7,6 +7,7 @@ const ModalNotification = ({
   popupVisible,
   setPopupVisible,
   type,
+  branch_id,
 }) => {
   const navigate = useNavigate();
   return (
@@ -40,8 +41,8 @@ const ModalNotification = ({
             if (type) {
               switch (type) {
                 case "submit": {
-                  // Phần id này sẽ được gọi từ database 
-                  navigate("/detailsBooking");
+                  // Phần id này sẽ được gọi từ database
+                  navigate(`/detailsBooking?id=null&&branch_id=${branch_id}`);
                   break;
                 }
                 case "cancel": {

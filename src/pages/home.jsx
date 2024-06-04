@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { Box, Text } from "zmp-ui";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -12,12 +12,25 @@ import image1 from "../../public/images/image1.jpg";
 import image2 from "../../public/images/image2.jpg";
 import image4 from "../../public/images/image4.jpg";
 import { fetchAllProducts } from "../components/redux/slices/productSlice";
+import { dataContext } from "../components/providerContext/providerContext";
+import { fetchAllStaffs } from "../components/redux/slices/staffSlice";
+import { fetchAllBranches } from "../components/redux/slices/branchSlice";
+import { fetchAllAppointments } from "../components/redux/slices/appointmentSlice";
+import { fetchAllCategories } from "../components/redux/slices/categorySlice";
+import { fetchAllTimeSlots } from "../components/redux/slices/timeSlotSlice";
 
 const Home = () => {
-  const dispatch = useDispatch();
+  const { dispatch, userInfo } = useContext(dataContext);
   const productList = useSelector((state) => state.products.products);
   useEffect(() => {
     dispatch(fetchAllProducts());
+    dispatch(fetchAllStaffs());
+    dispatch(fetchAllBranches());
+    dispatch(fetchAllProducts());
+    dispatch(fetchAllAppointments());
+    dispatch(fetchAllCategories());
+    dispatch(fetchAllTimeSlots());
+    // dispatch(fetchCustomerByZaloId(userInfo.id));
   }, []);
 
   return (

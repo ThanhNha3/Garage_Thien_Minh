@@ -1,17 +1,18 @@
-import { rootReducer } from "./reducers/rootReducer";
 import { configureStore } from "@reduxjs/toolkit";
 
 import productReducer from "./slices/productSlice";
-import appointmentReducer from "./slices/appointmentSlide";
-import branchReducer from "./slices/branchSlide";
-import categoryReducer from "./slices/categorySlide";
-import productSelectedReducer from "./slices/productSelectedSlide";
-import staffReducer from "./slices/staffSlide";
-import datePickerReducer from "./slices/datePickerSlide";
-import timeSlotReducer from "./slices/timeSlotSlide";
-import timeSlotPickerReducer from "./slices/timeSlotPickerSlide";
-import staffChosenReducer from "./slices/staffChosenSlide";
-import customerInformationReducer from "./slices/customerInformationSlide";
+import appointmentReducer from "./slices/appointmentSlice";
+import branchReducer from "./slices/branchSlice";
+import categoryReducer from "./slices/categorySlice";
+import productSelectedReducer from "./slices/productSelectedSlice";
+import staffReducer from "./slices/staffSlice";
+import datePickerReducer from "./slices/datePickerSlice";
+import timeSlotReducer from "./slices/timeSlotSlice";
+import timeSlotPickerReducer from "./slices/timeSlotPickerSlice";
+import staffChosenReducer from "./slices/staffChosenSlice";
+import customerInformationReducer from "./slices/customerInformationSlice";
+import customerReducer from "./slices/customerSlice";
+import ratingReducer from "./slices/ratingSlice";
 
 export const Store = configureStore({
   reducer: {
@@ -26,6 +27,8 @@ export const Store = configureStore({
     timeSlotPicker: timeSlotPickerReducer,
     staffChosen: staffChosenReducer,
     customerInformation: customerInformationReducer,
+    customer: customerReducer,
+    rating: ratingReducer,
   },
 });
 

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { dataContext } from "../providerContext/providerContext";
 import background from "../../../public/images/background.jpg";
-import { fetchAllBranches } from "../redux/slices/branchSlide";
+import { fetchAllBranches } from "../redux/slices/branchSlice";
 
 const BookingCard = (data) => {
   const { formatDate, dispatch, navigate } = useContext(dataContext);
@@ -28,7 +28,7 @@ const BookingCard = (data) => {
 
   return (
     <Box
-      onClick={() => navigate(`/detailsBooking/${id}`)}
+      onClick={() => navigate(`/detailsBooking?id=${id}`)}
       flex
       className="flex-col gap-2 bg-[var(--white-color)] rounded-xl"
       p={4}

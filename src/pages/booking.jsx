@@ -13,7 +13,7 @@ import { Box, Text, Icon } from "zmp-ui";
 import ButtonNavigate from "../components/buttonNavigate/buttonNavigate";
 import HeaderPage from "../components/headerPage/headerPage";
 import { dataContext } from "../components/providerContext/providerContext";
-import { fetchAllAppointments } from "../components/redux/slices/appointmentSlide";
+import { fetchAllAppointments } from "../components/redux/slices/appointmentSlice";
 
 const BookingCard = lazy(() => import("../components/cards/bookingCard"));
 

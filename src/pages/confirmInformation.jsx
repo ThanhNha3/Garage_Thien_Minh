@@ -15,7 +15,7 @@ const ConfirmInformation = () => {
   const { branch_id } = useParams("branch_id");
 
   // Lấy hàm từ dataContext
-  const { formatDate, dispatch } = useContext(dataContext);
+  const { formatDate } = useContext(dataContext);
 
   // Set state popup
   const [dialogVisible, setDialogVisible] = useState(false);
@@ -68,7 +68,7 @@ const ConfirmInformation = () => {
       >
         <Box flex justifyContent="space-between">
           <Text>Ngày đặt</Text>
-          <Text className="sub-title">{formatDate(datePicker)}</Text>
+          <Text className="sub-title">{datePicker}</Text>
         </Box>
         <Box flex justifyContent="space-between">
           <Text>Giờ đặt</Text>
@@ -146,6 +146,7 @@ const ConfirmInformation = () => {
         popupVisible={popupVisible}
         setPopupVisible={setPopupVisible}
         type="submit"
+        branch_id={branch_id}
       />
     </Box>
   );
