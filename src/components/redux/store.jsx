@@ -11,7 +11,6 @@ import timeSlotReducer from "./slices/timeSlotSlice";
 import timeSlotPickerReducer from "./slices/timeSlotPickerSlice";
 import staffChosenReducer from "./slices/staffChosenSlice";
 import customerInformationReducer from "./slices/customerInformationSlice";
-import customerReducer from "./slices/customerSlice";
 import ratingReducer from "./slices/ratingSlice";
 import appointmentDetailReducer from "./slices/appointmentDetailSlice";
 
@@ -28,7 +27,6 @@ export const Store = configureStore({
     timeSlotPicker: timeSlotPickerReducer,
     staffChosen: staffChosenReducer,
     customerInformation: customerInformationReducer,
-    customer: customerReducer,
     rating: ratingReducer,
     appointmentDetail: appointmentDetailReducer
   },

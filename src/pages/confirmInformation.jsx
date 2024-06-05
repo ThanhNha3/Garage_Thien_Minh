@@ -15,7 +15,7 @@ const ConfirmInformation = () => {
   const { branch_id } = useParams("branch_id");
 
   // Lấy hàm từ dataContext
-  const { formatDate } = useContext(dataContext);
+  const { userInfo } = useContext(dataContext);
 
   // Set state popup
   const [dialogVisible, setDialogVisible] = useState(false);
@@ -39,14 +39,6 @@ const ConfirmInformation = () => {
   const branchChosen = branches.find(
     (branch) => branch.id === Number(branch_id)
   );
-
-  console.log(branch_id);
-  console.log(customerInformation);
-  console.log(staffChosen);
-  console.log(timePicker);
-  console.log(datePicker);
-  console.log(productSelected);
-  console.log();
 
   return (
     <Box>
@@ -150,6 +142,7 @@ const ConfirmInformation = () => {
         dialogVisible={dialogVisible}
         setDialogVisible={setDialogVisible}
         setPopupVisible={setPopupVisible}
+        branch_id={branch_id}
       />
       <ModalNotification
         title="Đặt lịch thành công"

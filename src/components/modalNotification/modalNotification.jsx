@@ -1,5 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
+import { useSelector } from "react-redux";
 import { Box, Text, Modal, Button, Icon, useNavigate } from "zmp-ui";
+import { dataContext } from "../providerContext/providerContext";
+import { insertNewAppointment } from "../redux/slices/appointmentSlice";
 
 const ModalNotification = ({
   title,
@@ -9,7 +12,10 @@ const ModalNotification = ({
   type,
   branch_id,
 }) => {
-  const navigate = useNavigate();
+  const { navigate } = useContext(dataContext);
+  if (type === "submit") {
+
+  }
   return (
     <Modal
       visible={popupVisible}
@@ -41,6 +47,8 @@ const ModalNotification = ({
             if (type) {
               switch (type) {
                 case "submit": {
+                
+                  // bắn dispatch tại đây
                   // Phần id này sẽ được gọi từ database
                   navigate(`/detailsBooking?id=null&&branch_id=${branch_id}`);
                   break;

@@ -1,7 +1,12 @@
-import React, { useContext } from "react";
-import { Box, Modal, Text } from "zmp-ui";
+import React, { useContext, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { Box, DatePicker, Modal, Text } from "zmp-ui";
 import { dataContext } from "../providerContext/providerContext";
-import { cancelAppointment } from "../redux/slices/appointmentSlice";
+import { insertNewDetailAppointment } from "../redux/slices/appointmentDetailSlice";
+import {
+  cancelAppointment,
+  insertNewAppointment,
+} from "../redux/slices/appointmentSlice";
 
 const ModalConfirm = ({
   title,
@@ -11,14 +16,37 @@ const ModalConfirm = ({
   setDialogVisible,
   setPopupVisible,
   appointment_id,
-  action,
+  branch_id,
 }) => {
-  const { dispatch, navigate } = useContext(dataContext);
+  // Lấy hàm từ dataContext
+  const { dispatch, navigate, userInfo, convertDate } = useContext(dataContext);
+
+  // Lấy dữ liệu từ store
+  const timePicker = useSelector(
+    (state) => state.timeSlotPicker.timeSlotPicker
+  );
+
+  const staffChosen = useSelector((state) => state.staffChosen.staffChosen);
+  const datePicker = convertDate(
+    useSelector((state) => state.datePicker.datePicker)
+  );
+
+  // Hàm khi xác nhận thông tin
   const confirmData = () => {
     if (type === 2) {
       dispatch(cancelAppointment(appointment_id));
       navigate(-1);
     }
+
+    const appointmentInserted = {
+      zalo_id: userInfo.id,
+      branch_id,
+      employee_id: staffChosen.id,
+      appointment_date: datePicker,
+    };
+
+    dispatch(insertNewAppointment(appointmentInserted));
+
     // Gọi API tại đây để thêm dữ liệu vào Database
     setDialogVisible(false);
     setPopupVisible(true);

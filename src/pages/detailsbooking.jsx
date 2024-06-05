@@ -14,6 +14,7 @@ import {
   fetchRatingByAppointmentId,
   insertRating,
 } from "../components/redux/slices/ratingSlice";
+import { insertNewDetailAppointment } from "../components/redux/slices/appointmentDetailSlice";
 
 const DetailsBooking = () => {
   // Lấy id và branch_id
@@ -68,6 +69,7 @@ const DetailsBooking = () => {
   const appointmentDetail = useSelector(
     (state) => state.appointmentDetail.appointment
   );
+
   useEffect(() => {
     if (id === "null") {
       setCustomerInformation(customerInformationFromStore);
@@ -104,7 +106,7 @@ const DetailsBooking = () => {
   }, [currentAppointment]);
 
   useEffect(() => {
-    if (appointmentDetail.id) {
+    if (appointmentDetail && appointmentDetail.id) {
       setCustomerInformation({
         name: appointmentDetail.customer_name,
         phone: appointmentDetail.customer_phone,
@@ -157,11 +159,43 @@ const DetailsBooking = () => {
     setReadOnly(true);
   };
 
+  const insertId = useSelector((state) => state.appointments.insertId);
+  const isInsert = useSelector((state) => state.appointmentDetail.isInsert);
+  const [servicesId, setServicesId] = useState([]);
+  useEffect(() => {
+    setServicesId(() => {
+      if (productsSelected.length > 0) {
+        return productsSelected.map((product) => {
+          return product.id;
+        });
+      }
+      return [];
+    });
+  }, [productsSelected]);
+
+  useEffect(() => {
+    console.log(insertId);
+    if (isInsert && servicesId.length > 0) {
+      console.log("vô rồi");
+      const detailAppointment = {
+        appointment_id: insertId,
+        time_picker_id: timePicker.id,
+        customer_name: customerInformationFromStore.name,
+        customer_email: customerInformationFromStore.email,
+        customer_address: customerInformationFromStore.address,
+        customer_phone: customerInformationFromStore.phone,
+        customer_note: customerInformationFromStore.note,
+        services_id: servicesId,
+      };
+      dispatch(insertNewDetailAppointment(detailAppointment));
+    }
+  }, [insertId, servicesId]);
+
   //Kết thúc dữ liệu của detailBooking trong trường hợp không có ID
 
   return (
     <Box>
-      <HeaderPage title="Phiếu đặt lịch" isBackHome={false}></HeaderPage>
+      <HeaderPage title="Phiếu đặt lịch" isBackHome={true}></HeaderPage>
       <Box>
         <Box
           flex

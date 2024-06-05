@@ -21,6 +21,22 @@ const ProviderContext = (props) => {
     return formattedDate;
   };
 
+  function convertDate(inputDate) {
+    // Tách ngày, tháng, năm từ chuỗi input
+    const [day, month, year] = inputDate.split("/").map(Number);
+
+    // Tạo đối tượng Date từ các giá trị ngày, tháng, năm
+    const date = new Date(year, month - 1, day);
+
+    // Lấy giá trị năm, tháng, ngày
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, "0"); // Tháng từ 0-11 nên cần +1
+    const dd = String(date.getDate()).padStart(2, "0");
+
+    // Trả về chuỗi ngày tháng theo định dạng yyyy-mm-dd
+    return `${yyyy}-${mm}-${dd}`;
+  }
+
   const handleTimeActive = (time) => {
     // Lấy thời gian hiện tại
     var now = new Date();
@@ -76,6 +92,7 @@ const ProviderContext = (props) => {
     navigate,
     formatDate,
     handleTimeActive,
+    convertDate
   };
   return (
     <dataContext.Provider value={payload}>
