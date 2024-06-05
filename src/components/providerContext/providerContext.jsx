@@ -3,12 +3,28 @@ import React, { createContext, useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { getUserInfo } from "zmp-sdk/apis";
+import { fetchAllAppointments } from "../redux/slices/appointmentSlice";
+import { fetchAllBranches } from "../redux/slices/branchSlice";
+import { fetchAllCategories } from "../redux/slices/categorySlice";
+import { fetchAllProducts } from "../redux/slices/productSlice";
+import { fetchAllStaffs } from "../redux/slices/staffSlice";
+import { fetchAllTimeSlots } from "../redux/slices/timeSlotSlice";
 
 export const dataContext = createContext(null);
 
 const ProviderContext = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    dispatch(fetchAllProducts());
+    dispatch(fetchAllStaffs());
+    dispatch(fetchAllBranches());
+    dispatch(fetchAllProducts());
+    dispatch(fetchAllCategories());
+    dispatch(fetchAllTimeSlots());
+
+  }, [dispatch]);
 
   const [userInfo, setUserInfo] = useState({});
 
@@ -92,7 +108,7 @@ const ProviderContext = (props) => {
     navigate,
     formatDate,
     handleTimeActive,
-    convertDate
+    convertDate,
   };
   return (
     <dataContext.Provider value={payload}>

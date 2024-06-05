@@ -14,6 +14,7 @@ export const fetchAllAppointments = createAsyncThunk(
 export const cancelAppointment = createAsyncThunk(
   "users/cancelAppointment",
   async (id) => {
+    console.log("hủy ap ");
     const response = await fetch(
       `http://localhost:4000/api/appointments/cancel/${id}`,
       {

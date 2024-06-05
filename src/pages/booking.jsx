@@ -19,10 +19,14 @@ const BookingCard = lazy(() => import("../components/cards/bookingCard"));
 
 const Booking = () => {
   const { dispatch, navigate, userInfo } = useContext(dataContext);
+  const appointmentsFromStore = useSelector(
+    (state) => state.appointments.appointments
+  );
 
   useEffect(() => {
+    console.log(appointmentsFromStore);
     dispatch(fetchAllAppointments(Number(userInfo.id)));
-  }, [userInfo]);
+  }, []);
 
   // Lấy appointments
   const data = useSelector((state) => state.appointments.appointments);
@@ -52,7 +56,7 @@ const Booking = () => {
         );
       }
     });
-  }, [data, statusAppointment]);
+  }, [data, statusAppointment,appointmentsFromStore]);
 
   const handleNavigate = useCallback(() => {
     navigate("/branches");

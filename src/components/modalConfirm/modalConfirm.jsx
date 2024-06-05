@@ -34,19 +34,20 @@ const ModalConfirm = ({
   // Hàm khi xác nhận thông tin
   const confirmData = () => {
     if (type === 2) {
+      console.log("xóa");
       dispatch(cancelAppointment(appointment_id));
       navigate(-1);
     }
-
-    const appointmentInserted = {
-      zalo_id: userInfo.id,
-      branch_id,
-      employee_id: staffChosen.id,
-      appointment_date: datePicker,
-    };
-
-    dispatch(insertNewAppointment(appointmentInserted));
-
+    if (type === 1) {
+      console.log("thêm");
+      const appointmentInserted = {
+        zalo_id: userInfo.id,
+        branch_id,
+        employee_id: staffChosen.id,
+        appointment_date: datePicker,
+      };
+      dispatch(insertNewAppointment(appointmentInserted));
+    }
     // Gọi API tại đây để thêm dữ liệu vào Database
     setDialogVisible(false);
     setPopupVisible(true);
@@ -63,7 +64,6 @@ const ModalConfirm = ({
       onClose={() => {
         setDialogVisible(false);
       }}
-      onClick={() => console.log(1)}
       actions={[
         {
           text: "Hủy",

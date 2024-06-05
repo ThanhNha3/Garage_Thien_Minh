@@ -1,8 +1,6 @@
 import React, { useContext } from "react";
-import { useSelector } from "react-redux";
-import { Box, Text, Modal, Button, Icon, useNavigate } from "zmp-ui";
+import { Box, Text, Modal, Button, Icon } from "zmp-ui";
 import { dataContext } from "../providerContext/providerContext";
-import { insertNewAppointment } from "../redux/slices/appointmentSlice";
 
 const ModalNotification = ({
   title,
@@ -12,10 +10,8 @@ const ModalNotification = ({
   type,
   branch_id,
 }) => {
-  const { navigate } = useContext(dataContext);
-  if (type === "submit") {
-
-  }
+  // Lấy hàm từ context
+  const { navigate} = useContext(dataContext);
   return (
     <Modal
       visible={popupVisible}
@@ -43,13 +39,9 @@ const ModalNotification = ({
       <Box p={6}>
         <Button
           onClick={() => {
-            setPopupVisible(false);
             if (type) {
               switch (type) {
                 case "submit": {
-                
-                  // bắn dispatch tại đây
-                  // Phần id này sẽ được gọi từ database
                   navigate(`/detailsBooking?id=null&&branch_id=${branch_id}`);
                   break;
                 }

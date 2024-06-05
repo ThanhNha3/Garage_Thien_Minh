@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 export const fetAppointmentDetailbyId = createAsyncThunk(
   "users/fetAppointmentDetailbyId",
   async (appointment_id) => {
+    console.log("lấy ap detail");
     const response = await fetch(
       `  http://localhost:4000/api/appointments/detail/${appointment_id}`
     );
@@ -14,6 +15,7 @@ export const fetAppointmentDetailbyId = createAsyncThunk(
 export const insertNewDetailAppointment = createAsyncThunk(
   "users/insertNewDetailAppointment",
   async (request) => {
+    console.log("thêm ap detail");
     const {
       appointment_id,
       time_picker_id,
@@ -56,6 +58,7 @@ export const appointmentDetailSlice = createSlice({
     error: null,
     insertId: null,
     isInsert: true,
+    isComplete: false,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -76,16 +79,19 @@ export const appointmentDetailSlice = createSlice({
         state.loading = true;
         state.error = null;
         state.isInsert = true;
+        state.isComplete = false;
       })
       .addCase(insertNewDetailAppointment.fulfilled, (state, action) => {
         state.loading = false;
         state.insertId = action.payload.insertId;
         state.isInsert = false;
+        state.isComplete = true;
       })
       .addCase(insertNewDetailAppointment.rejected, (state, action) => {
         state.loading = false;
         state.isInsert = false;
         state.error = action.error.message;
+        state.isComplete = false;
       });
   },
 });

@@ -22,14 +22,7 @@ import { fetchAllTimeSlots } from "../components/redux/slices/timeSlotSlice";
 const Home = () => {
   const { dispatch, userInfo } = useContext(dataContext);
   const productList = useSelector((state) => state.products.products);
-  useEffect(() => {
-    dispatch(fetchAllProducts());
-    dispatch(fetchAllStaffs());
-    dispatch(fetchAllBranches());
-    dispatch(fetchAllProducts());
-    dispatch(fetchAllCategories());
-    dispatch(fetchAllTimeSlots());
-  }, []);
+
 
   return (
     <Box

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect, useCallback } from "react";
 import { Box, Icon, Text } from "zmp-ui";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
@@ -9,13 +9,13 @@ import ModalConfirm from "../components/modalConfirm/modalConfirm";
 import ModalNotification from "../components/modalNotification/modalNotification";
 import background from "../../public/images/background.jpg";
 import { dataContext } from "../components/providerContext/providerContext";
+import { insertNewDetailAppointment } from "../components/redux/slices/appointmentDetailSlice";
 
 const ConfirmInformation = () => {
+  const { navigate, dispatch } = useContext(dataContext);
+
   //Lấy branch_id
   const { branch_id } = useParams("branch_id");
-
-  // Lấy hàm từ dataContext
-  const { userInfo } = useContext(dataContext);
 
   // Set state popup
   const [dialogVisible, setDialogVisible] = useState(false);
@@ -31,9 +31,47 @@ const ConfirmInformation = () => {
   );
   const datePicker = useSelector((state) => state.datePicker.datePicker);
   const branches = useSelector((state) => state.branches.branches);
-  const productSelected = useSelector(
+  const insertId = useSelector((state) => state.appointments.insertId);
+  const productsSelected = useSelector(
     (state) => state.productsSelected.productsSelected
   );
+  const isCompleteInsertDetailAppointment = useSelector(
+    (state) => state.appointmentDetail.isComplete
+  );
+
+  useEffect(() => {
+    if (insertId) {
+      const services_id = productsSelected.map((product) => product.id);
+
+      if (timePicker && customerInformation && services_id) {
+        const data = {
+          appointment_id: insertId,
+          time_picker_id: timePicker.id,
+          customer_name: customerInformation.name,
+          customer_address: customerInformation.address,
+          customer_email: customerInformation.email,
+          customer_note: customerInformation.note,
+          services_id: services_id,
+          customer_phone: customerInformation.phone,
+        };
+        dispatch(insertNewDetailAppointment(data));
+        // .then(() => {
+        // })
+        // .catch((error) => {
+        //   console.error("Failed to insert new detail appointment:", error);
+        // });
+      }
+    }
+  }, [
+    insertId,
+    productsSelected,
+    timePicker,
+    customerInformation,
+    dispatch,
+    navigate,
+    branch_id,
+  ]);
+
 
   // Lấy ra branch được đặt
   const branchChosen = branches.find(
@@ -138,11 +176,11 @@ const ConfirmInformation = () => {
       <ModalConfirm
         title="Xác nhận đặt lịch"
         description="Bạn có chắc chắn đặt lịch không?"
-        type="submit"
         dialogVisible={dialogVisible}
         setDialogVisible={setDialogVisible}
         setPopupVisible={setPopupVisible}
         branch_id={branch_id}
+        type={1}
       />
       <ModalNotification
         title="Đặt lịch thành công"
