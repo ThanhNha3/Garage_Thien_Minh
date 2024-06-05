@@ -31,11 +31,22 @@ const ConfirmInformation = () => {
   );
   const datePicker = useSelector((state) => state.datePicker.datePicker);
   const branches = useSelector((state) => state.branches.branches);
+  const productSelected = useSelector(
+    (state) => state.productsSelected.productsSelected
+  );
 
   // Lấy ra branch được đặt
   const branchChosen = branches.find(
     (branch) => branch.id === Number(branch_id)
   );
+
+  console.log(branch_id);
+  console.log(customerInformation);
+  console.log(staffChosen);
+  console.log(timePicker);
+  console.log(datePicker);
+  console.log(productSelected);
+  console.log();
 
   return (
     <Box>

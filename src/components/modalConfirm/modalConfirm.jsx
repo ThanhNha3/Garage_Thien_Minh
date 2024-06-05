@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Box, Modal, Text } from "zmp-ui";
+import { dataContext } from "../providerContext/providerContext";
+import { cancelAppointment } from "../redux/slices/appointmentSlice";
 
 const ModalConfirm = ({
   title,
@@ -8,8 +10,15 @@ const ModalConfirm = ({
   dialogVisible,
   setDialogVisible,
   setPopupVisible,
+  appointment_id,
+  action,
 }) => {
+  const { dispatch, navigate } = useContext(dataContext);
   const confirmData = () => {
+    if (type === 2) {
+      dispatch(cancelAppointment(appointment_id));
+      navigate(-1);
+    }
     // Gọi API tại đây để thêm dữ liệu vào Database
     setDialogVisible(false);
     setPopupVisible(true);

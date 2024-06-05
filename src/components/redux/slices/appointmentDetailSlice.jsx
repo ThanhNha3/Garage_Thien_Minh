@@ -1,10 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-export const fetchAllAppointments = createAsyncThunk(
-  "users/fetchAllAppointments",
-  async () => {
+export const fetAppointmentDetailbyId = createAsyncThunk(
+  "users/fetAppointmentDetailbyId",
+  async (appointment_id) => {
     const response = await fetch(
-      `http://localhost:4000/api/appointments/3368637342326461234`
+      `  http://localhost:4000/api/appointments/detail/${appointment_id}`
     );
     const data = await response.json();
     return data;
@@ -14,22 +14,22 @@ export const fetchAllAppointments = createAsyncThunk(
 export const appointmentSlice = createSlice({
   name: "appointments",
   initialState: {
-    appointments: [],
+    appointment: {},
     loading: false,
     error: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchAllAppointments.pending, (state, action) => {
+      .addCase(fetAppointmentDetailbyId.pending, (state, action) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchAllAppointments.fulfilled, (state, action) => {
+      .addCase(fetAppointmentDetailbyId.fulfilled, (state, action) => {
         state.loading = false;
-        state.appointments = action.payload;
+        state.appointment = action.payload[0];
       })
-      .addCase(fetchAllAppointments.rejected, (state, action) => {
+      .addCase(fetAppointmentDetailbyId.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });

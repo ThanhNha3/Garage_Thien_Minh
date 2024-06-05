@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Box, Icon, Text, useNavigate } from "zmp-ui";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import { dataContext } from "../providerContext/providerContext";
 import background from "../../../public/images/background.jpg";
 import { fetchAllBranches } from "../redux/slices/branchSlice";
+import { fetAppointmentDetailbyId } from "../redux/slices/appointmentDetailSlice";
 
 const BookingCard = (data) => {
   const { formatDate, dispatch, navigate } = useContext(dataContext);
@@ -28,7 +29,10 @@ const BookingCard = (data) => {
 
   return (
     <Box
-      onClick={() => navigate(`/detailsBooking?id=${id}`)}
+      onClick={() => {
+        dispatch(fetAppointmentDetailbyId(id));
+        navigate(`/detailsBooking?id=${id}`);
+      }}
       flex
       className="flex-col gap-2 bg-[var(--white-color)] rounded-xl"
       p={4}

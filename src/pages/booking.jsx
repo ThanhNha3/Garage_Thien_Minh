@@ -18,11 +18,11 @@ import { fetchAllAppointments } from "../components/redux/slices/appointmentSlic
 const BookingCard = lazy(() => import("../components/cards/bookingCard"));
 
 const Booking = () => {
-  const { dispatch, navigate } = useContext(dataContext);
+  const { dispatch, navigate, userInfo } = useContext(dataContext);
 
   useEffect(() => {
-    dispatch(fetchAllAppointments());
-  }, []);
+    dispatch(fetchAllAppointments(Number(userInfo.id)));
+  }, [userInfo]);
 
   // Lấy appointments
   const data = useSelector((state) => state.appointments.appointments);

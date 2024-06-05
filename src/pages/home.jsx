@@ -27,10 +27,8 @@ const Home = () => {
     dispatch(fetchAllStaffs());
     dispatch(fetchAllBranches());
     dispatch(fetchAllProducts());
-    dispatch(fetchAllAppointments());
     dispatch(fetchAllCategories());
     dispatch(fetchAllTimeSlots());
-    // dispatch(fetchCustomerByZaloId(userInfo.id));
   }, []);
 
   return (

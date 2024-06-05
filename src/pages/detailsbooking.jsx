@@ -23,9 +23,11 @@ const DetailsBooking = () => {
 
   const [dialogVisible, setDialogVisible] = useState(false);
   const [popupVisible, setPopupVisible] = useState(false);
-  const { formatCurrency, formatDate, dispatch } = useContext(dataContext);
+  const { formatCurrency, formatDate, dispatch, userInfo } =
+    useContext(dataContext);
 
   //Set state của detailBooking trong trường hợp không có ID
+  const [detail, setDetail] = useState({});
   const [customerInformation, setCustomerInformation] = useState({});
   const [datePicker, setDatePicker] = useState("");
   const [timePicker, setTimePicker] = useState({});
@@ -63,7 +65,9 @@ const DetailsBooking = () => {
   const appointments = useSelector((state) => state.appointments.appointments);
   const staffs = useSelector((state) => state.staffs.staffs);
   const rating = useSelector((state) => state.rating.rating);
-
+  const appointmentDetail = useSelector(
+    (state) => state.appointmentDetail.appointment
+  );
   useEffect(() => {
     if (id === "null") {
       setCustomerInformation(customerInformationFromStore);
@@ -94,24 +98,32 @@ const DetailsBooking = () => {
         )
       );
 
-      setTimePicker(() =>
-        timeslots.find(
-          (timeslot) =>
-            timeslot.id === Number(currentAppointment.time_picker_id)
-        )
-      );
       setDatePicker(() => formatDate(currentAppointment.appointment_date));
-      setCustomerInformation(customerInformationFromStore);
-
-      setProductsSelected(() => {
-        return products.filter((product) =>
-          currentAppointment.services_id.includes(product.id)
-        );
-      });
-
       dispatch(fetchRatingByAppointmentId(currentAppointment.id));
     }
   }, [currentAppointment]);
+
+  useEffect(() => {
+    if (appointmentDetail.id) {
+      setCustomerInformation({
+        name: appointmentDetail.customer_name,
+        phone: appointmentDetail.customer_phone,
+        address: appointmentDetail.customer_address,
+        note: appointmentDetail.customer_note,
+        email: appointmentDetail.customer_email,
+      });
+      setProductsSelected(() => {
+        return products.filter((product) =>
+          appointmentDetail.services_id.includes(product.id)
+        );
+      });
+      setTimePicker(() =>
+        timeslots.find(
+          (timeslot) => timeslot.id === Number(appointmentDetail.time_picker_id)
+        )
+      );
+    }
+  }, [appointmentDetail]);
 
   useEffect(() => {
     if (rating) {
@@ -139,7 +151,7 @@ const DetailsBooking = () => {
       rating_status: ratingStatusSelected,
       appointment_id: Number(id),
     };
-    // Call API để gửi đánh giá
+    // dispath API để gửi đánh giá
     dispatch(insertRating(data));
     setPopupVisible(true);
     setReadOnly(true);
@@ -149,7 +161,7 @@ const DetailsBooking = () => {
 
   return (
     <Box>
-      <HeaderPage title="Phiếu đặt lịch" isBackHome={true}></HeaderPage>
+      <HeaderPage title="Phiếu đặt lịch" isBackHome={false}></HeaderPage>
       <Box>
         <Box
           flex
@@ -309,7 +321,9 @@ const DetailsBooking = () => {
                 }}
                 isCancel={true}
                 title="Hủy đặt lịch"
-                action={() => setDialogVisible(true)}
+                action={() => {
+                  setDialogVisible(true);
+                }}
               />
             </Box>
             <ModalConfirm
@@ -319,6 +333,8 @@ const DetailsBooking = () => {
               dialogVisible={dialogVisible}
               setDialogVisible={setDialogVisible}
               setPopupVisible={setPopupVisible}
+              type={2}
+              appointment_id={currentAppointment.id}
             />
             <ModalNotification
               title="Hủy lịch thành công"
