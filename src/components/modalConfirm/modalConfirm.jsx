@@ -34,12 +34,10 @@ const ModalConfirm = ({
   // Hàm khi xác nhận thông tin
   const confirmData = () => {
     if (type === 2) {
-      console.log("xóa");
       dispatch(cancelAppointment(appointment_id));
       navigate(-1);
     }
     if (type === 1) {
-      console.log("thêm");
       const appointmentInserted = {
         zalo_id: userInfo.id,
         branch_id,
@@ -48,7 +46,6 @@ const ModalConfirm = ({
       };
       dispatch(insertNewAppointment(appointmentInserted));
     }
-    // Gọi API tại đây để thêm dữ liệu vào Database
     setDialogVisible(false);
     setPopupVisible(true);
   };

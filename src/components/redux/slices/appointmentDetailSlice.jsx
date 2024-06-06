@@ -1,11 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-export const fetAppointmentDetailbyId = createAsyncThunk(
-  "users/fetAppointmentDetailbyId",
+export const fetchAppointmentDetailbyId = createAsyncThunk(
+  "users/fetchAppointmentDetailbyId",
   async (appointment_id) => {
-    console.log("lấy ap detail");
+    appointment_id = Number(appointment_id);
     const response = await fetch(
-      `  http://localhost:4000/api/appointments/detail/${appointment_id}`
+      `http://localhost:4000/api/appointments/detail/${appointment_id}`
     );
     const data = await response.json();
     return data;
@@ -15,7 +15,6 @@ export const fetAppointmentDetailbyId = createAsyncThunk(
 export const insertNewDetailAppointment = createAsyncThunk(
   "users/insertNewDetailAppointment",
   async (request) => {
-    console.log("thêm ap detail");
     const {
       appointment_id,
       time_picker_id,
@@ -60,18 +59,22 @@ export const appointmentDetailSlice = createSlice({
     isInsert: true,
     isComplete: false,
   },
-  reducers: {},
+  reducers: {
+    setAppoinmentToDefault: (state) => {
+      state.appointment = {};
+    },
+  },
   extraReducers: (builder) => {
     builder
-      .addCase(fetAppointmentDetailbyId.pending, (state, action) => {
+      .addCase(fetchAppointmentDetailbyId.pending, (state, action) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetAppointmentDetailbyId.fulfilled, (state, action) => {
+      .addCase(fetchAppointmentDetailbyId.fulfilled, (state, action) => {
         state.loading = false;
         state.appointment = action.payload[0];
       })
-      .addCase(fetAppointmentDetailbyId.rejected, (state, action) => {
+      .addCase(fetchAppointmentDetailbyId.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       })
@@ -83,7 +86,6 @@ export const appointmentDetailSlice = createSlice({
       })
       .addCase(insertNewDetailAppointment.fulfilled, (state, action) => {
         state.loading = false;
-        state.insertId = action.payload.insertId;
         state.isInsert = false;
         state.isComplete = true;
       })
@@ -96,5 +98,5 @@ export const appointmentDetailSlice = createSlice({
   },
 });
 
-export const {} = appointmentDetailSlice.actions;
+export const {setAppoinmentToDefault} = appointmentDetailSlice.actions;
 export default appointmentDetailSlice.reducer;

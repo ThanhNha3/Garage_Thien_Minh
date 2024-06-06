@@ -14,7 +14,6 @@ export const fetchAllAppointments = createAsyncThunk(
 export const cancelAppointment = createAsyncThunk(
   "users/cancelAppointment",
   async (id) => {
-    console.log("hủy ap ");
     const response = await fetch(
       `http://localhost:4000/api/appointments/cancel/${id}`,
       {
@@ -55,7 +54,11 @@ export const appointmentSlice = createSlice({
     error: null,
     insertId: null,
   },
-  reducers: {},
+  reducers: {
+    changeInsertId: (state) => {
+      state.insertId = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchAllAppointments.pending, (state, action) => {
@@ -85,11 +88,11 @@ export const appointmentSlice = createSlice({
       .addCase(insertNewAppointment.pending, (state, action) => {
         state.loading = true;
         state.error = null;
+        state.insertId = null;
       })
       .addCase(insertNewAppointment.fulfilled, (state, action) => {
         state.loading = false;
         state.insertId = action.payload.insertId;
-        // state.appointments = action.payload;
       })
       .addCase(insertNewAppointment.rejected, (state, action) => {
         state.loading = false;
@@ -98,5 +101,5 @@ export const appointmentSlice = createSlice({
   },
 });
 
-export const {} = appointmentSlice.actions;
+export const { changeInsertId } = appointmentSlice.actions;
 export default appointmentSlice.reducer;

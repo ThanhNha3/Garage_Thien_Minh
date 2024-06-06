@@ -35,14 +35,9 @@ const ConfirmInformation = () => {
   const productsSelected = useSelector(
     (state) => state.productsSelected.productsSelected
   );
-  const isCompleteInsertDetailAppointment = useSelector(
-    (state) => state.appointmentDetail.isComplete
-  );
-
   useEffect(() => {
     if (insertId) {
       const services_id = productsSelected.map((product) => product.id);
-
       if (timePicker && customerInformation && services_id) {
         const data = {
           appointment_id: insertId,
@@ -55,11 +50,6 @@ const ConfirmInformation = () => {
           customer_phone: customerInformation.phone,
         };
         dispatch(insertNewDetailAppointment(data));
-        // .then(() => {
-        // })
-        // .catch((error) => {
-        //   console.error("Failed to insert new detail appointment:", error);
-        // });
       }
     }
   }, [
@@ -71,7 +61,6 @@ const ConfirmInformation = () => {
     navigate,
     branch_id,
   ]);
-
 
   // Lấy ra branch được đặt
   const branchChosen = branches.find(

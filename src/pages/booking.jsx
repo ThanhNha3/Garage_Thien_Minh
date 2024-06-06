@@ -13,6 +13,7 @@ import { Box, Text, Icon } from "zmp-ui";
 import ButtonNavigate from "../components/buttonNavigate/buttonNavigate";
 import HeaderPage from "../components/headerPage/headerPage";
 import { dataContext } from "../components/providerContext/providerContext";
+import { setAppoinmentToDefault } from "../components/redux/slices/appointmentDetailSlice";
 import { fetchAllAppointments } from "../components/redux/slices/appointmentSlice";
 
 const BookingCard = lazy(() => import("../components/cards/bookingCard"));
@@ -24,8 +25,8 @@ const Booking = () => {
   );
 
   useEffect(() => {
-    console.log(appointmentsFromStore);
     dispatch(fetchAllAppointments(Number(userInfo.id)));
+    dispatch(setAppoinmentToDefault());
   }, []);
 
   // Lấy appointments
@@ -56,7 +57,8 @@ const Booking = () => {
         );
       }
     });
-  }, [data, statusAppointment,appointmentsFromStore]);
+    console.log(appointmentsFromStore);
+  }, [data, statusAppointment, appointmentsFromStore]);
 
   const handleNavigate = useCallback(() => {
     navigate("/branches");

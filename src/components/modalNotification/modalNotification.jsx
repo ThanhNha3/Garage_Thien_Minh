@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { Box, Text, Modal, Button, Icon } from "zmp-ui";
 import { dataContext } from "../providerContext/providerContext";
+import { changeInsertId } from "../redux/slices/appointmentSlice";
 
 const ModalNotification = ({
   title,
@@ -11,7 +12,7 @@ const ModalNotification = ({
   branch_id,
 }) => {
   // Lấy hàm từ context
-  const { navigate} = useContext(dataContext);
+  const { navigate, dispatch } = useContext(dataContext);
   return (
     <Modal
       visible={popupVisible}
@@ -31,6 +32,7 @@ const ModalNotification = ({
         </Box>
       }
       onClose={() => {
+        console.log("1");
         setPopupVisible(false);
       }}
       verticalActions
@@ -43,6 +45,7 @@ const ModalNotification = ({
               switch (type) {
                 case "submit": {
                   navigate(`/detailsBooking?id=null&&branch_id=${branch_id}`);
+                  dispatch(changeInsertId());
                   break;
                 }
                 case "cancel": {

@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { json } from "react-router";
 
 export const fetchAllRating = createAsyncThunk(
   "users/fetchAllRating",

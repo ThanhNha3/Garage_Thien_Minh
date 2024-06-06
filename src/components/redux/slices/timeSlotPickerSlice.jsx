@@ -12,7 +12,6 @@ export const timeSlotPickerSlice = createSlice({
   },
   reducers: {
     changeTimePicker: (state, action) => {
-      // console.log(action.payload.time);
       state.timeSlotPicker = {
         id: action.payload.id,
         time: action.payload.time,

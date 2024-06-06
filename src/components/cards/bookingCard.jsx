@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { dataContext } from "../providerContext/providerContext";
 import background from "../../../public/images/background.jpg";
 import { fetchAllBranches } from "../redux/slices/branchSlice";
-import { fetAppointmentDetailbyId } from "../redux/slices/appointmentDetailSlice";
+import { fetchAppointmentDetailbyId } from "../redux/slices/appointmentDetailSlice";
 
 const BookingCard = (data) => {
   const { formatDate, dispatch, navigate } = useContext(dataContext);
@@ -30,7 +30,7 @@ const BookingCard = (data) => {
   return (
     <Box
       onClick={() => {
-        dispatch(fetAppointmentDetailbyId(id));
+        dispatch(fetchAppointmentDetailbyId(id));
         navigate(`/detailsBooking?id=${id}`);
       }}
       flex

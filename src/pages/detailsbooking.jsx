@@ -14,7 +14,6 @@ import {
   fetchRatingByAppointmentId,
   insertRating,
 } from "../components/redux/slices/ratingSlice";
-import { insertNewDetailAppointment } from "../components/redux/slices/appointmentDetailSlice";
 
 const DetailsBooking = () => {
   // Lấy id và branch_id
@@ -84,7 +83,7 @@ const DetailsBooking = () => {
         appointments.find((appointment) => appointment.id === Number(id))
       );
     }
-  }, []);
+  }, [customerInformationFromStore]);
 
   useEffect(() => {
     if (currentAppointment !== undefined) {
@@ -123,7 +122,6 @@ const DetailsBooking = () => {
     }
   }, [currentAppointment, appointmentDetail]);
 
-
   useEffect(() => {
     if (rating) {
       setAppointmentRatingStatus(rating.rating_status);
@@ -144,7 +142,6 @@ const DetailsBooking = () => {
 
   const sendRating = () => {
     const ratingValue = document.getElementById("customer-rating");
-
     const data = {
       rating_value: ratingValue.value,
       rating_status: ratingStatusSelected,
@@ -410,6 +407,7 @@ const DetailsBooking = () => {
         title="Đánh giá thành công"
         popupVisible={popupVisible}
         setPopupVisible={setPopupVisible}
+        type=""
       />
     </Box>
   );
