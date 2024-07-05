@@ -16,7 +16,8 @@ export const fetchRatingByAppointmentId = createAsyncThunk(
       `http://localhost:4000/api/ratings/${appointment_id}`
     );
     const data = await response.json();
-    return data;
+    // return data;
+    return "hay";
   }
 );
 

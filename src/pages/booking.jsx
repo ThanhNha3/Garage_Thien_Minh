@@ -27,7 +27,7 @@ const Booking = () => {
   useEffect(() => {
     dispatch(fetchAllAppointments(Number(userInfo.id)));
     dispatch(setAppoinmentToDefault());
-  }, []);
+  }, [appointmentsFromStore]);
 
   // Lấy appointments
   const data = useSelector((state) => state.appointments.appointments);
@@ -57,7 +57,6 @@ const Booking = () => {
         );
       }
     });
-    console.log(appointmentsFromStore);
   }, [data, statusAppointment, appointmentsFromStore]);
 
   const handleNavigate = useCallback(() => {

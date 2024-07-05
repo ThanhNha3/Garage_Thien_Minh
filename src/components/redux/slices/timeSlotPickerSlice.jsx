@@ -14,7 +14,7 @@ export const timeSlotPickerSlice = createSlice({
     changeTimePicker: (state, action) => {
       state.timeSlotPicker = {
         id: action.payload.id,
-        time: action.payload.time,
+        time: action.payload.start_time,
       };
     },
   },

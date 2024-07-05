@@ -1,9 +1,7 @@
-import axios from "axios";
-import React, { createContext, useCallback, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { getUserInfo } from "zmp-sdk/apis";
-import { fetchAllAppointments } from "../redux/slices/appointmentSlice";
 import { fetchAllBranches } from "../redux/slices/branchSlice";
 import { fetchAllCategories } from "../redux/slices/categorySlice";
 import { fetchAllProducts } from "../redux/slices/productSlice";
@@ -23,10 +21,11 @@ const ProviderContext = (props) => {
     dispatch(fetchAllProducts());
     dispatch(fetchAllCategories());
     dispatch(fetchAllTimeSlots());
-
   }, [dispatch]);
 
   const [userInfo, setUserInfo] = useState({});
+
+  console.log();
 
   const formatDate = (dateInput) => {
     const date = new Date(dateInput);
@@ -81,6 +80,14 @@ const ProviderContext = (props) => {
     }
   };
 
+  const formatTimeSlot = (time) => {
+    if (time) {
+      const index = time.lastIndexOf(":");
+      return time.slice(0, index);
+    }
+    return time;
+  };
+
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -92,7 +99,6 @@ const ProviderContext = (props) => {
     const getUser = async () => {
       try {
         const { userInfo } = await getUserInfo({});
-        console.log(userInfo);
         setUserInfo(userInfo);
       } catch (error) {
         console.log(error);
@@ -109,6 +115,7 @@ const ProviderContext = (props) => {
     formatDate,
     handleTimeActive,
     convertDate,
+    formatTimeSlot,
   };
   return (
     <dataContext.Provider value={payload}>

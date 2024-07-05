@@ -5,7 +5,7 @@ import { dataContext } from "../providerContext/providerContext";
 import { changeTimePicker } from "../redux/slices/timeSlotPickerSlice";
 
 const TimeCard = (data) => {
-  const { id, time, isActive } = data;
+  let { id, time, isActive } = data;
   const { dispatch, handleTimeActive } = useContext(dataContext);
   const datePicker = useSelector((state) => state.datePicker.datePicker);
 
@@ -15,6 +15,10 @@ const TimeCard = (data) => {
       setIsAvailabel(true);
     }
   });
+
+  // Cắt bớt phần giây
+  const index = time.lastIndexOf(":");
+  time = time.slice(0,index)
 
   const handleAvailableDate = useCallback(() => {
     const arrayDatePicker = datePicker.split("/");

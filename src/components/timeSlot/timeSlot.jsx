@@ -27,12 +27,16 @@ const TimeSlot = () => {
   // Set default timeslot trong trường hợp người dùng không chọn
   useEffect(() => {
     setDefaultTimeslot(() => {
-      return timeSlots.find((timeslot) => handleTimeActive(timeslot.time));
+      return timeSlots.find((timeslot) => {
+        console.log(timeslot.start_time);
+        return handleTimeActive(timeslot.start_time);
+      });
     });
   }, [timeSlots]);
 
   useEffect(() => {
     if (defaultTimeslot !== undefined) {
+      console.log(defaultTimeslot);
       dispatch(changeTimePicker(defaultTimeslot));
     }
   }, [defaultTimeslot]);
@@ -46,7 +50,7 @@ const TimeSlot = () => {
               <TimeCard
                 key={time.id}
                 id={time.id}
-                time={time.time}
+                time={time.start_time}
                 isActive={time.id === timeSlotPicker.id}
               ></TimeCard>
             );

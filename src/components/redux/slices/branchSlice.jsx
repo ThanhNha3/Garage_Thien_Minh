@@ -3,9 +3,9 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 export const fetchAllBranches = createAsyncThunk(
   "users/fetchAllBranches",
   async () => {
-    const response = await fetch("http://localhost:4000/api/branches");
+    const response = await fetch("http://127.0.0.1:8000/api/branches");
     const data = await response.json();
-    return data;
+    return data.data;
   }
 );
 

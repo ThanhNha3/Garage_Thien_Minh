@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import { Box, Text, Modal, Button, Icon } from "zmp-ui";
 import { dataContext } from "../providerContext/providerContext";
-import { changeInsertId } from "../redux/slices/appointmentSlice";
 
 const ModalNotification = ({
   title,
@@ -45,7 +44,6 @@ const ModalNotification = ({
               switch (type) {
                 case "submit": {
                   navigate(`/detailsBooking?id=null&&branch_id=${branch_id}`);
-                  dispatch(changeInsertId());
                   break;
                 }
                 case "cancel": {

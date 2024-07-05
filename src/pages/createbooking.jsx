@@ -35,7 +35,7 @@ const CreateBooking = () => {
     (store) => store.productsSelected.productsSelected
   );
   const staffs = useSelector((store) => store.staffs.staffs);
-  const datePicker = useSelector((store) => store.datePicker.datePicker);
+  // const datePicker = useSelector((store) => store.datePicker.datePicker);
 
   // Đặt state cho chính nhánh, danh sách nhân viên, danh sách dịch vụ
   const [currentBranch, setCurrentBranch] = useState({});
@@ -48,7 +48,7 @@ const CreateBooking = () => {
 
   useEffect(() => {
     setStaffsByBranchId(() => {
-      return staffs.filter((staff) => staff.branch_id === Number(branch_id));
+      return staffs.filter((staff) => staff);
     });
   }, [branch_id]);
 

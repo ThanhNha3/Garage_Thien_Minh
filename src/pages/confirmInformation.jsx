@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useCallback } from "react";
+import React, { useContext, useState } from "react";
 import { Box, Icon, Text } from "zmp-ui";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
@@ -9,10 +9,9 @@ import ModalConfirm from "../components/modalConfirm/modalConfirm";
 import ModalNotification from "../components/modalNotification/modalNotification";
 import background from "../../public/images/background.jpg";
 import { dataContext } from "../components/providerContext/providerContext";
-import { insertNewDetailAppointment } from "../components/redux/slices/appointmentDetailSlice";
 
 const ConfirmInformation = () => {
-  const { navigate, dispatch } = useContext(dataContext);
+  const { formatTimeSlot } = useContext(dataContext);
 
   //Lấy branch_id
   const { branch_id } = useParams("branch_id");
@@ -26,41 +25,12 @@ const ConfirmInformation = () => {
     (state) => state.customerInformation.customerInformation
   );
   const staffChosen = useSelector((state) => state.staffChosen.staffChosen);
-  const timePicker = useSelector(
-    (state) => state.timeSlotPicker.timeSlotPicker
-  );
+
+  const timePicker = useSelector((state) => state.timeSlotPicker.timeSlotPicker);
+
   const datePicker = useSelector((state) => state.datePicker.datePicker);
+
   const branches = useSelector((state) => state.branches.branches);
-  const insertId = useSelector((state) => state.appointments.insertId);
-  const productsSelected = useSelector(
-    (state) => state.productsSelected.productsSelected
-  );
-  useEffect(() => {
-    if (insertId) {
-      const services_id = productsSelected.map((product) => product.id);
-      if (timePicker && customerInformation && services_id) {
-        const data = {
-          appointment_id: insertId,
-          time_picker_id: timePicker.id,
-          customer_name: customerInformation.name,
-          customer_address: customerInformation.address,
-          customer_email: customerInformation.email,
-          customer_note: customerInformation.note,
-          services_id: services_id,
-          customer_phone: customerInformation.phone,
-        };
-        dispatch(insertNewDetailAppointment(data));
-      }
-    }
-  }, [
-    insertId,
-    productsSelected,
-    timePicker,
-    customerInformation,
-    dispatch,
-    navigate,
-    branch_id,
-  ]);
 
   // Lấy ra branch được đặt
   const branchChosen = branches.find(
@@ -102,7 +72,9 @@ const ConfirmInformation = () => {
         </Box>
         <Box flex justifyContent="space-between">
           <Text>Giờ đặt</Text>
-          <Text className="sub-title">{timePicker.time || "giờ đặt"}</Text>
+          <Text className="sub-title">
+            {formatTimeSlot(timePicker.time) || "giờ đặt"}
+          </Text>
         </Box>
         <Box flex justifyContent="space-between">
           <Text>Nhân viên</Text>

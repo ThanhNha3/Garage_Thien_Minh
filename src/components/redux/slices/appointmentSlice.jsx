@@ -4,10 +4,10 @@ export const fetchAllAppointments = createAsyncThunk(
   "users/fetchAllAppointments",
   async (zalo_id) => {
     const response = await fetch(
-      `http://localhost:4000/api/appointments/3368637342326461234`
+      `http://127.0.0.1:8000/api/appointments/zalo=01234567893459`
     );
     const data = await response.json();
-    return data;
+    return data.data;
   }
 );
 
@@ -15,9 +15,15 @@ export const cancelAppointment = createAsyncThunk(
   "users/cancelAppointment",
   async (id) => {
     const response = await fetch(
-      `http://localhost:4000/api/appointments/cancel/${id}`,
+      `http://127.0.0.1:8000/api/appointment/update/${id}`,
       {
-        method: "POST",
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          status: 2,
+        }),
       }
     );
     const data = await response.json();
@@ -25,11 +31,18 @@ export const cancelAppointment = createAsyncThunk(
   }
 );
 
+
 export const insertNewAppointment = createAsyncThunk(
   "users/insertNewAppointment",
   async (request) => {
-    const { zalo_id, branch_id, employee_id, appointment_date } = request;
-    const response = await fetch(`http://localhost:4000/api/appointments`, {
+    const {
+      zalo_id,
+      branch_id,
+      employee_id,
+      appointment_date,
+      appointment_details,
+    } = request;
+    const response = await fetch(`http://127.0.0.1:8000/api/appointment/add`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -39,6 +52,8 @@ export const insertNewAppointment = createAsyncThunk(
         branch_id,
         employee_id,
         appointment_date,
+        status: 0,
+        appointment_details,
       }),
     });
     const data = await response.json();
@@ -52,12 +67,6 @@ export const appointmentSlice = createSlice({
     appointments: [],
     loading: false,
     error: null,
-    insertId: null,
-  },
-  reducers: {
-    changeInsertId: (state) => {
-      state.insertId = null;
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -88,11 +97,9 @@ export const appointmentSlice = createSlice({
       .addCase(insertNewAppointment.pending, (state, action) => {
         state.loading = true;
         state.error = null;
-        state.insertId = null;
       })
       .addCase(insertNewAppointment.fulfilled, (state, action) => {
         state.loading = false;
-        state.insertId = action.payload.insertId;
       })
       .addCase(insertNewAppointment.rejected, (state, action) => {
         state.loading = false;
@@ -101,5 +108,4 @@ export const appointmentSlice = createSlice({
   },
 });
 
-export const { changeInsertId } = appointmentSlice.actions;
 export default appointmentSlice.reducer;

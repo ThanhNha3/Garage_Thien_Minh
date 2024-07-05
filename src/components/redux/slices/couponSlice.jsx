@@ -3,14 +3,14 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 export const fetchAllCoupons = createAsyncThunk(
   "users/fetchAllCoupons",
   async () => {
-    const response = await fetch("http://127.0.0.1:8000/api/thien-minh/home");
+    const response = await fetch("http://127.0.0.1:8000/api/promotions");
     const data = await response.json();
-    return data.products;
+    return data.data;
   }
 );
 
 export const couponSlice = createSlice({
-  name: "products",
+  name: "coupons",
   initialState: {
     products: [],
     loading: false,

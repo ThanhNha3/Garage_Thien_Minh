@@ -5,47 +5,10 @@ export const fetchAppointmentDetailbyId = createAsyncThunk(
   async (appointment_id) => {
     appointment_id = Number(appointment_id);
     const response = await fetch(
-      `http://localhost:4000/api/appointments/detail/${appointment_id}`
+      `http://127.0.0.1:8000/api/appointment/detail/${appointment_id}`
     );
     const data = await response.json();
-    return data;
-  }
-);
-
-export const insertNewDetailAppointment = createAsyncThunk(
-  "users/insertNewDetailAppointment",
-  async (request) => {
-    const {
-      appointment_id,
-      time_picker_id,
-      customer_name,
-      customer_email,
-      customer_address,
-      customer_phone,
-      customer_note,
-      services_id,
-    } = request;
-    const response = await fetch(
-      `http://localhost:4000/api/appointments/detail`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          appointment_id,
-          time_picker_id,
-          customer_name,
-          customer_email,
-          customer_address,
-          customer_phone,
-          customer_note,
-          services_id,
-        }),
-      }
-    );
-    const data = await response.json();
-    return data;
+    return data.data;
   }
 );
 
@@ -55,9 +18,6 @@ export const appointmentDetailSlice = createSlice({
     appointment: {},
     loading: false,
     error: null,
-    insertId: null,
-    isInsert: true,
-    isComplete: false,
   },
   reducers: {
     setAppoinmentToDefault: (state) => {
@@ -72,29 +32,14 @@ export const appointmentDetailSlice = createSlice({
       })
       .addCase(fetchAppointmentDetailbyId.fulfilled, (state, action) => {
         state.loading = false;
+        console.log(action.payload[0]);
         state.appointment = action.payload[0];
       })
       .addCase(fetchAppointmentDetailbyId.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       })
-      .addCase(insertNewDetailAppointment.pending, (state, action) => {
-        state.loading = true;
-        state.error = null;
-        state.isInsert = true;
-        state.isComplete = false;
-      })
-      .addCase(insertNewDetailAppointment.fulfilled, (state, action) => {
-        state.loading = false;
-        state.isInsert = false;
-        state.isComplete = true;
-      })
-      .addCase(insertNewDetailAppointment.rejected, (state, action) => {
-        state.loading = false;
-        state.isInsert = false;
-        state.error = action.error.message;
-        state.isComplete = false;
-      });
+      
   },
 });
 

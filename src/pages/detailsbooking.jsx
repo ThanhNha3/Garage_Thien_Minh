@@ -23,7 +23,7 @@ const DetailsBooking = () => {
 
   const [dialogVisible, setDialogVisible] = useState(false);
   const [popupVisible, setPopupVisible] = useState(false);
-  const { formatCurrency, formatDate, dispatch, userInfo } =
+  const { formatCurrency, formatDate, dispatch, userInfo, formatTimeSlot } =
     useContext(dataContext);
 
   //Set state của detailBooking trong trường hợp không có ID
@@ -68,6 +68,7 @@ const DetailsBooking = () => {
     (state) => state.appointmentDetail.appointment
   );
 
+
   useEffect(() => {
     if (id === "null") {
       setCustomerInformation(customerInformationFromStore);
@@ -99,9 +100,9 @@ const DetailsBooking = () => {
       );
 
       setDatePicker(() => formatDate(currentAppointment.appointment_date));
-      dispatch(fetchRatingByAppointmentId(currentAppointment.id));
+      // dispatch(fetchRatingByAppointmentId(currentAppointment.id));
     }
-    if (appointmentDetail && appointmentDetail.id) {
+    if (appointmentDetail && appointmentDetail.appointment_id) {
       setCustomerInformation({
         name: appointmentDetail.customer_name,
         phone: appointmentDetail.customer_phone,
@@ -111,7 +112,7 @@ const DetailsBooking = () => {
       });
       setProductsSelected(() => {
         return products.filter((product) =>
-          appointmentDetail.services_id.includes(product.id)
+          appointmentDetail.product_id.includes(product.id)
         );
       });
       setTimePicker(() =>
@@ -211,7 +212,9 @@ const DetailsBooking = () => {
           </Box>
           <Box flex justifyContent="space-between">
             <Text>Giờ đặt</Text>
-            <Text className="sub-title">{timePicker.time || "Giờ đặt"}</Text>
+            <Text className="sub-title">
+              {formatTimeSlot(timePicker.time) || "Giờ đặt"}
+            </Text>
           </Box>
           <Box flex justifyContent="space-between">
             <Text>Nhân viên</Text>

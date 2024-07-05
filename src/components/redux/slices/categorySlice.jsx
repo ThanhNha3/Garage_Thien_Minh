@@ -3,9 +3,9 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 export const fetchAllCategories = createAsyncThunk(
   "users/fetchAllCategories",
   async () => {
-    const response = await fetch("http://localhost:4000/api/categories");
-    const data = await response.json();
-    return data;
+    const response = await fetch("http://127.0.0.1:8000/api/categories");
+    const data = await response.data.json();
+    return data.data;
   }
 );
 

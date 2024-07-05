@@ -1,6 +1,6 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Box, Text } from "zmp-ui";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 import BottomNavigationPage from "../components/bottomNavigation/bottomNavigation";
 import CircleCard from "../components/cards/circleCard";
@@ -11,19 +11,9 @@ import background from "../../public/images/background.jpg";
 import image1 from "../../public/images/image1.jpg";
 import image2 from "../../public/images/image2.jpg";
 import image4 from "../../public/images/image4.jpg";
-import { fetchAllProducts } from "../components/redux/slices/productSlice";
-import { dataContext } from "../components/providerContext/providerContext";
-import { fetchAllStaffs } from "../components/redux/slices/staffSlice";
-import { fetchAllBranches } from "../components/redux/slices/branchSlice";
-import { fetchAllAppointments } from "../components/redux/slices/appointmentSlice";
-import { fetchAllCategories } from "../components/redux/slices/categorySlice";
-import { fetchAllTimeSlots } from "../components/redux/slices/timeSlotSlice";
 
 const Home = () => {
-  const { dispatch, userInfo } = useContext(dataContext);
   const productList = useSelector((state) => state.products.products);
-
-
   return (
     <Box
       px={4}
