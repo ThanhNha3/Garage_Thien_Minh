@@ -3,75 +3,68 @@ import { Box, Icon, Text, DatePicker } from "zmp-ui";
 import { useParams } from "react-router";
 import { openChat } from "zmp-sdk/apis";
 import { useSelector } from "react-redux";
+import { createSelector } from "@reduxjs/toolkit";
 
 import { dataContext } from "../components/providerContext/providerContext";
 import ButtonNavigate from "../components/buttonNavigate/buttonNavigate";
 import HeaderPage from "../components/headerPage/headerPage";
 import { fetchAllBranches } from "../components/redux/slices/branchSlice";
+import { fetchAllStaffs } from "../components/redux/slices/staffSlice";
 import { changeDatePicker } from "../components/redux/slices/datePickerSlice";
+import { changeStaffChosen } from "../components/redux/slices/staffChosenSlice";
 import background from "../../public/images/background.jpg";
 import TimeSlot from "../components/timeSlot/timeSlot";
-import { fetchAllStaffs } from "../components/redux/slices/staffSlice";
-import { changeStaffChosen } from "../components/redux/slices/staffChosenSlice";
+
+const selectBranches = (state) => state.branches.branches;
+const selectProductsSelected = (state) => state.productsSelected.productsSelected;
+const selectStaffs = (state) => state.staffs.staffs;
+
+const selectBookingData = createSelector(
+  [selectBranches, selectProductsSelected, selectStaffs],
+  (branches, productsSelected, staffs) => ({
+    listBranches: branches,
+    productsSelected: productsSelected,
+    staffs: staffs,
+  })
+);
+
+console.log("đây là createbooking");
 
 const CreateBooking = () => {
-  // Lấy các hàm từ dataContext
   const { navigate, dispatch, formatCurrency } = useContext(dataContext);
+  const { branch_id } = useParams();
 
-  // Lấy branch_id
-  const { branch_id } = useParams("branch_id");
+  const { listBranches, productsSelected, staffs } = useSelector(selectBookingData);
 
-  // Dispatch
-  useEffect(() => {
-    dispatch(fetchAllBranches());
-  }, []);
-  useEffect(() => {
-    dispatch(fetchAllStaffs());
-  }, []);
-
-  // Lấy dữ liệu từ store
-  const listBranches = useSelector((state) => state.branches.branches);
-  const productsSelected = useSelector(
-    (store) => store.productsSelected.productsSelected
-  );
-  const staffs = useSelector((store) => store.staffs.staffs);
-  // const datePicker = useSelector((store) => store.datePicker.datePicker);
-
-  // Đặt state cho chính nhánh, danh sách nhân viên, danh sách dịch vụ
   const [currentBranch, setCurrentBranch] = useState({});
   const [staffsByBranchId, setStaffsByBranchId] = useState([]);
   const [date, setDate] = useState(new Date());
+  const [staffIdChosen, setStaffIdChosen] = useState();
+
+  useEffect(()=>{
+    setStaffsByBranchId(staffs)
+  },[])
+
+  useEffect(() => {
+    dispatch(fetchAllBranches());
+    dispatch(fetchAllStaffs());
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(changeDatePicker(date.toLocaleDateString("vi")));
-  }, [date]);
+  }, [date, dispatch]);
 
-  useEffect(() => {
-    setStaffsByBranchId(() => {
-      return staffs.filter((staff) => staff);
-    });
-  }, [branch_id]);
-
-  const [staffIdChosen, setStaffIdChosen] = useState();
-
-  // Đặt mặc định nhân viên đầu tiên của chi nhánh được chọn
   useEffect(() => {
     if (staffsByBranchId.length > 0) {
       dispatch(changeStaffChosen(staffsByBranchId[0]));
       setStaffIdChosen(staffsByBranchId[0].id);
     }
-  }, [staffsByBranchId]);
+  }, [staffsByBranchId, dispatch]);
 
-  // Tìm ra chi nhánh mặc định
   useEffect(() => {
-    setCurrentBranch(() => {
-      return listBranches.find((branch) => branch.id === Number(branch_id));
-    });
-  }, [listBranches, dispatch]);
+    setCurrentBranch(listBranches.find((branch) => branch.id === Number(branch_id)) || {});
+  }, [listBranches, branch_id]);
 
-  // Gửi dispatch khi date thay đổi
-
-  // Set date khi có sự thay đổi
   const handleDatePicker = (date) => {
     setDate(date);
   };
@@ -91,82 +84,35 @@ const CreateBooking = () => {
   return (
     <Box className="bg-[var(--background-grey)]">
       <HeaderPage title="Tạo lịch hẹn" />
-      <Box
-        py={4}
-        flex
-        flexDirection="column"
-        className="gap-2 bg-[var(--white-color)]"
-      >
+      <Box py={4} flex flexDirection="column" className="gap-2 bg-[var(--white-color)]">
         <Box>
-          <img src={(currentBranch && currentBranch.image) || background} />
+          <img src={(currentBranch && currentBranch.image) || background} alt="Branch Background" />
         </Box>
-        <Box
-          px={4}
-          flex
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-          className="gap-2"
-        >
-          <Text.Title className="sub-title">
-            {(currentBranch && currentBranch.name) || "Tên chi nhánh"}
-          </Text.Title>
-          <Text className="text-[var(--text-secondary)]">
-            {(currentBranch && currentBranch.address) || "Địa chỉ"}
-          </Text>
+        <Box px={4} flex flexDirection="column" alignItems="center" justifyContent="center" className="gap-2">
+          <Text.Title className="sub-title">{currentBranch.name || "Tên chi nhánh"}</Text.Title>
+          <Text className="text-[var(--text-secondary)]">{currentBranch.address || "Địa chỉ"}</Text>
         </Box>
       </Box>
-      <Box
-        p={4}
-        mt={4}
-        flex
-        flexDirection="column"
-        className="gap-8 bg-[var(--white-color)]"
-      >
-        <Box
-          flex
-          flexDirection="column"
-          className="gap-2"
-          onClick={() => navigate(-1)}
-        >
+      <Box p={4} mt={4} flex flexDirection="column" className="gap-8 bg-[var(--white-color)]">
+        <Box flex flexDirection="column" className="gap-2" onClick={() => navigate(-1)}>
           <Text.Title className="sub-title">1. Chọn chi nhánh</Text.Title>
           <Box flex alignItems="center" justifyContent="space-between">
             <Box flex alignItems="center" className="gap-2">
-              <Icon
-                className="text-[var(--secondary-color)]"
-                icon="zi-location-solid"
-              />
-              <Text>
-                {(currentBranch && currentBranch.name) || "Tên chi nhánh"}
-              </Text>
+              <Icon className="text-[var(--secondary-color)]" icon="zi-location-solid" />
+              <Text>{currentBranch.name || "Tên chi nhánh"}</Text>
             </Box>
             <Icon icon="zi-chevron-right" />
           </Box>
         </Box>
-        <Box
-          flex
-          flexDirection="column"
-          className="gap-2"
-          onClick={() => navigate("/product")}
-        >
+        <Box flex flexDirection="column" className="gap-2" onClick={() => navigate("/product")}>
           <Text.Title className="sub-title">2. Chọn dịch vụ</Text.Title>
           <Box className="gap-2 d-block">
             {productsSelected && productsSelected.length > 0 ? (
               productsSelected.map((item) => (
-                <Box
-                  key={item.id}
-                  flex
-                  justifyContent="space-between"
-                  alignItems="center"
-                  py={2}
-                >
+                <Box key={item.id} flex justifyContent="space-between" alignItems="center" py={2}>
                   <Box flex alignItems="center" className="gap-2">
                     <Box width={50} height={50}>
-                      <img
-                        width={50}
-                        className="w-full h-full"
-                        src={item.image}
-                      />
+                      <img src={item.image} className="w-full h-full" alt="Product" />
                     </Box>
                     <Text>{item.name}</Text>
                   </Box>
@@ -176,10 +122,7 @@ const CreateBooking = () => {
             ) : (
               <Box flex alignItems="center" justifyContent="space-between">
                 <Box flex alignItems="center" className="gap-2">
-                  <Icon
-                    className="text-[var(--secondary-color)]"
-                    icon="zi-more-grid-solid"
-                  />
+                  <Icon className="text-[var(--secondary-color)]" icon="zi-more-grid-solid" />
                   <Text>Xem tất cả dịch vụ</Text>
                 </Box>
                 <Icon icon="zi-chevron-right" />
@@ -188,59 +131,35 @@ const CreateBooking = () => {
           </Box>
         </Box>
         <Box flex flexDirection="column" className="gap-4">
-          <Text.Title className="sub-title">
-            3. Chọn ngày giờ và NV phục vụ
-          </Text.Title>
-          {productsSelected && productsSelected.length > 0 ? (
-            <Box
-              flex
-              alignItems="center"
-              justifyContent="space-around"
-              className="transition-all gap-2"
-            >
+          <Text.Title className="sub-title">3. Chọn ngày giờ và NV phục vụ</Text.Title>
+          {productsSelected && productsSelected.length > 0 && (
+            <Box flex alignItems="center" justifyContent="space-around" className="transition-all gap-2">
               {staffsByBranchId &&
-                staffsByBranchId.map((staff) => {
-                  return (
-                    <Box
-                      key={staff.id}
-                      flex
-                      flexDirection="column"
-                      alignItems="center"
-                      data={staff.id}
-                      justifyContent="center"
-                      style={{ gap: "8px", position: "relative" }}
-                      className={
-                        staff.id === staffIdChosen ? "staff-chosen-active" : ""
-                      }
-                      onClick={() => {
-                        setStaffIdChosen(staff.id);
-                        dispatch(changeStaffChosen(staff));
-                      }}
-                    >
-                      <Box width={50} height={50}>
-                        <img
-                          src={staff.image}
-                          className="w-full h-full object-contain rounded-full"
-                        />
-                      </Box>
-                      <Text className="sub-title">{staff.name}</Text>
+                staffsByBranchId.map((staff) => (
+                  <Box
+                    key={staff.id}
+                    flex flexDirection="column"
+                    alignItems="center"
+                    data={staff.id}
+                    justifyContent="center"
+                    style={{ gap: "8px", position: "relative" }}
+                    className={staff.id === staffIdChosen ? "staff-chosen-active" : ""}
+                    onClick={() => {
+                      setStaffIdChosen(staff.id);
+                      dispatch(changeStaffChosen(staff));
+                    }}
+                  >
+                    <Box width={50} height={50}>
+                      <img src={staff.image} className="w-full h-full object-contain rounded-full" alt="Staff" />
                     </Box>
-                  );
-                })}
+                    <Text className="sub-title">{staff.name}</Text>
+                  </Box>
+                ))}
             </Box>
-          ) : (
-            ""
           )}
           <Box>
             <DatePicker
-              prefix={
-                <Box>
-                  <Icon
-                    className="text-[var(--secondary-color)]"
-                    icon="zi-calendar-solid"
-                  />
-                </Box>
-              }
+              prefix={<Box><Icon className="text-[var(--secondary-color)]" icon="zi-calendar-solid" /></Box>}
               key={"a"}
               suffix={<Icon icon="zi-chevron-right" />}
               startDate={new Date()}
@@ -254,51 +173,23 @@ const CreateBooking = () => {
               onChange={(date) => handleDatePicker(date)}
             />
           </Box>
-          {productsSelected && productsSelected.length > 0 ? (
+          {productsSelected && productsSelected.length > 0 && (
             <Box style={{ paddingBottom: 100 }}>
-              <TimeSlot></TimeSlot>
+              <TimeSlot />
             </Box>
-          ) : (
-            ""
           )}
         </Box>
       </Box>
-      {productsSelected && productsSelected.length > 0 ? (
-        <Box
-          p={4}
-          className="fixed bottom-0 bg-[var(--white-color)] w-full gap-4"
-          flex
-          justifyContent="flex-end"
-          style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px -4px 12px" }}
-        >
-          <Box
-            flex
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="space-between"
-            onClick={() => openChatScreen()}
-          >
+      {productsSelected && productsSelected.length > 0 && (
+        <Box p={4} className="fixed bottom-0 bg-[var(--white-color)] w-full gap-4" flex justifyContent="flex-end" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px -4px 12px" }}>
+          <Box flex flexDirection="column" alignItems="center" justifyContent="space-between" onClick={openChatScreen}>
             <Box>
-              <Icon
-                className="text-[var(--secondary-color)]"
-                icon="zi-chat"
-                style={{
-                  color: "var(--primary-color)",
-                  background: "var(--white-color)",
-                  borderRadius: "10px",
-                }}
-              />
+              <Icon className="text-[var(--secondary-color)]" icon="zi-chat" style={{ color: "var(--primary-color)", background: "var(--white-color)", borderRadius: "10px" }} />
             </Box>
             <Box style={{ width: "max-content" }}>Chat Ngay</Box>
           </Box>
-          <ButtonNavigate
-            style={{ borderRadius: 10, background: "var(--primary-color)" }}
-            title="Tiếp tục"
-            action={() => navigate(`/forminformation/${branch_id}`)}
-          ></ButtonNavigate>
+          <ButtonNavigate style={{ borderRadius: 10, background: "var(--primary-color)" }} title="Tiếp tục" action={() => navigate(`/forminformation/${branch_id}`)} />
         </Box>
-      ) : (
-        ""
       )}
     </Box>
   );

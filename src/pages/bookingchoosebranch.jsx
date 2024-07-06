@@ -15,6 +15,7 @@ const BookingChooseBranch = () => {
 
   useEffect(() => {
     dispatch(fetchAllBranches());
+    console.log("đây là bookingchoosebranhches.jsx");
   }, []);
 
   return (

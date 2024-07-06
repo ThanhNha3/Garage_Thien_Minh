@@ -4,7 +4,7 @@ export const fetchAllAppointments = createAsyncThunk(
   "users/fetchAllAppointments",
   async (zalo_id) => {
     const response = await fetch(
-      `http://127.0.0.1:8000/api/appointments/zalo=01234567893459`
+      `http://127.0.0.1:8000/api/appointments/zalo=${zalo_id}`
     );
     const data = await response.json();
     return data.data;
@@ -31,7 +31,6 @@ export const cancelAppointment = createAsyncThunk(
   }
 );
 
-
 export const insertNewAppointment = createAsyncThunk(
   "users/insertNewAppointment",
   async (request) => {
@@ -42,6 +41,7 @@ export const insertNewAppointment = createAsyncThunk(
       appointment_date,
       appointment_details,
     } = request;
+    console.table(request);
     const response = await fetch(`http://127.0.0.1:8000/api/appointment/add`, {
       method: "POST",
       headers: {

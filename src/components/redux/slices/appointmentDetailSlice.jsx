@@ -32,7 +32,6 @@ export const appointmentDetailSlice = createSlice({
       })
       .addCase(fetchAppointmentDetailbyId.fulfilled, (state, action) => {
         state.loading = false;
-        console.log(action.payload[0]);
         state.appointment = action.payload[0];
       })
       .addCase(fetchAppointmentDetailbyId.rejected, (state, action) => {

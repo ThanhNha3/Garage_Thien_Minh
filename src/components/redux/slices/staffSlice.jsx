@@ -5,7 +5,9 @@ export const fetchAllStaffs = createAsyncThunk(
   async () => {
     const response = await fetch("http://127.0.0.1:8000/api/staffs");
     const data = await response.json();
-    return data.data;
+    return data.data.map((item) => {
+      return item.role === 0 ? item : null;
+    });
   }
 );
 

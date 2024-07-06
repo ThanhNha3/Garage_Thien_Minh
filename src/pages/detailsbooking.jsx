@@ -68,7 +68,6 @@ const DetailsBooking = () => {
     (state) => state.appointmentDetail.appointment
   );
 
-
   useEffect(() => {
     if (id === "null") {
       setCustomerInformation(customerInformationFromStore);
@@ -100,7 +99,6 @@ const DetailsBooking = () => {
       );
 
       setDatePicker(() => formatDate(currentAppointment.appointment_date));
-      // dispatch(fetchRatingByAppointmentId(currentAppointment.id));
     }
     if (appointmentDetail && appointmentDetail.appointment_id) {
       setCustomerInformation({
@@ -120,6 +118,7 @@ const DetailsBooking = () => {
           (timeslot) => timeslot.id === Number(appointmentDetail.time_picker_id)
         )
       );
+      dispatch(fetchRatingByAppointmentId(appointmentDetail.appointment_id));
     }
   }, [currentAppointment, appointmentDetail]);
 
@@ -342,8 +341,8 @@ const DetailsBooking = () => {
             />
           </Box>
         )}
-        <Box>
-          {currentAppointment && currentAppointment.status === 1 ? (
+        {currentAppointment&&currentAppointment.id ? (
+          <Box>
             <Box
               p={4}
               className="bg-[var(--white-color)] gap-4"
@@ -356,9 +355,7 @@ const DetailsBooking = () => {
                 <Box flex justifyContent="space-between" className="w-full">
                   <Box
                     onClick={() => {
-                      if (!readOnly) {
-                        setRatingStatusSelected(0);
-                      }
+                      setRatingStatusSelected(0);
                     }}
                     pb={2}
                     className={`text-center flex-1 ${
@@ -369,9 +366,7 @@ const DetailsBooking = () => {
                   </Box>
                   <Box
                     onClick={() => {
-                      if (!readOnly) {
-                        setRatingStatusSelected(1);
-                      }
+                      setRatingStatusSelected(1);
                     }}
                     pb={2}
                     className={`text-center flex-1 ${
@@ -383,12 +378,12 @@ const DetailsBooking = () => {
                 </Box>
                 <Input.TextArea
                   value={ratingValue}
-                  readOnly={readOnly}
                   onChange={handleInput}
                   id="customer-rating"
                   placeholder="đánh giá của bạn..."
+                  readOnly={readOnly}
                 />
-                {!readOnly ? (
+                {!rating ? (
                   <ButtonNavigate
                     title="Gửi"
                     style={{
@@ -402,15 +397,17 @@ const DetailsBooking = () => {
                 )}
               </Box>
             </Box>
-          ) : null}
-        </Box>
+          </Box>
+        ) : (
+          ""
+        )}
       </Box>
       <ModalNotification
         description={"Cảm ơn bạn đã để lại đánh giá"}
         title="Đánh giá thành công"
         popupVisible={popupVisible}
         setPopupVisible={setPopupVisible}
-        type=""
+        type="send-rating"
       />
     </Box>
   );

@@ -20,28 +20,20 @@ const BookingCard = lazy(() => import("../components/cards/bookingCard"));
 
 const Booking = () => {
   const { dispatch, navigate, userInfo } = useContext(dataContext);
-  const appointmentsFromStore = useSelector(
-    (state) => state.appointments.appointments
-  );
-
-  useEffect(() => {
-    dispatch(fetchAllAppointments(Number(userInfo.id)));
-    dispatch(setAppoinmentToDefault());
-  }, [appointmentsFromStore]);
-
-  // Lấy appointments
+  
   const data = useSelector((state) => state.appointments.appointments);
 
-  // Lấy ra sản phẩm
   const [listAppointments, setListAppointments] = useState([]);
-
-  //Dùng cho tab
   const [appointmentTab, setAppointmentTab] = useState("all");
-
-  // Set status appointments muốn hiển thị
   const [statusAppointment, setStatusAppointment] = useState([0]);
 
-  // Cập nhật listAppointments khi data hoặc statusAppointment thay đổi
+  useEffect(() => {
+    dispatch(fetchAllAppointments("01234567893459"));
+    dispatch(setAppoinmentToDefault());
+    console.log("đây là booking.jsx");
+  }, [dispatch, userInfo.id]);
+  
+
   useEffect(() => {
     setListAppointments(() => {
       if (statusAppointment.length >= 2) {
@@ -57,7 +49,7 @@ const Booking = () => {
         );
       }
     });
-  }, [data, statusAppointment, appointmentsFromStore]);
+  }, [data, statusAppointment]);
 
   const handleNavigate = useCallback(() => {
     navigate("/branches");
@@ -160,10 +152,10 @@ const Booking = () => {
       >
         <ButtonNavigate
           page="/branches"
-          style={buttonStyle} //style cần phải dùng luôn useMemo vì mỗi lần re-render lại nó sẽ tạo mới lại
+          style={buttonStyle}
           title="Tạo lịch hẹn mới"
           action={handleNavigate}
-        ></ButtonNavigate>
+        />
       </Box>
     </Box>
   );

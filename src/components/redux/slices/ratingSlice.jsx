@@ -13,11 +13,10 @@ export const fetchRatingByAppointmentId = createAsyncThunk(
   "users/fetchRatingByAppointmentId",
   async (appointment_id) => {
     const response = await fetch(
-      `http://localhost:4000/api/ratings/${appointment_id}`
+      `http://127.0.0.1:8000/api/ratings/appointment=${appointment_id}`
     );
     const data = await response.json();
-    // return data;
-    return "hay";
+    return data;
   }
 );
 
@@ -26,7 +25,7 @@ export const insertRating = createAsyncThunk(
   async (ratingData) => {
     console.log(ratingData);
     const { rating_value, rating_status, appointment_id } = ratingData;
-    const response = await fetch(`http://localhost:4000/api/ratings`, {
+    const response = await fetch(`http://127.0.0.1:8000/api/ratings/appointment=${appointment_id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

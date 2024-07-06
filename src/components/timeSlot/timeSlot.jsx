@@ -28,7 +28,6 @@ const TimeSlot = () => {
   useEffect(() => {
     setDefaultTimeslot(() => {
       return timeSlots.find((timeslot) => {
-        console.log(timeslot.start_time);
         return handleTimeActive(timeslot.start_time);
       });
     });
@@ -36,7 +35,6 @@ const TimeSlot = () => {
 
   useEffect(() => {
     if (defaultTimeslot !== undefined) {
-      console.log(defaultTimeslot);
       dispatch(changeTimePicker(defaultTimeslot));
     }
   }, [defaultTimeslot]);

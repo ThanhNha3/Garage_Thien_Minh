@@ -40,6 +40,7 @@ const ModalNotification = ({
       <Box p={6}>
         <Button
           onClick={() => {
+            console.log(type);
             if (type) {
               switch (type) {
                 case "submit": {
@@ -48,6 +49,10 @@ const ModalNotification = ({
                 }
                 case "cancel": {
                   navigate("/");
+                  break;
+                }
+                case "send-rating": {
+                  navigate("/booking");
                   break;
                 }
                 default: {
