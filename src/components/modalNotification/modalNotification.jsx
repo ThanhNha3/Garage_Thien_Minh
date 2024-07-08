@@ -40,7 +40,6 @@ const ModalNotification = ({
       <Box p={6}>
         <Button
           onClick={() => {
-            console.log(type);
             if (type) {
               switch (type) {
                 case "submit": {

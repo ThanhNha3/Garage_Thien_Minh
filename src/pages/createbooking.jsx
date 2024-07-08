@@ -28,8 +28,6 @@ const selectBookingData = createSelector(
   })
 );
 
-console.log("đây là createbooking");
-
 const CreateBooking = () => {
   const { navigate, dispatch, formatCurrency } = useContext(dataContext);
   const { branch_id } = useParams();

@@ -4,6 +4,7 @@ import { Box, Modal, Text } from "zmp-ui";
 import { dataContext } from "../providerContext/providerContext";
 import {
   cancelAppointment,
+  fetchAllAppointments,
   insertNewAppointment,
 } from "../redux/slices/appointmentSlice";
 
@@ -28,7 +29,7 @@ const ModalConfirm = ({
   const productsSelected = useSelector(
     (state) => state.productsSelected.productsSelected
   );
-  
+
   const customerInformation = useSelector(
     (state) => state.customerInformation.customerInformation
   );
@@ -39,10 +40,11 @@ const ModalConfirm = ({
   );
 
   // Hàm khi xác nhận thông tin
-  const confirmData = () => {
+  const confirmData = async () => {
     if (type === 2) {
       dispatch(cancelAppointment(appointment_id));
       navigate(-1);
+      await dispatch(fetchAllAppointments(`${userInfo.id}`));
     }
     if (type === 1) {
       const productsId = productsSelected.map((productSelected) => {
@@ -56,12 +58,12 @@ const ModalConfirm = ({
         appointment_details: [
           {
             product_id: productsId,
-            time_picker_id:timePicker.id,
-            customer_name:customerInformation.name,
-            customer_email:customerInformation.email,
-            customer_address:customerInformation.address,
-            customer_phone:customerInformation.phone,
-            customer_note:customerInformation.note
+            time_picker_id: timePicker.id,
+            customer_name: customerInformation.name,
+            customer_email: customerInformation.email,
+            customer_address: customerInformation.address,
+            customer_phone: customerInformation.phone,
+            customer_note: customerInformation.note,
           },
         ],
       };

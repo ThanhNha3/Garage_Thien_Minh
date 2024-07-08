@@ -41,7 +41,6 @@ export const insertNewAppointment = createAsyncThunk(
       appointment_date,
       appointment_details,
     } = request;
-    console.table(request);
     const response = await fetch(`http://127.0.0.1:8000/api/appointment/add`, {
       method: "POST",
       headers: {

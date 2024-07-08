@@ -28,9 +28,8 @@ const Booking = () => {
   const [statusAppointment, setStatusAppointment] = useState([0]);
 
   useEffect(() => {
-    dispatch(fetchAllAppointments("01234567893459"));
+    dispatch(fetchAllAppointments(`${userInfo.id}`));
     dispatch(setAppoinmentToDefault());
-    console.log("đây là booking.jsx");
   }, [dispatch, userInfo.id]);
   
 

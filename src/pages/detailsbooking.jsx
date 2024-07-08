@@ -212,7 +212,7 @@ const DetailsBooking = () => {
           <Box flex justifyContent="space-between">
             <Text>Giờ đặt</Text>
             <Text className="sub-title">
-              {formatTimeSlot(timePicker.time) || "Giờ đặt"}
+              {formatTimeSlot(timePicker.start_time) || "Giờ đặt"}
             </Text>
           </Box>
           <Box flex justifyContent="space-between">
@@ -341,7 +341,9 @@ const DetailsBooking = () => {
             />
           </Box>
         )}
-        {currentAppointment&&currentAppointment.id ? (
+        {currentAppointment &&
+        currentAppointment.id &&
+        currentAppointment.status == 1 ? (
           <Box>
             <Box
               p={4}

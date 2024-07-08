@@ -73,7 +73,7 @@ const ConfirmInformation = () => {
         <Box flex justifyContent="space-between">
           <Text>Giờ đặt</Text>
           <Text className="sub-title">
-            {formatTimeSlot(timePicker.time) || "giờ đặt"}
+            {formatTimeSlot(timePicker.start_time) || "giờ đặt"}
           </Text>
         </Box>
         <Box flex justifyContent="space-between">
