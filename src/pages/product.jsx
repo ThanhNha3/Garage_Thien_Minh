@@ -17,10 +17,11 @@ const ProductPage = () => {
   // dispatch fired
   useEffect(() => {
     dispatch(fetchAllProducts());
-  }, []);
+  }, [dispatch]);
 
   //Lấy các dữ liệu từ Store
   const products = useSelector((state) => state.products.products);
+
   const productsSelected = useSelector(
     (state) => state.productsSelected.productsSelected
   );

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Box, Text } from "zmp-ui";
 import { useSelector } from "react-redux";
 

@@ -104,7 +104,7 @@ const ProviderContext = (props) => {
         console.log(error);
       }
     };
-    setUserInfo(() => getUser());
+    setUserInfo(async () => await getUser());
   }, []);
 
   const payload = {

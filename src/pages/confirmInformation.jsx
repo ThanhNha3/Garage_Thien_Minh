@@ -11,7 +11,6 @@ import background from "../../public/images/background.jpg";
 import { dataContext } from "../components/providerContext/providerContext";
 
 const ConfirmInformation = () => {
-  const { formatTimeSlot } = useContext(dataContext);
 
   //Lấy branch_id
   const { branch_id } = useParams("branch_id");
@@ -26,7 +25,9 @@ const ConfirmInformation = () => {
   );
   const staffChosen = useSelector((state) => state.staffChosen.staffChosen);
 
-  const timePicker = useSelector((state) => state.timeSlotPicker.timeSlotPicker);
+  const timePicker = useSelector(
+    (state) => state.timeSlotPicker.timeSlotPicker
+  );
 
   const datePicker = useSelector((state) => state.datePicker.datePicker);
 
@@ -73,7 +74,7 @@ const ConfirmInformation = () => {
         <Box flex justifyContent="space-between">
           <Text>Giờ đặt</Text>
           <Text className="sub-title">
-            {formatTimeSlot(timePicker.start_time) || "giờ đặt"}
+            {timePicker.start_time || "giờ đặt"}
           </Text>
         </Box>
         <Box flex justifyContent="space-between">

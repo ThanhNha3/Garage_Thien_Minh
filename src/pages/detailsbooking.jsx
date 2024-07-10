@@ -23,7 +23,7 @@ const DetailsBooking = () => {
 
   const [dialogVisible, setDialogVisible] = useState(false);
   const [popupVisible, setPopupVisible] = useState(false);
-  const { formatCurrency, formatDate, dispatch, userInfo, formatTimeSlot } =
+  const { formatCurrency, formatDate, dispatch, formatTimeSlot } =
     useContext(dataContext);
 
   //Set state của detailBooking trong trường hợp không có ID
@@ -212,7 +212,9 @@ const DetailsBooking = () => {
           <Box flex justifyContent="space-between">
             <Text>Giờ đặt</Text>
             <Text className="sub-title">
-              {formatTimeSlot(timePicker.start_time) || "Giờ đặt"}
+              {appointmentDetail.appointment_id
+                ? formatTimeSlot(timePicker.start_time)
+                : timePicker.start_time || "Giờ đặt"}
             </Text>
           </Box>
           <Box flex justifyContent="space-between">

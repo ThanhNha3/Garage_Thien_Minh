@@ -18,7 +18,7 @@ const TimeCard = (data) => {
 
   // Cắt bớt phần giây
   const index = time.lastIndexOf(":");
-  time = time.slice(0,index)
+  time = time.slice(0, index);
 
   const handleAvailableDate = useCallback(() => {
     const arrayDatePicker = datePicker.split("/");
@@ -39,7 +39,7 @@ const TimeCard = (data) => {
     <Box
       onClick={() => {
         if (isAvailable) {
-          dispatch(changeTimePicker({ id, time }));
+          dispatch(changeTimePicker({ id, start_time: time }));
         }
       }}
       p={2}

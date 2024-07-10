@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Box } from "zmp-ui";
 import TimeCard from "../cards/timePickerCard";
 import { dataContext } from "../providerContext/providerContext";
@@ -7,57 +7,53 @@ import { changeTimePicker } from "../redux/slices/timeSlotPickerSlice";
 import { fetchAllTimeSlots } from "../redux/slices/timeSlotSlice";
 
 const TimeSlot = () => {
-  // Set state cho timeslot được chọn
-
-  // Lấy hàm từ dataContext
-  const { dispatch, handleTimeActive } = useContext(dataContext);
+  const dispatch = useDispatch();
+  const { handleTimeActive } = useContext(dataContext);
   const [defaultTimeslot, setDefaultTimeslot] = useState();
 
-  // dispatch fired
+  // Fetch time slots and set default time slot
   useEffect(() => {
     dispatch(fetchAllTimeSlots());
-  }, []);
+  }, [dispatch]);
 
-  // Lấy dữ liệu từ store
   const timeSlots = useSelector((state) => state.timeSlots.timeSlots);
-  const timeSlotPicker = useSelector(
-    (state) => state.timeSlotPicker.timeSlotPicker
-  );
+  const timeSlotPicker = useSelector((state) => state.timeSlotPicker.timeSlotPicker);
 
-  // Set default timeslot trong trường hợp người dùng không chọn
+  // Set default time slot when time slots change
   useEffect(() => {
-    setDefaultTimeslot(() => {
-      return timeSlots.find((timeslot) => {
-        return handleTimeActive(timeslot.start_time);
-      });
-    });
-  }, [timeSlots]);
+    if (timeSlots && timeSlots.length > 0) {
+      const defaultSlot = timeSlots.find((slot) => handleTimeActive(slot.start_time));
+      if (defaultSlot) {
+        setDefaultTimeslot(defaultSlot);
+      }
+    }
+  }, [timeSlots, handleTimeActive]);
 
+  // Change time picker when default time slot changes
   useEffect(() => {
-    if (defaultTimeslot !== undefined) {
+    if (defaultTimeslot) {
       dispatch(changeTimePicker(defaultTimeslot));
     }
-  }, [defaultTimeslot]);
+  }, [defaultTimeslot, dispatch]);
 
   return (
     <Box>
       {timeSlots && timeSlots.length > 0 ? (
         <Box className="grid-cols-4 gap-4" style={{ display: "grid" }}>
-          {timeSlots.map((time) => {
-            return (
-              <TimeCard
-                key={time.id}
-                id={time.id}
-                time={time.start_time}
-                isActive={time.id === timeSlotPicker.id}
-              ></TimeCard>
-            );
-          })}
+          {timeSlots.map((time) => (
+            <TimeCard
+              key={time.id}
+              id={time.id}
+              time={time.start_time}
+              isActive={time.id === timeSlotPicker.id}
+            />
+          ))}
         </Box>
       ) : (
-        <Box flex justifyContent="center" className="sub-title"></Box>
+        <Box flex justifyContent="center" className="sub-title" />
       )}
     </Box>
   );
 };
+
 export default TimeSlot;
