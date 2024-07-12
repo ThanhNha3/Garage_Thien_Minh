@@ -9,34 +9,43 @@ import ModalConfirm from "../components/modalConfirm/modalConfirm";
 import ModalNotification from "../components/modalNotification/modalNotification";
 import background from "../../public/images/background.jpg";
 import { dataContext } from "../components/providerContext/providerContext";
+import { createSelector } from "reselect";
+
+const customerInformation = (state) =>
+  state.customerInformation.customerInformation;
+const staffChosen = (state) => state.staffChosen.staffChosen;
+const timePicker = (state) => state.timeSlotPicker.timeSlotPicker;
+const datePicker = (state) => state.datePicker.datePicker;
+const branches = (state) => state.branches.branches;
+
+const confirmInformationData = createSelector(
+  [customerInformation, timePicker, staffChosen, datePicker, branches],
+  (customerInformation, timePicker, staffChosen, datePicker, branches) => ({
+    customerInformation: customerInformation,
+    timePicker: timePicker,
+    staffChosen: staffChosen,
+    datePicker: datePicker,
+    branches: branches,
+  })
+);
 
 const ConfirmInformation = () => {
+  // Lấy thông tin từ store
+  const { customerInformation, staffChosen, timePicker, datePicker, branches } =
+    useSelector(confirmInformationData);
 
-  //Lấy branch_id
+  // Lấy hàm dùng chung từ dataContext
+  const { formatTimeSlot } = useContext(dataContext);
+
+  // Lấy branch
   const { branch_id } = useParams("branch_id");
+  const branchChosen = branches.find(
+    (branch) => branch.id === Number(branch_id)
+  );
 
   // Set state popup
   const [dialogVisible, setDialogVisible] = useState(false);
   const [popupVisible, setPopupVisible] = useState(false);
-
-  // Lấy dữ liệu từ store
-  const customerInformation = useSelector(
-    (state) => state.customerInformation.customerInformation
-  );
-  const staffChosen = useSelector((state) => state.staffChosen.staffChosen);
-
-  const timePicker = useSelector(
-    (state) => state.timeSlotPicker.timeSlotPicker
-  );
-
-  const datePicker = useSelector((state) => state.datePicker.datePicker);
-
-  const branches = useSelector((state) => state.branches.branches);
-
-  // Lấy ra branch được đặt
-  const branchChosen = branches.find(
-    (branch) => branch.id === Number(branch_id)
-  );
 
   return (
     <Box>
@@ -74,7 +83,7 @@ const ConfirmInformation = () => {
         <Box flex justifyContent="space-between">
           <Text>Giờ đặt</Text>
           <Text className="sub-title">
-            {timePicker.start_time || "giờ đặt"}
+            {formatTimeSlot(timePicker.start_time) || "giờ đặt"}
           </Text>
         </Box>
         <Box flex justifyContent="space-between">

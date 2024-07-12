@@ -1,26 +1,32 @@
 import React, { useState, useContext, useEffect, lazy, Suspense } from "react";
-import { Box, Header, Input, Text, Icon, useNavigate } from "zmp-ui";
+import { Box, Header, Input, Text } from "zmp-ui";
 import { dataContext } from "../components/providerContext/providerContext";
 import EmptyData from "../components/emptyData/emptyData";
 import { useSelector } from "react-redux";
-import { fetchAllProducts } from "../components/redux/slices/productSlice";
+import { createSelector } from "reselect";
 
 const ProductList = lazy(() => import("../components/productList/productList"));
 const CategoryNavbar = lazy(() =>
   import("../components/categoryNavbar/categoryNavbar")
 );
 
+const products = (state) => state.products.products;
+const categories = (state) => state.categories.categories;
+
+const productPageData = createSelector(
+  [products, categories],
+  (products, categories) => ({
+    products: products,
+    categories: categories,
+  })
+);
+
 const ProductPage = () => {
   // Lấy dữ liệu từ dataContext
-  const { formatCurrency, dispatch, navigate } = useContext(dataContext);
-
-  // dispatch fired
-  useEffect(() => {
-    dispatch(fetchAllProducts());
-  }, [dispatch]);
+  const { formatCurrency, navigate } = useContext(dataContext);
 
   //Lấy các dữ liệu từ Store
-  const products = useSelector((state) => state.products.products);
+  const { products, categories } = useSelector(productPageData);
 
   const productsSelected = useSelector(
     (state) => state.productsSelected.productsSelected
@@ -35,7 +41,7 @@ const ProductPage = () => {
   useEffect(() => {
     setTotalMoney(() => {
       return productsSelected.reduce((acc, currentValue) => {
-        return (acc += currentValue.price);
+        return (acc += Number(currentValue.price));
       }, 0);
     });
   }, [productsSelected]);

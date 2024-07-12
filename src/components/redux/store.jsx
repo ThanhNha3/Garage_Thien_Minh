@@ -28,7 +28,7 @@ export const Store = configureStore({
     staffChosen: staffChosenReducer,
     customerInformation: customerInformationReducer,
     rating: ratingReducer,
-    appointmentDetail: appointmentDetailReducer
+    appointmentDetail: appointmentDetailReducer,
   },
 });
 

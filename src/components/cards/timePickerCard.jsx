@@ -39,7 +39,7 @@ const TimeCard = (data) => {
     <Box
       onClick={() => {
         if (isAvailable) {
-          dispatch(changeTimePicker({ id, start_time: time }));
+          dispatch(changeTimePicker({ id, start_time: `${time}:00` }));
         }
       }}
       p={2}

@@ -1,21 +1,19 @@
-import React, { lazy, Suspense, useEffect, useContext } from "react";
+import React, { lazy, Suspense } from "react";
 import { useSelector } from "react-redux";
 import { Box, Icon, Text } from "zmp-ui";
+import { createSelector } from "reselect";
 
 import HeaderPage from "../components/headerPage/headerPage";
-import { dataContext } from "../components/providerContext/providerContext";
-import { fetchAllBranches } from "../components/redux/slices/branchSlice";
 
 const BranchCard = lazy(() => import("../components/cards/branchCard"));
 
+const selectBranches = createSelector(
+  (state) => state.branches.branches,
+  (branches) => branches
+);
+
 const BookingChooseBranch = () => {
-  const listBranches = useSelector((store) => store.branches.branches);
-
-  const { dispatch } = useContext(dataContext);
-
-  useEffect(() => {
-    dispatch(fetchAllBranches());
-  }, []);
+  const listBranches = useSelector(selectBranches);
 
   return (
     <Box>
@@ -25,7 +23,7 @@ const BookingChooseBranch = () => {
           <Box flex flexDirection="column" className="gap-2" pt={2}>
             {listBranches.map((branch) => (
               <Suspense fallback={"đang load"} key={branch.id}>
-                <BranchCard {...branch}></BranchCard>
+                <BranchCard {...branch} />
               </Suspense>
             ))}
           </Box>

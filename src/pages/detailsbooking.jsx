@@ -10,130 +10,123 @@ import ButtonNavigate from "../components/buttonNavigate/buttonNavigate";
 import ModalConfirm from "../components/modalConfirm/modalConfirm";
 import ModalNotification from "../components/modalNotification/modalNotification";
 import StatusCard from "../components/cards/statusCard";
-import {
-  fetchRatingByAppointmentId,
-  insertRating,
-} from "../components/redux/slices/ratingSlice";
+import { insertRating } from "../components/redux/slices/ratingSlice";
+import { createSelector } from "reselect";
+
+const customerInformation = (state) =>
+  state.customerInformation.customerInformation;
+const staffChosen = (state) => state.staffChosen.staffChosen;
+const timePicker = (state) => state.timeSlotPicker.timeSlotPicker;
+const datePicker = (state) => state.datePicker.datePicker;
+const branches = (state) => state.branches.branches;
+const productsSelected = (state) => state.productsSelected.productsSelected;
+const appointmentDetail = (state) => state.appointmentDetail.appointment;
+const staffs = (state) => state.staffs.staffs;
+const timeSlots = (state) => state.timeSlots.timeSlots;
+const products = (state) => state.products.products;
+
+const detailsBookingData = createSelector(
+  [
+    customerInformation,
+    timePicker,
+    staffChosen,
+    datePicker,
+    branches,
+    productsSelected,
+    appointmentDetail,
+    staffs,
+    timeSlots,
+    products,
+  ],
+  (
+    customerInformation,
+    timePicker,
+    staffChosen,
+    datePicker,
+    branches,
+    productsSelected,
+    appointmentDetail,
+    staffs,
+    timeSlots,
+    products
+  ) => ({
+    customerInformation: customerInformation,
+    timePicker: timePicker,
+    staffChosen: staffChosen,
+    datePicker: datePicker,
+    branches: branches,
+    productsSelected: productsSelected,
+    appointmentDetail: appointmentDetail,
+    staffs: staffs,
+    timeSlots: timeSlots,
+    products: products,
+  })
+);
 
 const DetailsBooking = () => {
   // Lấy id và branch_id
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
-  const branch_id = searchParams.get("branch_id");
+  const [hasId, setHasId] = useState(false);
 
+  const branch_id = searchParams.get("branch_id");
   const [dialogVisible, setDialogVisible] = useState(false);
   const [popupVisible, setPopupVisible] = useState(false);
   const { formatCurrency, formatDate, dispatch, formatTimeSlot } =
     useContext(dataContext);
 
-  //Set state của detailBooking trong trường hợp không có ID
-  const [customerInformation, setCustomerInformation] = useState({});
-  const [datePicker, setDatePicker] = useState("");
-  const [timePicker, setTimePicker] = useState({});
-  const [staffChosen, setStaffChosen] = useState({});
-  const [branchChosen, setBranchChosen] = useState({});
-  const [productsSelected, setProductsSelected] = useState({});
+  // Bắt đầu logic mới
+  const [user, setUser] = useState({});
+  const [staff, setStaff] = useState({});
+  const [dateAppoinment, setDateAppointment] = useState("");
+  const [time, setTime] = useState("");
+  const [branch, setBranch] = useState({});
+  const [listProducts, setListProducts] = useState([]);
 
-  //Set state của detailBooking trong trường hợp có ID
-  const [currentAppointment, setCurrentAppoinment] = useState();
-
-  const [appointmentRatingStatus, setAppointmentRatingStatus] = useState(0); //đánh giá status
-  const [ratingStatusSelected, setRatingStatusSelected] = useState(0); //đánh giá status
-  const [ratingValue, setRatingValue] = useState({}); //kiểm tra nó có trong cơ sở dữ liệu chưa
-  const [readOnly, setReadOnly] = useState(false);
-
-  // Lấy dữ liệu từ store
-  const customerInformationFromStore = useSelector(
-    (state) => state.customerInformation.customerInformation
-  );
-  const datePickerFromStore = useSelector(
-    (state) => state.datePicker.datePicker
-  );
-  const timePickerFromStore = useSelector(
-    (state) => state.timeSlotPicker.timeSlotPicker
-  );
-  const staffChosenFromStore = useSelector(
-    (state) => state.staffChosen.staffChosen
-  );
-  const branches = useSelector((state) => state.branches.branches);
-  const productsSelectedFromStore = useSelector(
-    (state) => state.productsSelected.productsSelected
-  );
-  const timeslots = useSelector((state) => state.timeSlots.timeSlots);
-  const products = useSelector((state) => state.products.products);
-  const appointments = useSelector((state) => state.appointments.appointments);
-  const staffs = useSelector((state) => state.staffs.staffs);
-  const rating = useSelector((state) => state.rating.rating);
-  const appointmentDetail = useSelector(
-    (state) => state.appointmentDetail.appointment
-  );
+  const {
+    customerInformation,
+    staffChosen,
+    timePicker,
+    datePicker,
+    branches,
+    productsSelected,
+    appointmentDetail,
+    staffs,
+    timeSlots,
+    products,
+  } = useSelector(detailsBookingData);
 
   useEffect(() => {
     if (id === "null") {
-      setCustomerInformation(customerInformationFromStore);
-      setDatePicker(datePickerFromStore);
-      setTimePicker(timePickerFromStore);
-      setStaffChosen(staffChosenFromStore);
-      setBranchChosen(() =>
-        branches.find((branch) => branch.id === Number(branch_id))
-      );
-      setProductsSelected(productsSelectedFromStore);
+      setHasId(false);
+      setUser(customerInformation);
+      setStaff(staffChosen);
+      setDateAppointment(datePicker);
+      setTime(timePicker);
+      setBranch(() => {
+        return branches.find((branch) => {
+          return branch.id === Number(branch_id);
+        });
+      });
+      setListProducts(productsSelected);
     } else {
-      setCurrentAppoinment(
-        appointments.find((appointment) => appointment.id === Number(id))
-      );
-    }
-  }, [customerInformationFromStore]);
-
-  useEffect(() => {
-    if (currentAppointment !== undefined) {
-      setBranchChosen(() =>
-        branches.find(
-          (branch) => branch.id === Number(currentAppointment.branch_id)
-        )
-      );
-      setStaffChosen(() =>
-        staffs.find(
-          (staff) => staff.id === Number(currentAppointment.employee_id)
-        )
-      );
-
-      setDatePicker(() => formatDate(currentAppointment.appointment_date));
-    }
-    if (appointmentDetail && appointmentDetail.appointment_id) {
-      setCustomerInformation({
+      setUser({
         name: appointmentDetail.customer_name,
-        phone: appointmentDetail.customer_phone,
-        address: appointmentDetail.customer_address,
-        note: appointmentDetail.customer_note,
         email: appointmentDetail.customer_email,
+        address: appointmentDetail.customer_address,
+        phone: appointmentDetail.customer_phone,
+        note: appointmentDetail.customer_note,
       });
-      setProductsSelected(() => {
-        return products.filter((product) =>
-          appointmentDetail.product_id.includes(product.id)
-        );
+      setTime(() => {
+        return timeSlots.find((timeSlot) => {
+          return timeSlot.id === Number(appointmentDetail.time_picker_id);
+        });
       });
-      setTimePicker(() =>
-        timeslots.find(
-          (timeslot) => timeslot.id === Number(appointmentDetail.time_picker_id)
-        )
-      );
-      dispatch(fetchRatingByAppointmentId(appointmentDetail.appointment_id));
+      setHasId(true);
     }
-  }, [currentAppointment, appointmentDetail]);
+  }, []);
 
-  useEffect(() => {
-    if (rating) {
-      setAppointmentRatingStatus(rating.rating_status);
-      setRatingValue(rating.rating_value);
-      setReadOnly(true);
-    } else {
-      setReadOnly(false);
-      setRatingValue("");
-      setAppointmentRatingStatus(ratingStatusSelected);
-    }
-  }, [rating, ratingStatusSelected]);
-
+  // Kết thúc logic mới
   const handleInput = (e) => {
     if (!rating) {
       setRatingValue(e.target.value);
@@ -166,15 +159,11 @@ const DetailsBooking = () => {
           className="bg-[var(--white-color)]"
         >
           <Box>
-            {id && id !== "null" ? (
-              <Text className="text-[var(--text-disable)]">#{id}</Text>
-            ) : (
-              ""
-            )}
+            <Text className="text-[var(--text-disable)]">{`${
+              hasId ? `#${id}` : ""
+            }`}</Text>
           </Box>
-          <StatusCard
-            status={currentAppointment && currentAppointment.status}
-          />
+          <StatusCard status={0} />
         </Box>
         <Box
           p={4}
@@ -186,14 +175,14 @@ const DetailsBooking = () => {
           <Text className="sub-title">Chi tiết đặt lịch</Text>
           <Box flex className="gap-4">
             <Box width={135}>
-              <img src={branchChosen.image || background}></img>
+              <img src={branch.image || background}></img>
             </Box>
             <Box>
               <Text className="sub-title">
-                {branchChosen.name || "Tên chi nhánh"}
+                {branch.name || "Tên chi nhánh"}
               </Text>
               <Text className="text-[var(--text-disable)]">
-                {branchChosen.address || "địa chỉ chi nhánh"}
+                {branch.address || "địa chỉ chi nhánh"}
               </Text>
             </Box>
           </Box>
@@ -207,25 +196,21 @@ const DetailsBooking = () => {
         >
           <Box flex justifyContent="space-between">
             <Text>Ngày đặt</Text>
-            <Text className="sub-title">{datePicker || "Ngày đặt"}</Text>
+            <Text className="sub-title">{dateAppoinment || "Ngày đặt"}</Text>
           </Box>
           <Box flex justifyContent="space-between">
             <Text>Giờ đặt</Text>
             <Text className="sub-title">
-              {appointmentDetail.appointment_id
-                ? formatTimeSlot(timePicker.start_time)
-                : timePicker.start_time || "Giờ đặt"}
+              {formatTimeSlot(time.start_time) || "Giờ đặt"}
             </Text>
           </Box>
           <Box flex justifyContent="space-between">
             <Text>Nhân viên</Text>
             <Box flex alignItems="center">
               <Box width={25}>
-                <img src={staffChosen.image || background} />
+                <img src={staff.image || background} />
               </Box>
-              <Text className="sub-title">
-                {staffChosen.name || "tên nhân viên"}
-              </Text>
+              <Text className="sub-title">{staff.name || "tên nhân viên"}</Text>
             </Box>
           </Box>
         </Box>
@@ -233,14 +218,12 @@ const DetailsBooking = () => {
           flex
           flexDirection="column"
           className="gap-2 bg-[var(--white-color)]"
-          px={4}
-          py={2}
-          mt={2}
+          p={4}
         >
-          <Text className="sub-title">Dịch vụ đã chọn</Text>
+          <Text.Title className="sub-title">Dịch vụ đã chọn</Text.Title>
           <Box className="gap-2 d-block">
-            {productsSelected && productsSelected.length > 0 ? (
-              productsSelected.map((item) => (
+            {listProducts && listProducts.length > 0 ? (
+              listProducts.map((item) => (
                 <Box
                   key={item.id}
                   flex
@@ -251,9 +234,9 @@ const DetailsBooking = () => {
                   <Box flex alignItems="center" className="gap-2">
                     <Box width={50} height={50}>
                       <img
-                        width={50}
-                        className="w-full h-full"
                         src={item.image}
+                        className="w-full h-full"
+                        alt="Product"
                       />
                     </Box>
                     <Text>{item.name}</Text>
@@ -286,67 +269,72 @@ const DetailsBooking = () => {
           <Box flex flexDirection="column" className="gap-2">
             <Box flex alignItems="center" className="gap-2">
               <Icon icon="zi-user-solid"></Icon>
-              <Text>{customerInformation.name || "tên KH"}</Text>
+              <Text>{user.name || "tên KH"}</Text>
             </Box>
             <Box flex alignItems="center" className="gap-2">
               <Icon icon="zi-call-solid"></Icon>
-              <Text>{customerInformation.phone || "sđt KH"}</Text>
+              <Text>{user.phone || "sđt KH"}</Text>
             </Box>
             <Box flex alignItems="center" className="gap-2">
               <Icon icon="zi-notif-ring"></Icon>
-              <Text>{customerInformation.email || "email KH"}</Text>
+              <Text>{user.email || "email KH"}</Text>
             </Box>
             <Box flex alignItems="center" className="gap-2">
               <Icon icon="zi-location-solid"></Icon>
-              <Text>{customerInformation.address || "địa chỉ KH"}</Text>
+              <Text>{user.address || "địa chỉ KH"}</Text>
             </Box>
             <Box flex alignItems="center" className="gap-2">
               <Icon icon="zi-post"></Icon>
-              <Text>{customerInformation.note || "ghi chú KH"}</Text>
+              <Text>{user.note || "ghi chú KH"}</Text>
             </Box>
           </Box>
         </Box>
-        {id && currentAppointment && currentAppointment.status === 0 && (
-          <Box>
-            <Box p={4} mb={10} className="gap-2 bg-[var(--white-color)]" mt={2}>
-              <ButtonNavigate
-                style={{
-                  borderRadius: 10,
-                  border: "1px solid red",
-                  background: "white",
-                  color: "red",
-                  fontWeight: "bold",
-                }}
-                isCancel={true}
-                title="Hủy đặt lịch"
-                action={() => {
-                  setDialogVisible(true);
-                }}
+        <Box>
+          {hasId && (
+            <Box>
+              <Box
+                p={4}
+                mb={10}
+                className="gap-2 bg-[var(--white-color)]"
+                mt={2}
+              >
+                <ButtonNavigate
+                  style={{
+                    borderRadius: 10,
+                    border: "1px solid red",
+                    background: "white",
+                    color: "red",
+                    fontWeight: "bold",
+                  }}
+                  isCancel={true}
+                  title="Hủy đặt lịch"
+                  action={() => {
+                    setDialogVisible(true);
+                  }}
+                />
+              </Box>
+              <ModalConfirm
+                title="Xác nhận hủy lịch"
+                description="Bạn có chắc chắn hủy lịch không?"
+                type="submit"
+                dialogVisible={dialogVisible}
+                setDialogVisible={setDialogVisible}
+                setPopupVisible={setPopupVisible}
+                type={2}
+                appointment_id={id}
+              />
+              <ModalNotification
+                title="Hủy lịch thành công"
+                description="Hẹn gặp bạn vào một dịp khác!"
+                popupVisible={popupVisible}
+                setPopupVisible={setPopupVisible}
+                type="cancel"
               />
             </Box>
-            <ModalConfirm
-              title="Xác nhận hủy lịch"
-              description="Bạn có chắc chắn hủy lịch không?"
-              type="submit"
-              dialogVisible={dialogVisible}
-              setDialogVisible={setDialogVisible}
-              setPopupVisible={setPopupVisible}
-              type={2}
-              appointment_id={currentAppointment.id}
-            />
-            <ModalNotification
-              title="Hủy lịch thành công"
-              description="Hẹn gặp bạn vào một dịp khác!"
-              popupVisible={popupVisible}
-              setPopupVisible={setPopupVisible}
-              type="cancel"
-            />
-          </Box>
-        )}
-        {currentAppointment &&
-        currentAppointment.id &&
-        currentAppointment.status == 1 ? (
-          <Box>
+          )}
+        </Box>
+        <Box>
+          {hasId && (
             <Box
               p={4}
               className="bg-[var(--white-color)] gap-4"
@@ -356,55 +344,30 @@ const DetailsBooking = () => {
             >
               <Box flex flexDirection="column" className="gap-4">
                 <label className="sub-title">Đánh giá dịch vụ</label>
-                <Box flex justifyContent="space-between" className="w-full">
-                  <Box
-                    onClick={() => {
-                      setRatingStatusSelected(0);
-                    }}
-                    pb={2}
-                    className={`text-center flex-1 ${
-                      appointmentRatingStatus === 0 ? "rating-active" : ""
-                    }`}
-                  >
+                <Box flex justifyContent="space-around" className="w-full">
+                  <Box onClick={() => {}} p={2}>
                     Hài lòng
                   </Box>
-                  <Box
-                    onClick={() => {
-                      setRatingStatusSelected(1);
-                    }}
-                    pb={2}
-                    className={`text-center flex-1 ${
-                      appointmentRatingStatus === 1 ? "rating-active" : ""
-                    }`}
-                  >
+                  <Box onClick={() => {}} p={2}>
                     Không hài lòng
                   </Box>
                 </Box>
                 <Input.TextArea
-                  value={ratingValue}
-                  onChange={handleInput}
                   id="customer-rating"
                   placeholder="đánh giá của bạn..."
-                  readOnly={readOnly}
                 />
-                {!rating ? (
-                  <ButtonNavigate
-                    title="Gửi"
-                    style={{
-                      borderRadius: 10,
-                      background: "var(--primary-color)",
-                    }}
-                    action={sendRating}
-                  ></ButtonNavigate>
-                ) : (
-                  ""
-                )}
+                <ButtonNavigate
+                  title="Gửi"
+                  style={{
+                    borderRadius: 10,
+                    background: "var(--primary-color)",
+                  }}
+                  action={sendRating}
+                ></ButtonNavigate>
               </Box>
             </Box>
-          </Box>
-        ) : (
-          ""
-        )}
+          )}
+        </Box>
       </Box>
       <ModalNotification
         description={"Cảm ơn bạn đã để lại đánh giá"}

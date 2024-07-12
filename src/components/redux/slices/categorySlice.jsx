@@ -4,12 +4,12 @@ export const fetchAllCategories = createAsyncThunk(
   "users/fetchAllCategories",
   async () => {
     const response = await fetch("http://127.0.0.1:8000/api/categories");
-    const data = await response.data.json();
+    const data = await response.json();
     return data.data;
   }
 );
 
-export const branchSlice = createSlice({
+export const categorySlice = createSlice({
   name: "categories",
   initialState: {
     categories: [],
@@ -25,7 +25,7 @@ export const branchSlice = createSlice({
       })
       .addCase(fetchAllCategories.fulfilled, (state, action) => {
         state.loading = false;
-        state.categories = action.payload; // update products array
+        state.categories = action.payload;
       })
       .addCase(fetchAllCategories.rejected, (state, action) => {
         state.loading = false;
@@ -35,5 +35,4 @@ export const branchSlice = createSlice({
 });
 
 // Export actions and reducer
-export const {} = branchSlice.actions;
-export default branchSlice.reducer;
+export default categorySlice.reducer;

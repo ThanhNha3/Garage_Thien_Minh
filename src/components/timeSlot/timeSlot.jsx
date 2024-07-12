@@ -11,11 +11,6 @@ const TimeSlot = () => {
   const { handleTimeActive } = useContext(dataContext);
   const [defaultTimeslot, setDefaultTimeslot] = useState();
 
-  // Fetch time slots and set default time slot
-  useEffect(() => {
-    dispatch(fetchAllTimeSlots());
-  }, [dispatch]);
-
   const timeSlots = useSelector((state) => state.timeSlots.timeSlots);
   const timeSlotPicker = useSelector((state) => state.timeSlotPicker.timeSlotPicker);
 

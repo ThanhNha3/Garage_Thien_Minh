@@ -10,18 +10,30 @@ import { fetchAllTimeSlots } from "../redux/slices/timeSlotSlice";
 
 export const dataContext = createContext(null);
 
+console.log("provider-context re-render");
+
 const ProviderContext = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(fetchAllProducts());
-    dispatch(fetchAllStaffs());
-    dispatch(fetchAllBranches());
-    dispatch(fetchAllProducts());
-    dispatch(fetchAllCategories());
-    dispatch(fetchAllTimeSlots());
-  }, [dispatch]);
+    const fetchData = async () => {
+      try {
+        await Promise.all([
+          dispatch(fetchAllProducts()),
+          dispatch(fetchAllStaffs()),
+          dispatch(fetchAllBranches()),
+          dispatch(fetchAllCategories()),
+          dispatch(fetchAllTimeSlots()),
+        ]);
+        const { userInfo } = await getUserInfo({});
+        setUserInfo(userInfo);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const [userInfo, setUserInfo] = useState({});
 

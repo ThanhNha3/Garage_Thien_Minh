@@ -13,14 +13,13 @@ import { Box, Text, Icon } from "zmp-ui";
 import ButtonNavigate from "../components/buttonNavigate/buttonNavigate";
 import HeaderPage from "../components/headerPage/headerPage";
 import { dataContext } from "../components/providerContext/providerContext";
-import { setAppoinmentToDefault } from "../components/redux/slices/appointmentDetailSlice";
 import { fetchAllAppointments } from "../components/redux/slices/appointmentSlice";
 
 const BookingCard = lazy(() => import("../components/cards/bookingCard"));
 
 const Booking = () => {
   const { dispatch, navigate, userInfo } = useContext(dataContext);
-  
+
   const data = useSelector((state) => state.appointments.appointments);
 
   const [listAppointments, setListAppointments] = useState([]);
@@ -29,9 +28,7 @@ const Booking = () => {
 
   useEffect(() => {
     dispatch(fetchAllAppointments(`${userInfo.id}`));
-    dispatch(setAppoinmentToDefault());
   }, [dispatch, userInfo.id]);
-  
 
   useEffect(() => {
     setListAppointments(() => {
@@ -142,12 +139,13 @@ const Booking = () => {
         )}
       </Box>
       <Box
-        className="sticky bg-[var(--white-color)] w-full top-full"
+        className=" bg-[var(--white-color)] w-full top-full bottom-0"
         flex
         justifyContent="center"
         alignItems="center"
         py={2}
         px={4}
+        style={{ position: "sticky", top: "100%" }}
       >
         <ButtonNavigate
           page="/branches"

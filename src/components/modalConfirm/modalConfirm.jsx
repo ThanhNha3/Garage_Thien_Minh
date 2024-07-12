@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { useSelector } from "react-redux";
+import { createSelector } from "reselect";
 import { Box, Modal, Text } from "zmp-ui";
 import { dataContext } from "../providerContext/providerContext";
 import {
@@ -7,6 +8,40 @@ import {
   fetchAllAppointments,
   insertNewAppointment,
 } from "../redux/slices/appointmentSlice";
+
+const customerInformation = (state) =>
+  state.customerInformation.customerInformation;
+const staffChosen = (state) => state.staffChosen.staffChosen;
+const timePicker = (state) => state.timeSlotPicker.timeSlotPicker;
+const datePicker = (state) => state.datePicker.datePicker;
+const branches = (state) => state.branches.branches;
+const productsSelected = (state) => state.productsSelected.productsSelected;
+
+const modalConfirmData = createSelector(
+  [
+    customerInformation,
+    timePicker,
+    staffChosen,
+    datePicker,
+    branches,
+    productsSelected,
+  ],
+  (
+    customerInformation,
+    timePicker,
+    staffChosen,
+    datePicker,
+    branches,
+    productsSelected
+  ) => ({
+    customerInformation: customerInformation,
+    timePicker: timePicker,
+    staffChosen: staffChosen,
+    datePicker: datePicker,
+    branches: branches,
+    productsSelected: productsSelected,
+  })
+);
 
 const ModalConfirm = ({
   title,
@@ -21,23 +56,13 @@ const ModalConfirm = ({
   // Lấy hàm từ dataContext
   const { dispatch, navigate, userInfo, convertDate } = useContext(dataContext);
 
-  // Lấy dữ liệu từ store
-  const timePicker = useSelector(
-    (state) => state.timeSlotPicker.timeSlotPicker
-  );
-
-  const productsSelected = useSelector(
-    (state) => state.productsSelected.productsSelected
-  );
-
-  const customerInformation = useSelector(
-    (state) => state.customerInformation.customerInformation
-  );
-
-  const staffChosen = useSelector((state) => state.staffChosen.staffChosen);
-  const datePicker = convertDate(
-    useSelector((state) => state.datePicker.datePicker)
-  );
+  const {
+    timePicker,
+    productsSelected,
+    customerInformation,
+    staffChosen,
+    datePicker,
+  } = useSelector(modalConfirmData);
 
   // Hàm khi xác nhận thông tin
   const confirmData = async () => {
@@ -54,7 +79,7 @@ const ModalConfirm = ({
         zalo_id: userInfo.id,
         branch_id,
         employee_id: staffChosen.id,
-        appointment_date: datePicker,
+        appointment_date: convertDate(datePicker),
         appointment_details: [
           {
             product_id: productsId,

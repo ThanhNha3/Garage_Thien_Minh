@@ -19,11 +19,6 @@ export const appointmentDetailSlice = createSlice({
     loading: false,
     error: null,
   },
-  reducers: {
-    setAppoinmentToDefault: (state) => {
-      state.appointment = {};
-    },
-  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchAppointmentDetailbyId.pending, (state, action) => {
@@ -37,10 +32,8 @@ export const appointmentDetailSlice = createSlice({
       .addCase(fetchAppointmentDetailbyId.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
-      })
-      
+      });
   },
 });
 
-export const {setAppoinmentToDefault} = appointmentDetailSlice.actions;
 export default appointmentDetailSlice.reducer;

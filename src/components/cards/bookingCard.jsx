@@ -12,10 +12,6 @@ const BookingCard = (data) => {
   const { id, branch_id, appointment_date, status } = data;
   const [branch, setBranch] = useState({});
 
-  useEffect(() => {
-    dispatch(fetchAllBranches());
-  }, []);
-
   const branches = useSelector((state) => state.branches.branches);
 
   useEffect(() => {
@@ -29,8 +25,8 @@ const BookingCard = (data) => {
 
   return (
     <Box
-      onClick={() => {
-        dispatch(fetchAppointmentDetailbyId(id));
+      onClick={async () => {
+        await dispatch(fetchAppointmentDetailbyId(id));
         navigate(`/detailsBooking?id=${id}`);
       }}
       flex
