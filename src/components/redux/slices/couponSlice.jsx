@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 export const fetchAllCoupons = createAsyncThunk(
   "users/fetchAllCoupons",
   async () => {
-    const response = await fetch("http://127.0.0.1:8000/api/promotions");
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/promotions`);
     const data = await response.json();
     return data.data;
   }
@@ -16,9 +16,7 @@ export const couponSlice = createSlice({
     loading: false,
     error: null,
   },
-  reducers: {
-
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchAllCoupons.pending, (state, action) => {
@@ -37,5 +35,5 @@ export const couponSlice = createSlice({
 });
 
 // Export actions and reducer
-export const { } = couponSlice.actions;
+export const {} = couponSlice.actions;
 export default couponSlice.reducer;

@@ -5,7 +5,7 @@ export const fetchAppointmentDetailbyId = createAsyncThunk(
   async (appointment_id) => {
     appointment_id = Number(appointment_id);
     const response = await fetch(
-      `http://127.0.0.1:8000/api/appointment/detail/${appointment_id}`
+      `${import.meta.env.VITE_API_URL}/appointment/detail/${appointment_id}`
     );
     const data = await response.json();
     return data.data;

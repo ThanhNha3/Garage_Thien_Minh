@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 export const fetchAllBranches = createAsyncThunk(
   "users/fetchAllBranches",
   async () => {
-    const response = await fetch("http://127.0.0.1:8000/api/branches");
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/branches`);
     const data = await response.json();
     return data.data;
   }

@@ -4,7 +4,7 @@ export const fetchAllAppointments = createAsyncThunk(
   "users/fetchAllAppointments",
   async (zalo_id) => {
     const response = await fetch(
-      `http://127.0.0.1:8000/api/appointments/zalo=${zalo_id}`
+      `${import.meta.env.VITE_API_URL}/appointments/zalo=${zalo_id}`
     );
     const data = await response.json();
     return data.data;
@@ -15,7 +15,7 @@ export const cancelAppointment = createAsyncThunk(
   "users/cancelAppointment",
   async (id) => {
     const response = await fetch(
-      `http://127.0.0.1:8000/api/appointment/update/${id}`,
+      `${import.meta.env.VITE_API_URL}/appointment/update/${id}`,
       {
         method: "PUT",
         headers: {
@@ -41,20 +41,23 @@ export const insertNewAppointment = createAsyncThunk(
       appointment_date,
       appointment_details,
     } = request;
-    const response = await fetch(`http://127.0.0.1:8000/api/appointment/add`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        zalo_id,
-        branch_id,
-        employee_id,
-        appointment_date,
-        status: 0,
-        appointment_details,
-      }),
-    });
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/appointment/add`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          zalo_id,
+          branch_id,
+          employee_id,
+          appointment_date,
+          status: 0,
+          appointment_details,
+        }),
+      }
+    );
     const data = await response.json();
     return data;
   }

@@ -24,6 +24,7 @@ const appointmentDetail = (state) => state.appointmentDetail.appointment;
 const staffs = (state) => state.staffs.staffs;
 const timeSlots = (state) => state.timeSlots.timeSlots;
 const products = (state) => state.products.products;
+const rating = (state) => state.rating.rating;
 
 const detailsBookingData = createSelector(
   [
@@ -37,6 +38,7 @@ const detailsBookingData = createSelector(
     staffs,
     timeSlots,
     products,
+    rating,
   ],
   (
     customerInformation,
@@ -48,7 +50,8 @@ const detailsBookingData = createSelector(
     appointmentDetail,
     staffs,
     timeSlots,
-    products
+    products,
+    rating
   ) => ({
     customerInformation: customerInformation,
     timePicker: timePicker,
@@ -60,6 +63,7 @@ const detailsBookingData = createSelector(
     staffs: staffs,
     timeSlots: timeSlots,
     products: products,
+    rating: rating,
   })
 );
 
@@ -82,6 +86,12 @@ const DetailsBooking = () => {
   const [time, setTime] = useState("");
   const [branch, setBranch] = useState({});
   const [listProducts, setListProducts] = useState([]);
+  const [ratingExisted, setRatingExisted] = useState({
+    rating_status: null,
+  });
+  const [ratingValue, setRatingValue] = useState("");
+  const [ratingStatus, setRatingStatus] = useState(1);
+  const [readOnly, setReadOnly] = useState(false);
 
   const {
     customerInformation,
@@ -94,6 +104,7 @@ const DetailsBooking = () => {
     staffs,
     timeSlots,
     products,
+    rating,
   } = useSelector(detailsBookingData);
 
   useEffect(() => {
@@ -117,11 +128,33 @@ const DetailsBooking = () => {
         phone: appointmentDetail.customer_phone,
         note: appointmentDetail.customer_note,
       });
+      setStaff(() => {
+        return staffs.find((staff) => {
+          return staff.id === Number(appointmentDetail.employee_id);
+        });
+      });
+
       setTime(() => {
         return timeSlots.find((timeSlot) => {
           return timeSlot.id === Number(appointmentDetail.time_picker_id);
         });
       });
+      setBranch(() => {
+        return branches.find((branch) => {
+          return branch.id === Number(appointmentDetail.branch_id);
+        });
+      });
+      setListProducts(() => {
+        return products.filter((product) => {
+          return appointmentDetail.product_id.includes(product.id);
+        });
+      });
+      if (rating) {
+        setReadOnly(true);
+        setRatingValue(rating.rating_value);
+        setRatingStatus(rating.rating_status);
+      }
+      setRatingExisted(rating);
       setHasId(true);
     }
   }, []);
@@ -137,7 +170,7 @@ const DetailsBooking = () => {
     const ratingValue = document.getElementById("customer-rating");
     const data = {
       rating_value: ratingValue.value,
-      rating_status: ratingStatusSelected,
+      rating_status: ratingStatus,
       appointment_id: Number(id),
     };
     // dispath API để gửi đánh giá
@@ -163,7 +196,7 @@ const DetailsBooking = () => {
               hasId ? `#${id}` : ""
             }`}</Text>
           </Box>
-          <StatusCard status={0} />
+          <StatusCard status={(hasId && appointmentDetail.status) || 0} />
         </Box>
         <Box
           p={4}
@@ -290,7 +323,7 @@ const DetailsBooking = () => {
           </Box>
         </Box>
         <Box>
-          {hasId && (
+          {hasId && appointmentDetail.status === 0 && (
             <Box>
               <Box
                 p={4}
@@ -334,7 +367,7 @@ const DetailsBooking = () => {
           )}
         </Box>
         <Box>
-          {hasId && (
+          {hasId && appointmentDetail.status === 1 && (
             <Box
               p={4}
               className="bg-[var(--white-color)] gap-4"
@@ -345,25 +378,42 @@ const DetailsBooking = () => {
               <Box flex flexDirection="column" className="gap-4">
                 <label className="sub-title">Đánh giá dịch vụ</label>
                 <Box flex justifyContent="space-around" className="w-full">
-                  <Box onClick={() => {}} p={2}>
+                  <Box
+                    className={ratingStatus === 1 ? "rating-active" : ""}
+                    onClick={() => {
+                      !readOnly && setRatingStatus(1);
+                    }}
+                    p={2}
+                  >
                     Hài lòng
                   </Box>
-                  <Box onClick={() => {}} p={2}>
+                  <Box
+                    className={ratingStatus === 0 ? "rating-active" : ""}
+                    onClick={() => {
+                      !readOnly && setRatingStatus(0);
+                    }}
+                    p={2}
+                  >
                     Không hài lòng
                   </Box>
                 </Box>
                 <Input.TextArea
+                  value={ratingValue}
                   id="customer-rating"
                   placeholder="đánh giá của bạn..."
+                  onChange={handleInput}
+                  readOnly={readOnly}
                 />
-                <ButtonNavigate
-                  title="Gửi"
-                  style={{
-                    borderRadius: 10,
-                    background: "var(--primary-color)",
-                  }}
-                  action={sendRating}
-                ></ButtonNavigate>
+                {!readOnly && (
+                  <ButtonNavigate
+                    title="Gửi"
+                    style={{
+                      borderRadius: 10,
+                      background: "var(--primary-color)",
+                    }}
+                    action={sendRating}
+                  ></ButtonNavigate>
+                )}
               </Box>
             </Box>
           )}

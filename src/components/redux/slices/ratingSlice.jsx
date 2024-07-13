@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 export const fetchAllRating = createAsyncThunk(
   "users/fetchAllRating",
   async () => {
-    const response = await fetch(`http://localhost:4000/api/ratings}`);
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/ratings`);
     const data = await response.json();
     return data;
   }
@@ -13,7 +13,7 @@ export const fetchRatingByAppointmentId = createAsyncThunk(
   "users/fetchRatingByAppointmentId",
   async (appointment_id) => {
     const response = await fetch(
-      `http://127.0.0.1:8000/api/ratings/appointment=${appointment_id}`
+      `${import.meta.env.VITE_API_URL}/ratings/appointment=${appointment_id}`
     );
     const data = await response.json();
     return data;
@@ -23,19 +23,21 @@ export const fetchRatingByAppointmentId = createAsyncThunk(
 export const insertRating = createAsyncThunk(
   "users/insertRating",
   async (ratingData) => {
-    console.log(ratingData);
     const { rating_value, rating_status, appointment_id } = ratingData;
-    const response = await fetch(`http://127.0.0.1:8000/api/ratings/appointment=${appointment_id}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        rating_value,
-        rating_status,
-        appointment_id,
-      }),
-    });
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/ratings/appointment=${appointment_id}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          rating_value,
+          rating_status,
+          appointment_id,
+        }),
+      }
+    );
     const data = await response.json();
     return data;
   }

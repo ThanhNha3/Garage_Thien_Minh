@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 export const fetchAllTimeSlots = createAsyncThunk(
   "users/fetchAllTimeSlots",
   async () => {
-    const response = await fetch("http://127.0.0.1:8000/api/timeslots");
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/timeslots`);
     const data = await response.json();
     return data;
   }

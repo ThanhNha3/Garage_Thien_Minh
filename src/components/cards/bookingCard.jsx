@@ -6,6 +6,7 @@ import { dataContext } from "../providerContext/providerContext";
 import background from "../../../public/images/background.jpg";
 import { fetchAllBranches } from "../redux/slices/branchSlice";
 import { fetchAppointmentDetailbyId } from "../redux/slices/appointmentDetailSlice";
+import { fetchRatingByAppointmentId } from "../redux/slices/ratingSlice";
 
 const BookingCard = (data) => {
   const { formatDate, dispatch, navigate } = useContext(dataContext);
@@ -27,6 +28,7 @@ const BookingCard = (data) => {
     <Box
       onClick={async () => {
         await dispatch(fetchAppointmentDetailbyId(id));
+        await dispatch(fetchRatingByAppointmentId(id));
         navigate(`/detailsBooking?id=${id}`);
       }}
       flex

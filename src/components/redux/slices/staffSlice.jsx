@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 export const fetchAllStaffs = createAsyncThunk(
   "users/fetchAllStaffs",
   async () => {
-    const response = await fetch("http://127.0.0.1:8000/api/staffs");
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/staffs`);
     const data = await response.json();
     return data.data;
   }
@@ -12,7 +12,7 @@ export const fetchAllStaffs = createAsyncThunk(
 export const fetchAllStaffsTransfer = createAsyncThunk(
   "users/fetchAllStaffs",
   async () => {
-    const response = await fetch("http://127.0.0.1:8000/api/staffs");
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/staffs`);
     const data = await response.json();
     return data.data;
   }
